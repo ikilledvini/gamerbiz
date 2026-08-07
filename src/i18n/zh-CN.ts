@@ -260,6 +260,7 @@ export const zhCN: Dict = {
     talentsLink: "旗下人才",
     websiteLink: "官方网站",
     linkedinLink: "LinkedIn",
+    primaryNav: "主要链接",
     backToWebsite: "返回 Gamerbiz 官网",
     sharePage: "分享 Gamerbiz 页面",
     linkCopied: "链接已复制",

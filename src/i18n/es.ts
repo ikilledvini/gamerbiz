@@ -265,6 +265,7 @@ export const es: Dict = {
     talentsLink: "Talentos",
     websiteLink: "Sitio oficial",
     linkedinLink: "LinkedIn",
+    primaryNav: "Enlaces principales",
     backToWebsite: "Volver al sitio de Gamerbiz",
     sharePage: "Compartir la página de Gamerbiz",
     linkCopied: "Enlace copiado",

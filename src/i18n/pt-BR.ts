@@ -264,6 +264,7 @@ export const ptBR: Dict = {
     talentsLink: "Talentos",
     websiteLink: "Site oficial",
     linkedinLink: "LinkedIn",
+    primaryNav: "Links principais",
     backToWebsite: "Voltar ao site da Gamerbiz",
     sharePage: "Compartilhar página da Gamerbiz",
     linkCopied: "Link copiado",

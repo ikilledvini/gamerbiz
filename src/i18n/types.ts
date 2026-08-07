@@ -168,6 +168,7 @@ export type Dict = {
     talentsLink: string;
     websiteLink: string;
     linkedinLink: string;
+    primaryNav: string;
     backToWebsite: string;
     sharePage: string;
     linkCopied: string;

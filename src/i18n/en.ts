@@ -262,6 +262,7 @@ export const en: Dict = {
     talentsLink: "Talents",
     websiteLink: "Official website",
     linkedinLink: "LinkedIn",
+    primaryNav: "Main links",
     backToWebsite: "Back to the Gamerbiz website",
     sharePage: "Share the Gamerbiz page",
     linkCopied: "Link copied",

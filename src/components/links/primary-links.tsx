@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Globe, Linkedin, Users } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Globe, Linkedin } from "lucide-react";
 import { gamerbizLinks } from "@/data/links";
 import { useI18n } from "@/i18n";
 
@@ -9,26 +9,11 @@ const baseClass =
 const activeClass =
   "bg-primary text-primary-foreground border border-transparent hover:-translate-y-0.5 hover:border-white/25 hover:bg-primary-dark";
 
-
 export function PrimaryLinks() {
   const { t } = useI18n();
 
-  function scrollToTalents(event: React.MouseEvent<HTMLAnchorElement>) {
-    event.preventDefault();
-    const target = document.getElementById("talentos");
-    if (!target) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
-    history.replaceState(null, "", "#talentos");
-  }
-
   return (
-    <nav aria-label={t.links.talentsTitle} className="mt-9 flex flex-col gap-3">
-      <a href="#talentos" onClick={scrollToTalents} className={`${baseClass} ${activeClass}`}>
-        <Users className="h-5 w-5 shrink-0" aria-hidden="true" />
-        <span className="flex-1">{t.links.talentsLink}</span>
-        <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-      </a>
+    <nav aria-label={t.links.primaryNav} className="mt-9 flex flex-col gap-3">
 
       <Link to="/" className={`${baseClass} ${activeClass}`}>
         <Globe className="h-5 w-5 shrink-0" aria-hidden="true" />
