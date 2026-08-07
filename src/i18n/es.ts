@@ -161,7 +161,7 @@ export const es: Dict = {
     title: "No es solo un roster. Es curaduría.",
     description:
       "Creators, streamers y jugadores profesionales con comunidades comprometidas. Cada talento en la oportunidad correcta.",
-    card: "VER MEDIA KIT →",
+    card: "VER MEDIA KIT",
     allButton: "CONOCE A TODOS LOS TALENTOS",
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "Talento representado oficialmente por Gamerbiz.",
