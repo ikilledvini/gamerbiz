@@ -76,7 +76,7 @@ export function Header() {
         <div className="container-gbz flex justify-center py-4">
           <div className="grid h-[68px] w-full max-w-4xl grid-cols-3 items-center gap-6">
             <a href="#inicio" className="flex items-center justify-self-start" aria-label="Gamerbiz">
-              <Logo className="h-9" />
+              <Logo className="h-10" />
             </a>
 
             <nav aria-label="Principal" className="hidden items-center justify-center gap-6 lg:flex">
