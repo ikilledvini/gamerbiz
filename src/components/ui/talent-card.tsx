@@ -72,7 +72,7 @@ export function TalentCard({
         )}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent" />
 
-        <div className="absolute inset-x-0 bottom-0 z-10 p-5">
+        <div className="absolute inset-x-0 bottom-0 z-10 p-5 pb-6">
           {talent.firstName ? (
             <p className="font-display text-sm font-bold text-white/80">{talent.firstName}</p>
           ) : null}
@@ -80,17 +80,15 @@ export function TalentCard({
             &ldquo;{talent.stageName}&rdquo;
           </h3>
           <p className="mt-1 text-sm font-semibold text-white/70">{talent.shortDescription}</p>
-        </div>
-      </div>
 
-      <div className="p-4">
-        <button
-          type="button"
-          onClick={() => onMediaKit(talent)}
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
-        >
-          {t.talents.card}
-        </button>
+          <button
+            type="button"
+            onClick={() => onMediaKit(talent)}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
+          >
+            {t.talents.card}
+          </button>
+        </div>
       </div>
     </article>
   );
