@@ -29,6 +29,19 @@ export function CreatorApplicationModal({
   const set = (key: keyof typeof values) => (value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
+  function validateField(key: keyof typeof values, value: string): string | undefined {
+    if (key === "whatsapp") return undefined;
+    if (!value.trim())
+      return key === "profiles" ? t.validation.profiles : t.validation.required;
+    if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim()))
+      return t.validation.email;
+    return undefined;
+  }
+
+  function blur(key: keyof typeof values) {
+    setErrors((prev) => ({ ...prev, [key]: validateField(key, values[key]) }));
+  }
+
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     const next: Errors = {
@@ -36,7 +49,6 @@ export function CreatorApplicationModal({
       email: validateField("email", values.email),
       type: validateField("type", values.type),
       profiles: validateField("profiles", values.profiles),
-      platforms: platforms.length === 0 ? t.validation.platform : undefined,
     };
     setErrors(next);
     if (Object.values(next).some(Boolean)) return;
@@ -119,41 +131,6 @@ export function CreatorApplicationModal({
             />
           </Field>
 
-          <fieldset className="md:col-span-2">
-            <legend className="font-display text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground">
-              {m.platforms}
-            </legend>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {[...PLATFORM_KEYS, m.other].map((platform) => {
-                const id = `platform-${platform}`;
-                const checked = platforms.includes(platform);
-                return (
-                  <label
-                    key={platform}
-                    htmlFor={id}
-                    className={
-                      "flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-200 " +
-                      (checked
-                        ? "border-primary bg-primary/15 text-foreground"
-                        : "border-border text-muted-foreground hover:border-subtle")
-                    }
-                  >
-                    <input
-                      id={id}
-                      type="checkbox"
-                      className="h-4 w-4 accent-[oklch(0.6279_0.2577_29.23)]"
-                      checked={checked}
-                      onChange={() => togglePlatform(platform)}
-                    />
-                    {platform}
-                  </label>
-                );
-              })}
-            </div>
-            {errors.platforms ? (
-              <p className="mt-2 text-xs font-semibold text-primary">⚠ {errors.platforms}</p>
-            ) : null}
-          </fieldset>
 
           <Field id="creator-type" label={m.type} error={errors.type} className="md:col-span-2">
             <textarea
