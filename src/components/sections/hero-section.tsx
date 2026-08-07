@@ -18,9 +18,9 @@ export function HeroSection() {
         <img
           src={heroBg.url}
           alt=""
-          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-[16px]"
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-60 blur-[14px]"
         />
-        <div className="absolute inset-0 bg-background/70" />
+        <div className="absolute inset-0 bg-background/60" />
         <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/20 blur-[160px]" />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/40" />
       </div>
