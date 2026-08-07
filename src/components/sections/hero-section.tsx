@@ -11,14 +11,14 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-screen items-center overflow-hidden pb-20 pt-[132px]"
+      className="relative flex min-h-[92vh] items-center overflow-hidden pb-28 pt-[132px]"
     >
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
         <img
           src={heroBg.url}
           alt=""
-          className="absolute inset-0 h-full w-full scale-[1.15] object-cover opacity-95 blur-[1px]"
+          className="absolute inset-0 h-full w-full scale-[1.15] object-cover opacity-95 blur-[2px]"
         />
         <div className="absolute inset-0 bg-background/15" />
         <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/8 blur-[140px]" />
