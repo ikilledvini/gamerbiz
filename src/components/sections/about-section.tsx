@@ -1,13 +1,7 @@
-import { Gamepad2, Megaphone, Trophy, Camera } from "lucide-react";
+import { Camera } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
-
-const ICONS = {
-  talents: Gamepad2,
-  marketing: Megaphone,
-  esports: Trophy,
-} as const;
 
 export function AboutSection() {
   const { t } = useI18n();
@@ -39,21 +33,17 @@ export function AboutSection() {
         </div>
 
         <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {t.about.pillars.map((pillar) => {
-            const Icon = ICONS[pillar.key as keyof typeof ICONS] ?? Gamepad2;
-            return (
-              <article
-                key={pillar.key}
-                className="rounded-3xl border border-border bg-background p-8 transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/60"
-              >
-                <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
-                <h3 className="mt-5 font-display text-xl font-bold">{pillar.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  {pillar.text}
-                </p>
-              </article>
-            );
-          })}
+          {t.about.pillars.map((pillar) => (
+            <article
+              key={pillar.key}
+              className="rounded-3xl border border-border bg-background p-8 transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/60"
+            >
+              <h3 className="font-display text-xl font-bold">{pillar.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                {pillar.text}
+              </p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
