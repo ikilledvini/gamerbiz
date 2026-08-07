@@ -81,4 +81,5 @@ export const TALENT_IMAGES: Record<string, string> = {
   GeoPasch: geopasch.url,
   Tetéia: teteia.url,
   JoaoPdzin: joaopdzin.url,
+  RayDiva: raydiva.url,
 };
