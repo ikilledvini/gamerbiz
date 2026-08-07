@@ -10,7 +10,7 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-[92vh] items-center overflow-hidden pb-16 pt-[112px]"
+      className="relative flex min-h-[78vh] items-center overflow-hidden pb-16 pt-[112px]"
     >
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
