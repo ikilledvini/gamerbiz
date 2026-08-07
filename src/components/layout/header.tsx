@@ -29,7 +29,6 @@ export function Header() {
       if (!ticking) {
         window.requestAnimationFrame(() => {
           const currentScrollY = window.scrollY;
-          setAtTop(currentScrollY < 20);
 
           if (currentScrollY < 20) {
             setVisible(true);
