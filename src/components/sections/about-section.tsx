@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Volume2, VolumeX } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
@@ -7,6 +9,7 @@ import aboutPoster from "@/assets/gamerbiz-hero-poster.jpg.asset.json";
 export function AboutSection() {
   const { t } = useI18n();
   const { openBrandModal } = useModals();
+  const [isMuted, setIsMuted] = useState(true);
 
   return (
     <section id="sobre" className="section-gbz bg-surface">
@@ -27,7 +30,7 @@ export function AboutSection() {
             <video
               className="h-full w-full object-cover"
               autoPlay
-              muted
+              muted={isMuted}
               loop
               playsInline
               preload="metadata"
@@ -36,6 +39,14 @@ export function AboutSection() {
               aria-label={t.about.mediaPlaceholder}
             />
             <div className="pointer-events-none absolute inset-0 bg-black/20" aria-hidden="true" />
+            <button
+              type="button"
+              onClick={() => setIsMuted((prev) => !prev)}
+              className="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary hover:text-primary"
+              aria-label={isMuted ? "Ativar som" : "Desativar som"}
+            >
+              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </button>
           </div>
         </div>
 
