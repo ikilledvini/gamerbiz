@@ -85,10 +85,10 @@ export function Header() {
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-0 top-[72px] z-40 lg:hidden" onClick={() => setMenuOpen(false)}>
+          <div className="fixed inset-0 top-[92px] z-40 lg:hidden" onClick={() => setMenuOpen(false)}>
             <div
               id="mobile-menu"
-              className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
+              className="max-h-[calc(100dvh-92px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
               onClick={(event) => event.stopPropagation()}
             >
               <nav aria-label="Principal (mobile)" className="flex flex-col">
