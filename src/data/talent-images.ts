@@ -36,6 +36,8 @@ import osuperwil from "@/assets/talents/osuperwil.jpg.asset.json";
 import oilaris from "@/assets/talents/oilaris.png.asset.json";
 import vitto from "@/assets/talents/vittozao.webp.asset.json";
 import revmpt from "@/assets/talents/revmpt.jpg.asset.json";
+import joaopdzin from "@/assets/talents/joaopdzin.jpg.asset.json";
+
 
 export const TALENT_IMAGES: Record<string, string> = {
   Thalera: thalera.url,
