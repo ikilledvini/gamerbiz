@@ -2,7 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
-import heroBg from "@/assets/cta-arena.jpg.asset.json";
+import heroBg from "@/assets/hero-arena.jpg.asset.json";
 
 export function HeroSection() {
   const { t } = useI18n();
