@@ -2,6 +2,7 @@ import teamLiquidLogo from "@/assets/team-liquid.png.asset.json";
 import furiaLogo from "@/assets/furia.png.asset.json";
 import mibrLogo from "@/assets/mibr.png.asset.json";
 import imperialLogo from "@/assets/imperial.png.asset.json";
+import legacyLogo from "@/assets/legacy.png.asset.json";
 
 export type ClientLogo = {
   name: string;
