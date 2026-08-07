@@ -27,7 +27,7 @@ export function Footer() {
     <footer id="contato" className="border-t border-border bg-surface">
       <div className="container-gbz grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4 lg:py-20">
         <div className="lg:col-span-1">
-          <Logo className="text-2xl" />
+          <Logo className="h-10" />
           <p className="mt-5 max-w-[34ch] text-sm text-muted-foreground">{t.footer.phrase}</p>
           <a
             href="mailto:hello@gamerbiz.com.br"
