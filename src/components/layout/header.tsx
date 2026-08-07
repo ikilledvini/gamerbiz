@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const { t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
-  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const lastY = useRef(0);
 
   const links = [
     { href: "#sobre", label: t.nav.about },
@@ -23,8 +24,15 @@ export function Header() {
   ];
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    lastY.current = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const delta = y - lastY.current;
+      if (Math.abs(delta) < 6) return;
+      if (delta > 0 && y > 120) setHidden(true);
+      else if (delta < 0) setHidden(false);
+      lastY.current = y;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -43,106 +51,108 @@ export function Header() {
   }, [menuOpen]);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-200 ease-out",
-        scrolled
-          ? "border-b border-border bg-background/92 backdrop-blur-md"
-          : "border-b border-transparent bg-background/45 backdrop-blur-sm",
-      )}
-    >
-      <div className="container-gbz flex h-[84px] items-center justify-between gap-6">
-        <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
-          <Logo className="h-10" />
-        </a>
-
-        <nav aria-label="Principal" className="hidden items-center gap-7 lg:flex">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="font-display text-base font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 lg:flex">
-          <LanguageSwitcher />
-          <GbzButton variant="outline" size="md" onClick={() => openBrandModal()}>
-            {t.actions.brand}
-          </GbzButton>
-          <GbzButton size="md" onClick={openCreatorModal}>
-            {t.actions.creator}
-          </GbzButton>
-        </div>
-
-        <button
-          type="button"
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-menu"
-          aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
-          onClick={() => setMenuOpen((prev) => !prev)}
-        >
-          {menuOpen ? (
-            <X className="h-6 w-6" aria-hidden="true" />
-          ) : (
-            <Menu className="h-6 w-6" aria-hidden="true" />
-          )}
-        </button>
+    <>
+      <div className="fixed right-5 top-6 z-[60] hidden lg:block">
+        <LanguageSwitcher />
       </div>
 
-      {menuOpen ? (
-        <div
-          className="fixed inset-0 top-[84px] z-40 lg:hidden"
-          onClick={() => setMenuOpen(false)}
-        >
-          <div
-            id="mobile-menu"
-            className="max-h-[calc(100dvh-84px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <nav aria-label="Principal (mobile)" className="flex flex-col">
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out",
+          hidden && !menuOpen ? "-translate-y-[130%]" : "translate-y-0",
+        )}
+      >
+        <div className="container-gbz flex justify-center pt-4">
+          <div className="flex h-[68px] w-full max-w-4xl items-center justify-between gap-6 rounded-full border border-border bg-background/85 px-5 backdrop-blur-md lg:justify-center lg:gap-8">
+            <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
+              <Logo className="h-9" />
+            </a>
+
+            <nav aria-label="Principal" className="hidden items-center gap-6 lg:flex">
               {links.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="border-b border-border py-4 font-display text-lg font-bold text-foreground"
+                  className="font-display text-[0.95rem] font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
                 >
                   {link.label}
                 </a>
               ))}
             </nav>
-            <div className="mt-6 flex items-center justify-center">
-              <LanguageSwitcher />
-            </div>
-            <div className="mt-6 flex flex-col gap-3">
-              <GbzButton
-                variant="outline"
-                size="full"
-                onClick={() => {
-                  setMenuOpen(false);
-                  openBrandModal();
-                }}
-              >
+
+            <div className="hidden items-center gap-2 lg:flex">
+              <GbzButton variant="outline" size="sm" onClick={() => openBrandModal()}>
                 {t.actions.brand}
               </GbzButton>
-              <GbzButton
-                size="full"
-                onClick={() => {
-                  setMenuOpen(false);
-                  openCreatorModal();
-                }}
-              >
+              <GbzButton size="sm" onClick={openCreatorModal}>
                 {t.actions.creator}
               </GbzButton>
             </div>
+
+            <button
+              type="button"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              {menuOpen ? (
+                <X className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
-      ) : null}
-    </header>
+
+        {menuOpen ? (
+          <div className="fixed inset-0 top-[92px] z-40 lg:hidden" onClick={() => setMenuOpen(false)}>
+            <div
+              id="mobile-menu"
+              className="max-h-[calc(100dvh-92px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <nav aria-label="Principal (mobile)" className="flex flex-col">
+                {links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="border-b border-border py-4 font-display text-lg font-bold text-foreground"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </nav>
+              <div className="mt-6 flex items-center justify-center">
+                <LanguageSwitcher />
+              </div>
+              <div className="mt-6 flex flex-col gap-3">
+                <GbzButton
+                  variant="outline"
+                  size="full"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    openBrandModal();
+                  }}
+                >
+                  {t.actions.brand}
+                </GbzButton>
+                <GbzButton
+                  size="full"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    openCreatorModal();
+                  }}
+                >
+                  {t.actions.creator}
+                </GbzButton>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </header>
+    </>
   );
 }
