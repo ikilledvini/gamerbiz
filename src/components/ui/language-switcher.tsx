@@ -8,7 +8,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
     <div
       role="group"
       aria-label={t.a11y.languageSwitcher}
-      className={cn("grid grid-cols-2 grid-rows-2 gap-1", className)}
+      className={cn("flex items-center gap-4", className)}
     >
       {LANGUAGES.map((option) => {
         const active = option.code === lang;
@@ -20,10 +20,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             aria-current={active ? "true" : undefined}
             onClick={() => setLang(option.code)}
             className={cn(
-              "flex h-9 w-9 items-center justify-center border text-sm font-bold tracking-tight transition-colors duration-200",
-              active
-                ? "border-primary bg-primary text-white"
-                : "border-border bg-background/80 text-muted-foreground hover:border-primary/50 hover:text-foreground",
+              "text-sm font-bold tracking-tight transition-colors duration-200",
+              active ? "text-primary" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {option.label}
