@@ -1,13 +1,7 @@
-import { Gamepad2, Megaphone, Trophy, Camera } from "lucide-react";
+import { Camera } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
-
-const ICONS = {
-  talents: Gamepad2,
-  marketing: Megaphone,
-  esports: Trophy,
-} as const;
 
 export function AboutSection() {
   const { t } = useI18n();
