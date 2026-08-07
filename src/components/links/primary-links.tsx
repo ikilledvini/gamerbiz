@@ -13,7 +13,7 @@ export function PrimaryLinks() {
   const { t } = useI18n();
 
   return (
-    <nav aria-label={t.links.talentsTitle} className="mt-9 flex flex-col gap-3">
+    <nav aria-label={t.links.primaryNav} className="mt-9 flex flex-col gap-3">
 
       <Link to="/" className={`${baseClass} ${activeClass}`}>
         <Globe className="h-5 w-5 shrink-0" aria-hidden="true" />
