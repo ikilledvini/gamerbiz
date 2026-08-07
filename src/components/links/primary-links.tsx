@@ -7,7 +7,7 @@ const baseClass =
   "flex min-h-[60px] w-full items-center gap-3 rounded-[16px] bg-primary px-5 text-left font-display text-sm font-bold uppercase tracking-[0.08em] text-primary-foreground outline-offset-2 duration-200 ease-out [transition-property:transform,background-color,border-color,opacity] focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.97] sm:min-h-[68px] sm:text-base";
 
 const hoverClass =
-  "border border-transparent [@media(hover:hover)and(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)and(pointer:fine)]:hover:border-white/25 [@media(hover:hover)and(pointer:fine)]:hover:bg-primary-dark";
+  "border border-transparent [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:border-white/25 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-primary-dark";
 
 export function PrimaryLinks() {
   const { t } = useI18n();

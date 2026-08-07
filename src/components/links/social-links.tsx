@@ -41,7 +41,7 @@ export function SocialLinks() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={item.label}
-            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground outline-offset-2 duration-200 ease-out [transition-property:transform,color,opacity] focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.96] [@media(hover:hover)and(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)and(pointer:fine)]:hover:text-primary"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-foreground outline-offset-2 duration-200 ease-out [transition-property:transform,color,opacity] focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.96] [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-0.5 [@media(hover:hover)_and_(pointer:fine)]:hover:text-primary"
           >
             <item.icon className="h-5 w-5" aria-hidden="true" />
           </a>
