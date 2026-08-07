@@ -40,53 +40,55 @@ export function Header() {
       </div>
 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="container-gbz flex h-[72px] items-center justify-between gap-6">
-          <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
-            <Logo className="h-9" />
-          </a>
+        <div className="container-gbz flex justify-center py-3">
+          <div className="grid h-[68px] w-full max-w-4xl grid-cols-3 items-center gap-6">
+            <a href="#inicio" className="flex items-center justify-self-start" aria-label="Gamerbiz">
+              <Logo className="h-9" />
+            </a>
 
-          <nav aria-label="Principal" className="hidden items-center gap-8 lg:flex">
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="font-display text-[0.95rem] font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+            <nav aria-label="Principal" className="hidden items-center justify-center gap-6 lg:flex">
+              {links.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="font-display text-[0.95rem] font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
 
-          <div className="hidden items-center gap-2 lg:flex">
-            <GbzButton variant="outline" size="sm" onClick={() => openBrandModal()}>
-              {t.actions.brand}
-            </GbzButton>
-            <GbzButton size="sm" onClick={openCreatorModal}>
-              {t.actions.creator}
-            </GbzButton>
+            <div className="hidden items-center justify-end gap-2 lg:flex">
+              <GbzButton variant="outline" size="sm" onClick={() => openBrandModal()}>
+                {t.actions.brand}
+              </GbzButton>
+              <GbzButton size="sm" onClick={openCreatorModal}>
+                {t.actions.creator}
+              </GbzButton>
+            </div>
+
+            <button
+              type="button"
+              className="col-start-3 flex h-11 w-11 items-center justify-center justify-self-end rounded-full border border-border text-foreground lg:hidden"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              {menuOpen ? (
+                <X className="h-6 w-6" aria-hidden="true" />
+              ) : (
+                <Menu className="h-6 w-6" aria-hidden="true" />
+              )}
+            </button>
           </div>
-
-          <button
-            type="button"
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
-            onClick={() => setMenuOpen((prev) => !prev)}
-          >
-            {menuOpen ? (
-              <X className="h-6 w-6" aria-hidden="true" />
-            ) : (
-              <Menu className="h-6 w-6" aria-hidden="true" />
-            )}
-          </button>
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-0 top-[72px] z-40 lg:hidden" onClick={() => setMenuOpen(false)}>
+          <div className="fixed inset-0 top-[92px] z-40 lg:hidden" onClick={() => setMenuOpen(false)}>
             <div
               id="mobile-menu"
-              className="max-h-[calc(100dvh-72px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
+              className="max-h-[calc(100dvh-92px)] overflow-y-auto border-t border-border bg-background px-5 pb-10 pt-6"
               onClick={(event) => event.stopPropagation()}
             >
               <nav aria-label="Principal (mobile)" className="flex flex-col">
