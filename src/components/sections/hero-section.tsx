@@ -39,24 +39,6 @@ export function HeroSection() {
             </a>
           </div>
         </div>
-
-        <div className="relative w-full">
-          <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-border bg-graphite">
-            <video
-              className="h-full w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster={heroPoster.url}
-              src={heroVideo.url}
-              aria-label={t.hero.videoPlaceholder}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-black/25" aria-hidden="true" />
-          </div>
-        </div>
-
       </div>
 
 
