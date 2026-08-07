@@ -35,6 +35,7 @@ import nxghtt from "@/assets/talents/nxy9htt.png.asset.json";
 import osuperwil from "@/assets/talents/osuperwil.jpg.asset.json";
 import oilaris from "@/assets/talents/oilaris.png.asset.json";
 import vitto from "@/assets/talents/vittozao.webp.asset.json";
+import revmpt from "@/assets/talents/revmpt.jpg.asset.json";
 
 export const TALENT_IMAGES: Record<string, string> = {
   Thalera: thalera.url,
@@ -47,6 +48,7 @@ export const TALENT_IMAGES: Record<string, string> = {
   Vitto: vitto.url,
   Vett: vett.url,
   OsuperWil: osuperwil.url,
+  Revmpt: revmpt.url,
   LuBu: lubu.url,
   Colosso: colosso.url,
   Nitrao: nitrao.url,
