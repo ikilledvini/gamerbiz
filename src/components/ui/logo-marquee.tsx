@@ -11,6 +11,8 @@ type LogoMarqueeProps = {
 };
 
 function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean }) {
+  const [failed, setFailed] = useState(false);
+
   return (
     <li
       className="shrink-0"
@@ -19,18 +21,18 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
     >
       <div
         tabIndex={duplicate ? -1 : 0}
-        className="flex h-16 min-w-[150px] items-center justify-center px-6 opacity-35 grayscale transition-all duration-[220ms] ease-out hover:opacity-100 hover:grayscale-0 focus-visible:opacity-100 focus-visible:grayscale-0 md:h-20 md:min-w-[190px]"
+        className="group flex h-16 min-w-[150px] items-center justify-center px-6 md:h-20 md:min-w-[190px]"
       >
-        {item.logo ? (
+        {item.logo && !failed ? (
           <img
             src={item.logo}
             alt={duplicate ? "" : item.alt}
             loading="lazy"
-            className="h-10 w-auto max-w-[160px] object-contain md:h-12"
+            onError={() => setFailed(true)}
+            className="h-10 w-auto max-w-[150px] object-contain opacity-55 brightness-0 invert transition-all duration-[220ms] ease-out group-hover:opacity-100 group-hover:brightness-100 group-hover:invert-0 group-focus-visible:opacity-100 group-focus-visible:brightness-100 group-focus-visible:invert-0 md:h-12"
           />
         ) : (
-          // TODO: substituir pelo logo oficial em public/assets/
-          <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground md:text-lg">
+          <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[220ms] group-hover:opacity-100 md:text-lg">
             {item.name}
           </span>
         )}
@@ -38,6 +40,7 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
     </li>
   );
 }
+
 
 export function LogoMarquee({
   items,
