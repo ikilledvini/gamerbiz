@@ -14,7 +14,7 @@ export function TalentMediaKitsSection() {
   const { t } = useI18n();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
-    containScroll: false,
+    containScroll: "trimSnaps",
     loop: false,
   });
   const [selected, setSelected] = useState(0);
@@ -75,59 +75,62 @@ export function TalentMediaKitsSection() {
             </p>
           </div>
 
-          <div className="mt-8 flex items-center justify-between gap-4">
+          <div className="mt-8 flex items-center justify-center">
             <p aria-live="polite" className="text-xs font-semibold uppercase tracking-[0.18em] text-subtle">
               {t.a11y.slideStatus} {selected + 1}/{totalPages}
             </p>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                aria-label={t.a11y.prevSlide}
-                onClick={scrollPrevPage}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
-              >
-                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              </button>
-              <button
-                type="button"
-                aria-label={t.a11y.nextSlide}
-                onClick={scrollNextPage}
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
-              >
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
           </div>
 
-          <div
-            className="mt-4 overflow-hidden px-0 pb-4 pt-4 sm:px-6 lg:px-12"
-            ref={emblaRef}
-            tabIndex={0}
-            role="region"
-            aria-roledescription="carousel"
-            aria-label={t.talents.eyebrow}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowRight") {
-                event.preventDefault();
-                scrollNextPage();
-              }
-              if (event.key === "ArrowLeft") {
-                event.preventDefault();
-                scrollPrevPage();
-              }
-            }}
-          >
-            <ul className="flex gap-5 py-5">
-              {talents.map((talent) => (
-                <li
-                  key={talent.id}
-                  className="min-w-0 shrink-0 basis-[78%] sm:basis-[48%] lg:basis-[calc(20%-16px)]"
-                >
-                  <TalentCard talent={talent} onMediaKit={handleMediaKit} />
-                </li>
-              ))}
-            </ul>
+          <div className="mt-4 flex items-center gap-3 sm:gap-4">
+            <button
+              type="button"
+              aria-label={t.a11y.prevSlide}
+              onClick={scrollPrevPage}
+              className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary sm:flex"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            </button>
+
+            <div
+              className="min-w-0 flex-1 overflow-hidden"
+              ref={emblaRef}
+              tabIndex={0}
+              role="region"
+              aria-roledescription="carousel"
+              aria-label={t.talents.eyebrow}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  scrollNextPage();
+                }
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  scrollPrevPage();
+                }
+              }}
+            >
+              <ul className="flex gap-5 py-5">
+                {talents.map((talent) => (
+                  <li
+                    key={talent.id}
+                    className="min-w-0 shrink-0 basis-[78%] sm:basis-[48%] lg:basis-[calc(20%-16px)]"
+                  >
+                    <TalentCard talent={talent} onMediaKit={handleMediaKit} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <button
+              type="button"
+              aria-label={t.a11y.nextSlide}
+              onClick={scrollNextPage}
+              className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary sm:flex"
+            >
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
+
 
           <div className="mt-6 flex flex-wrap justify-center gap-2">
             {Array.from({ length: totalPages }).map((_, index) => (
