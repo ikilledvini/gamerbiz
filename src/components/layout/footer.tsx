@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Youtube, Mail, MapPin } from "lucide-react";
+import { Instagram, Linkedin, Youtube, Mail } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
