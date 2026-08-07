@@ -1,0 +1,7 @@
+<!doctype html><html><body><pre id="o">loading</pre><script>
+(async()=>{try{
+const r=await fetch("https://liquipedia.net/commons/images/9/98/Legacy_full_lightmode.png");
+const b=new Uint8Array(await r.arrayBuffer());let s="";for(const x of b)s+=String.fromCharCode(x);
+document.getElementById("o").textContent="B64START"+btoa(s)+"B64END";
+}catch(e){document.getElementById("o").textContent="ERR"+e}})();
+</script></body></html>
