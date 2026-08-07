@@ -6,7 +6,7 @@ export const LANGUAGES: LangOption[] = [
   { code: "pt-BR", label: "PT" },
   { code: "en", label: "EN" },
   { code: "es", label: "ES" },
-  { code: "zh-CN", label: "CH" },
+  { code: "zh-CN", label: "官话" },
 ];
 
 export type Dict = {
