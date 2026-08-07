@@ -52,7 +52,7 @@ export function TalentMediaKitsSection() {
             </p>
           </div>
 
-          <div className="mt-12 flex items-center justify-between gap-4">
+          <div className="mt-8 flex items-center justify-between gap-4">
             <p aria-live="polite" className="text-xs font-semibold uppercase tracking-[0.18em] text-subtle">
               {t.a11y.slideStatus} {selected + 1}/{Math.max(snaps.length, 1)}
             </p>
@@ -77,7 +77,7 @@ export function TalentMediaKitsSection() {
           </div>
 
           <div
-            className="mt-6 overflow-hidden"
+            className="mt-4 overflow-hidden"
             ref={emblaRef}
             tabIndex={0}
             role="region"
@@ -106,7 +106,7 @@ export function TalentMediaKitsSection() {
             </ul>
           </div>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-2">
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
             {snaps.map((_, index) => (
               <button
                 key={index}
@@ -122,7 +122,7 @@ export function TalentMediaKitsSection() {
             ))}
           </div>
 
-          <div className="mt-10 flex justify-center">
+          <div className="mt-8 flex justify-center">
             <a
               href="#talentos"
               onClick={() => emblaApi?.scrollTo(0)}
