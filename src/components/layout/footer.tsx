@@ -33,7 +33,7 @@ export function Footer() {
   const socials = [
     { label: "Instagram", icon: Instagram },
     { label: "YouTube", icon: Youtube },
-    { label: "LinkedIn", icon: Linkedin },
+    { label: "LinkedIn", icon: LinkedInIcon },
   ];
 
   return (
