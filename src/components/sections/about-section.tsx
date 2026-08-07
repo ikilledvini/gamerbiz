@@ -1,7 +1,8 @@
-import { Camera } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
+import aboutVideo from "@/assets/gamerbiz-hero.mp4.asset.json";
+import aboutPoster from "@/assets/gamerbiz-hero-poster.jpg.asset.json";
 
 export function AboutSection() {
   const { t } = useI18n();
@@ -22,13 +23,19 @@ export function AboutSection() {
             </div>
           </div>
 
-          <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border bg-graphite">
-            <div className="flex h-full flex-col items-center justify-center gap-3 px-8 text-center">
-              <Camera className="h-7 w-7 text-primary" aria-hidden="true" />
-              <p className="font-display text-sm font-bold uppercase tracking-[0.16em] text-muted-foreground">
-                {t.about.mediaPlaceholder}
-              </p>
-            </div>
+          <div className="relative aspect-video overflow-hidden rounded-3xl border border-border bg-graphite">
+            <video
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={aboutPoster.url}
+              src={aboutVideo.url}
+              aria-label={t.about.mediaPlaceholder}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-black/20" aria-hidden="true" />
           </div>
         </div>
 
