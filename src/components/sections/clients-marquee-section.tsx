@@ -21,7 +21,6 @@ export function ClientsMarqueeSection() {
             <LogoMarquee
               items={brandLogos}
               label={t.clients.groupBrands}
-              durationSeconds={90}
             />
           </div>
         </div>
@@ -35,7 +34,6 @@ export function ClientsMarqueeSection() {
               items={teamLogos}
               label={t.clients.groupTeams}
               reverse
-              durationSeconds={38}
             />
           </div>
         </div>
