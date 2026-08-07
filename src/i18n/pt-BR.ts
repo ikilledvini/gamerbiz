@@ -95,7 +95,7 @@ export const ptBR: Dict = {
     title: "Campanhas que viram conexão, conteúdo e resultado",
     description:
       "Conheça campanhas, ativações e projetos que desenvolvemos conectando marcas, talentos e comunidades dentro do universo gamer.",
-    phrase: { top: "GBZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
+    phrase: { top: "GAMERBIZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
     video: "Conheça mais sobre a Gamerbiz",
     services: [
       {

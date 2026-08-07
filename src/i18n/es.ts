@@ -95,7 +95,7 @@ export const es: Dict = {
     title: "Campañas que se convierten en conexión, contenido y resultados",
     description:
       "Conoce las campañas, activaciones y proyectos que desarrollamos conectando marcas, talentos y comunidades dentro del universo gamer.",
-    phrase: { top: "GBZ", mid: "TU EQUIPO.", bottom: "NUESTRO JUEGO." },
+    phrase: { top: "GAMERBIZ", mid: "TU EQUIPO.", bottom: "NUESTRO JUEGO." },
     video: "Conoce más sobre Gamerbiz",
     services: [
       {
