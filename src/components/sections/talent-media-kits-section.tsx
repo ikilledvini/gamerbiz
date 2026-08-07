@@ -24,7 +24,7 @@ export function TalentMediaKitsSection() {
     (pageIndex: number) => {
       if (!emblaApi) return;
       const target = Math.min(pageIndex * PAGE_SIZE, talents.length - PAGE_SIZE);
-      emblaApi.scrollTo(Math.max(0, target), true);
+      emblaApi.scrollTo(Math.max(0, target));
     },
     [emblaApi],
   );
