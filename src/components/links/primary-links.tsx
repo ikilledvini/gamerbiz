@@ -16,7 +16,7 @@ export function PrimaryLinks() {
     <nav aria-label={t.links.primaryNav} className="mt-9 flex flex-col gap-3">
 
       <Link to="/" className={`${baseClass} ${activeClass}`}>
-        <span className="flex-1">{t.links.websiteLink}</span>
+        <span className="flex-1 text-center">{t.links.websiteLink}</span>
         <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
       </Link>
 
@@ -28,7 +28,7 @@ export function PrimaryLinks() {
           aria-label={t.links.social.linkedin}
           className={`${baseClass} ${activeClass}`}
         >
-          <span className="flex-1">{t.links.linkedinLink}</span>
+          <span className="flex-1 text-center">{t.links.linkedinLink}</span>
           <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
         </a>
       ) : (
@@ -36,7 +36,7 @@ export function PrimaryLinks() {
           aria-disabled="true"
           className={`${baseClass} cursor-not-allowed border border-border bg-graphite text-muted-foreground`}
         >
-          <span className="flex-1">{t.links.linkedinLink}</span>
+          <span className="flex-1 text-center">{t.links.linkedinLink}</span>
           <span className="text-[0.6rem] tracking-[0.16em]">{t.links.soon}</span>
         </span>
       )}
