@@ -11,18 +11,18 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-[88vh] items-center overflow-hidden pb-20 pt-[132px]"
+      className="relative flex min-h-screen items-center overflow-hidden pb-20 pt-[132px]"
     >
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
         <img
           src={heroBg.url}
           alt=""
-          className="absolute inset-0 h-full w-full scale-105 object-cover opacity-90 blur-[2px]"
+          className="absolute inset-0 h-full w-full scale-[1.15] object-cover opacity-95 blur-[1px]"
         />
-        <div className="absolute inset-0 bg-background/20" />
-        <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/10 blur-[140px]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/45 via-background/25 to-background/15" />
+        <div className="absolute inset-0 bg-background/15" />
+        <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/8 blur-[140px]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/35 via-background/20 to-background/10" />
       </div>
 
       <div className="container-gbz relative flex flex-col gap-12">
