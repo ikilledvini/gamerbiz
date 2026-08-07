@@ -87,7 +87,6 @@ export function TalentCard({
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
           >
             {t.talents.card}
-            <span aria-hidden="true">&rarr;</span>
           </button>
         </div>
       </div>
