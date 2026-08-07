@@ -61,7 +61,7 @@ export function Header() {
             <a
               key={link.href}
               href={link.href}
-              className="font-display text-sm font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
+              className="font-display text-base font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
             >
               {link.label}
             </a>
@@ -70,10 +70,10 @@ export function Header() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <LanguageSwitcher />
-          <GbzButton variant="outline" size="sm" onClick={() => openBrandModal()}>
+          <GbzButton variant="outline" size="md" onClick={() => openBrandModal()}>
             {t.actions.brand}
           </GbzButton>
-          <GbzButton size="sm" onClick={openCreatorModal}>
+          <GbzButton size="md" onClick={openCreatorModal}>
             {t.actions.creator}
           </GbzButton>
         </div>
