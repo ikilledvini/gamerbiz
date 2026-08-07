@@ -22,33 +22,12 @@ export function CreatorApplicationModal({
     type: "",
     profiles: "",
   });
-  const [platforms, setPlatforms] = useState<string[]>([]);
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
 
   const set = (key: keyof typeof values) => (value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
-
-  function validateField(key: keyof typeof values, value: string): string | undefined {
-    if (key === "whatsapp") return undefined;
-    if (!value.trim())
-      return key === "profiles" ? t.validation.profiles : t.validation.required;
-    if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim()))
-      return t.validation.email;
-    return undefined;
-  }
-
-  function blur(key: keyof typeof values) {
-    setErrors((prev) => ({ ...prev, [key]: validateField(key, values[key]) }));
-  }
-
-  function togglePlatform(name: string) {
-    setPlatforms((prev) =>
-      prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name],
-    );
-    setErrors((prev) => ({ ...prev, platforms: undefined }));
-  }
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
