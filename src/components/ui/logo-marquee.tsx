@@ -3,6 +3,9 @@ import type { ClientLogo } from "@/data/clients";
 import { usePrefersReducedMotion } from "@/hooks/use-motion";
 import { cn } from "@/lib/utils";
 
+const BASE_DURATION = 90;
+const BASE_COUNT = 37;
+
 type LogoMarqueeProps = {
   items: ClientLogo[];
   label: string;
@@ -50,10 +53,13 @@ export function LogoMarquee({
   items,
   label,
   reverse = false,
-  durationSeconds = 60,
+  durationSeconds,
 }: LogoMarqueeProps) {
   const reduced = usePrefersReducedMotion();
   const [paused, setPaused] = useState(false);
+
+  const computedDuration =
+    durationSeconds ?? Math.round((items.length / BASE_COUNT) * BASE_DURATION);
 
   return (
     <div
@@ -71,7 +77,7 @@ export function LogoMarquee({
       >
         <ul
           aria-label={label}
-          style={{ ["--marquee-duration" as string]: `${durationSeconds}s` }}
+          style={{ ["--marquee-duration" as string]: `${computedDuration}s` }}
           className={cn(
             "flex w-max items-center",
             !reduced && (reverse ? "animate-marquee-reverse" : "animate-marquee"),
