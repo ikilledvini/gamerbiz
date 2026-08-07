@@ -65,7 +65,7 @@ export function TalentMediaKitsSection() {
     <Tooltip.Provider delayDuration={150}>
       <section id="talentos" className="section-gbz bg-surface">
         <div className="container-gbz">
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
             <div>
               <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
               <h2 className="title-gbz mt-4 max-w-[16ch]">{t.talents.title}</h2>
@@ -78,7 +78,7 @@ export function TalentMediaKitsSection() {
               </a>
             </div>
             <div>
-              <p className="max-w-[52ch] text-base text-muted-foreground">
+              <p className="max-w-[48ch] text-lg leading-relaxed text-muted-foreground">
                 {t.talents.description}
               </p>
             </div>
