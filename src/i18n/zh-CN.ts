@@ -95,7 +95,7 @@ export const zhCN: Dict = {
     title: "让营销活动转化为连接、内容与成果",
     description:
       "了解我们如何连接品牌、人才与社区，打造游戏领域的营销活动、品牌激活和合作项目。",
-    phrase: { top: "GBZ", mid: "你的战队。", bottom: "我们的赛场。" },
+    phrase: { top: "GAMERBIZ", mid: "你的战队。", bottom: "我们的赛场。" },
     video: "进一步了解 Gamerbiz",
     services: [
       {

@@ -95,7 +95,7 @@ export const en: Dict = {
     title: "Campaigns that become connection, content and results",
     description:
       "Discover the campaigns, activations and projects we build by connecting brands, talents and communities across the gaming universe.",
-    phrase: { top: "GBZ", mid: "YOUR TEAM.", bottom: "OUR GAME." },
+    phrase: { top: "GAMERBIZ", mid: "YOUR TEAM.", bottom: "OUR GAME." },
     video: "Discover more about Gamerbiz",
     services: [
       {
