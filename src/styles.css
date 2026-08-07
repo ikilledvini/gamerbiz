@@ -208,3 +208,8 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Oculta o badge "Edit with Lovable" em produção/preview */
+#lovable-badge {
+  display: none !important;
+}
