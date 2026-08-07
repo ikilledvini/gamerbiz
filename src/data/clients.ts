@@ -166,6 +166,7 @@ function build(entries: Array<[string, string | null]>, category: "brand" | "tea
     logo: LOGO_OVERRIDES[name] ?? logoUrl(domain),
     category,
     alt: name,
+    forceWhite: name === "Activision",
   }));
 }
 
