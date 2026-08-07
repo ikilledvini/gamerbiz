@@ -19,12 +19,12 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             lang={option.code}
             aria-current={active ? "true" : undefined}
             onClick={() => setLang(option.code)}
-            className={cn(
-              "rounded-full px-2.5 py-1.5 font-display text-xs font-bold tracking-[0.12em] transition-colors duration-200",
-              active
-                ? "text-primary underline decoration-primary decoration-2 underline-offset-4"
-                : "text-subtle hover:text-foreground",
-            )}
+              className={cn(
+                "rounded-full px-2.5 py-1.5 font-display text-sm font-bold tracking-[0.12em] transition-colors duration-200",
+                active
+                  ? "text-primary underline decoration-primary decoration-2 underline-offset-4"
+                  : "text-subtle hover:text-foreground",
+              )}
           >
             {option.label}
           </button>
