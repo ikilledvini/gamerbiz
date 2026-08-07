@@ -1,24 +1,74 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { I18nProvider, useI18n } from "@/i18n";
+import { ModalProvider } from "@/components/modals/modal-provider";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { HeroSection } from "@/components/sections/hero-section";
+import { ServicesMarquee } from "@/components/sections/services-marquee";
+import { StatsSection } from "@/components/sections/stats-section";
+import { AboutSection } from "@/components/sections/about-section";
+import { BrandsSolutionsSection } from "@/components/sections/brands-solutions-section";
+import { TeamsSolutionsSection } from "@/components/sections/teams-solutions-section";
+import { ClientsMarqueeSection } from "@/components/sections/clients-marquee-section";
+import { TalentMediaKitsSection } from "@/components/sections/talent-media-kits-section";
+import { CasesSection } from "@/components/sections/cases-section";
+import { FinalCtaSection } from "@/components/sections/final-cta-section";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
+const TITLE = "Gamerbiz — Marketing, Talentos e Esports";
+const DESCRIPTION =
+  "Conectamos marcas, talentos e comunidades através de campanhas, ativações e parcerias dentro do ecossistema gamer.";
+
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: TITLE },
+      { name: "description", content: DESCRIPTION },
+      { property: "og:title", content: TITLE },
+      { property: "og:description", content: DESCRIPTION },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+function HomeContent() {
+  const { t } = useI18n();
+
+  return (
+    <>
+      <a
+        href="#conteudo"
+        className="sr-only rounded-full bg-primary px-5 py-3 font-display text-sm font-bold text-primary-foreground focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200]"
+      >
+        {t.a11y.skipToContent}
+      </a>
+      <Header />
+      <main id="conteudo">
+        <HeroSection />
+        <ServicesMarquee />
+        <StatsSection />
+        <AboutSection />
+        <BrandsSolutionsSection />
+        <TeamsSolutionsSection />
+        <ClientsMarqueeSection />
+        <TalentMediaKitsSection />
+        <CasesSection />
+        <FinalCtaSection />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <I18nProvider>
+      <ModalProvider>
+        <HomeContent />
+        <Toaster />
+      </ModalProvider>
+    </I18nProvider>
   );
 }
