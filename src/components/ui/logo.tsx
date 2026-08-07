@@ -1,19 +1,14 @@
 import { cn } from "@/lib/utils";
+import logoAsset from "@/assets/gamerbiz-logo.png.asset.json";
 
-/**
- * Marca tipográfica temporária da Gamerbiz.
- * TODO: substituir pelo arquivo oficial de logo assim que ele for anexado
- * (basta trocar o conteúdo deste componente por <img src={logo} ... />).
- */
+/** Logo oficial da Gamerbiz. */
 export function Logo({ className }: { className?: string }) {
   return (
-    <span
-      className={cn(
-        "font-display text-xl font-extrabold uppercase leading-none tracking-[-0.04em] text-foreground",
-        className,
-      )}
-    >
-      Gamer<span className="text-primary">biz</span>
-    </span>
+    <img
+      src={logoAsset.url}
+      alt="Gamerbiz"
+      className={cn("h-8 w-auto select-none", className)}
+      draggable={false}
+    />
   );
 }
