@@ -6,7 +6,7 @@ export function LinksProfile() {
 
   return (
     <div className="flex flex-col items-center text-center">
-      <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-border bg-surface sm:h-28 sm:w-28">
+      <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border border-border bg-links sm:h-28 sm:w-28">
         <img
           src={avatarAsset.url}
           alt="Gamerbiz"
