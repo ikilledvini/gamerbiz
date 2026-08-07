@@ -6,7 +6,7 @@ import legacyLogo from "@/assets/legacy-mark.png.asset.json";
 import ifoodLogo from "@/assets/ifood.png.asset.json";
 import lgLogo from "@/assets/lg.png.asset.json";
 import logitechLogo from "@/assets/logitech.png.asset.json";
-import 1xbetWiki from "@/assets/1xbet.png.asset.json";
+import xbetWiki from "@/assets/1xbet.png.asset.json";
 import adataXpgWiki from "@/assets/adata-xpg.png.asset.json";
 import activisionWiki from "@/assets/activision.png.asset.json";
 import betanoWiki from "@/assets/betano.png.asset.json";
@@ -122,7 +122,7 @@ const LOGO_OVERRIDES: Record<string, string> = {
   "iFood": ifoodLogo.url,
   "LG Electronics": lgLogo.url,
   Logitech: logitechLogo.url,
-  "1XBET": 1xbetWiki.url,
+  "1XBET": xbetWiki.url,
   "ADATA/XPG": adataXpgWiki.url,
   "Activision": activisionWiki.url,
   "Betano": betanoWiki.url,
