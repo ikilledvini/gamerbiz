@@ -4,16 +4,7 @@ import { useI18n } from "@/i18n";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { Field, ModalShell, inputClass, textareaClass } from "./modal-shell";
 
-type Errors = Partial<Record<"name" | "email" | "platforms" | "type" | "profiles", string | undefined>>;
-
-const PLATFORM_KEYS = [
-  "YouTube",
-  "Instagram",
-  "TikTok",
-  "Kwai",
-  "Twitch",
-  "Facebook",
-] as const;
+type Errors = Partial<Record<"name" | "email" | "type" | "profiles", string | undefined>>;
 
 export function CreatorApplicationModal({
   open,
