@@ -92,59 +92,59 @@ export const en: Dict = {
   },
   brands: {
     eyebrow: "Solutions for brands",
-    title: "We connect your brand to the gaming universe",
+    title: "We put your brand in the gaming spotlight",
     description:
-      "Campaigns, activations and partnerships that put brands at the center of gaming, connecting talents, teams and communities authentically and with results.",
+      "We activate campaigns, partnerships and content that drive real reach, conversion and authority within the gaming universe.",
     phrase: { top: "GAMERBIZ", mid: "YOUR TEAM.", bottom: "OUR GAME." },
     video: "Discover more about Gamerbiz",
     services: [
       {
         key: "strategy",
         title: "Strategy",
-        text: "We position brands in gaming with market intelligence, the right talent choices and campaign formats that deliver results.",
+        text: "We define positioning, pick the right creators and design campaigns that deliver ROI in gaming.",
       },
       {
         key: "influence",
         title: "Influence",
-        text: "We activate creators and streamers to build genuine connection, qualified reach and real impact among gaming audiences.",
+        text: "We connect your brand to creators and streamers who actually speak to the audience you want to reach.",
       },
       {
         key: "experiences",
         title: "Experiences",
-        text: "We create events, tournaments and activations that bring brands and communities closer through memorable experiences.",
+        text: "We produce events, activations and competitions that turn brands into part of gaming culture.",
       },
       {
         key: "partnerships",
         title: "Partnerships",
-        text: "We connect brands, talents and projects to unlock value, growth and opportunity across competitive gaming and entertainment.",
+        text: "We close strategic alliances between brands, teams and projects to generate visibility and revenue.",
       },
     ],
   },
   teams: {
     eyebrow: "Solutions for teams",
-    title: "We strengthen your organization inside and outside the game",
+    title: "We accelerate your team in and out of the server",
     description:
-      "We support teams and organizations with commercial, branding and performance solutions so you can focus on what really matters: winning.",
+      "We provide commercial, branding and structural support for organizations that want to grow in the competitive scene.",
     services: [
       {
         key: "commercial",
         title: "Commercial",
-        text: "We connect organizations and competitive projects with the right brands, structuring sponsorships, campaigns and monetization opportunities.",
+        text: "We open doors with sponsors, partners and monetization opportunities for your organization.",
       },
       {
         key: "scouting",
         title: "Scouting",
-        text: "We identify talents, lineups and promising projects to strengthen organizations through strategic recruitment and market insight.",
+        text: "We find talent and promising projects that strengthen your lineup and your brand.",
       },
       {
         key: "performance",
         title: "Performance",
-        text: "We develop strategies for competitive and structural growth, identifying opportunities inside and outside the server.",
+        text: "We build strategies to improve competitive results and raise your team's market value.",
       },
       {
         key: "branding",
         title: "Branding",
-        text: "We strengthen your organization's identity, expand its presence and consolidate its brand across the ecosystem.",
+        text: "We build identity, digital presence and narrative to make your team recognized in the scene.",
       },
     ],
     button: "Talk to Gamerbiz",

@@ -69,18 +69,18 @@ export function TalentMediaKitsSection() {
             <div>
               <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
               <h2 className="title-gbz mt-4 max-w-[16ch]">{t.talents.title}</h2>
-            </div>
-            <div className="flex flex-col items-start gap-6">
-              <p className="max-w-[52ch] text-base text-muted-foreground">
-                {t.talents.description}
-              </p>
               <a
                 href="#talentos"
                 onClick={() => scrollToPage(0)}
-                className="rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+                className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
               >
                 {t.talents.allButton}
               </a>
+            </div>
+            <div>
+              <p className="max-w-[52ch] text-base text-muted-foreground">
+                {t.talents.description}
+              </p>
             </div>
           </div>
 

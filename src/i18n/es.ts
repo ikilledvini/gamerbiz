@@ -92,59 +92,59 @@ export const es: Dict = {
   },
   brands: {
     eyebrow: "Soluciones para marcas",
-    title: "Conectamos tu marca con el universo gamer",
+    title: "Colocamos tu marca en la vitrina del gaming",
     description:
-      "Campañas, activaciones y alianzas que colocan a las marcas en el centro del gaming, conectando talentos, equipos y comunidades de forma auténtica y con resultados.",
+      "Activamos campañas, alianzas y contenidos que generan alcance real, conversión y autoridad dentro del universo gamer.",
     phrase: { top: "GAMERBIZ", mid: "TU EQUIPO.", bottom: "NUESTRO JUEGO." },
     video: "Conoce más sobre Gamerbiz",
     services: [
       {
         key: "strategy",
         title: "Estrategia",
-        text: "Posicionamos marcas en el gaming con inteligencia de mercado, selección de talentos y formatos de campaña que generan resultados.",
+        text: "Definimos posicionamiento, elegimos los creators adecuados y diseñamos campañas que entregan ROI en el gaming.",
       },
       {
         key: "influence",
         title: "Influencia",
-        text: "Activamos creators y streamers para generar conexión genuina, alcance cualificado e impacto real en el público gamer.",
+        text: "Conectamos tu marca con creators y streamers que realmente hablan con el público que quieres alcanzar.",
       },
       {
         key: "experiences",
         title: "Experiencias",
-        text: "Desarrollamos eventos, torneos y activaciones que acercan marcas y comunidades mediante experiencias memorables.",
+        text: "Producimos eventos, activaciones y competiciones que transforman marcas en parte de la cultura gamer.",
       },
       {
         key: "partnerships",
         title: "Alianzas",
-        text: "Conectamos marcas, talentos y proyectos para generar valor, crecimiento y oportunidades dentro del ecosistema competitivo y del entretenimiento.",
+        text: "Cerramos alianzas estratégicas entre marcas, equipos y proyectos para generar visibilidad e ingresos.",
       },
     ],
   },
   teams: {
     eyebrow: "Soluciones para equipos",
-    title: "Fortalecemos tu organización dentro y fuera del juego",
+    title: "Aceleramos tu equipo dentro y fuera del servidor",
     description:
-      "Apoyamos a equipos y organizaciones con soluciones comerciales, de branding y de rendimiento, para que te enfoques en lo que realmente importa: ganar.",
+      "Ofrecemos soporte comercial, branding y estructura para organizaciones que quieren crecer en el escenario competitivo.",
     services: [
       {
         key: "commercial",
         title: "Comercial",
-        text: "Conectamos organizaciones y proyectos competitivos con las marcas adecuadas, estructurando patrocinios, campañas y oportunidades de monetización.",
+        text: "Abrimos puertas con patrocinadores, socios y oportunidades de monetización para tu organización.",
       },
       {
         key: "scouting",
         title: "Scouting",
-        text: "Mapeamos talentos, alineaciones y proyectos prometedores para fortalecer organizaciones mediante reclutamiento estratégico y visión de mercado.",
+        text: "Encontramos talentos y proyectos prometedores que fortalecen tu alineación y tu marca.",
       },
       {
         key: "performance",
         title: "Rendimiento",
-        text: "Desarrollamos estrategias de crecimiento competitivo y estructural, identificando oportunidades dentro y fuera del servidor.",
+        text: "Creamos estrategias para mejorar resultados competitivos y el valor de tu equipo en el mercado.",
       },
       {
         key: "branding",
         title: "Branding",
-        text: "Fortalecemos la identidad de tu organización, ampliamos su presencia y consolidamos su marca dentro del ecosistema.",
+        text: "Construimos identidad, presencia digital y narrativa para hacer tu equipo reconocido en la escena.",
       },
     ],
     button: "Habla con Gamerbiz",
