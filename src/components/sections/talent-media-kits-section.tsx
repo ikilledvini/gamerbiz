@@ -8,26 +8,49 @@ import { talents, type Talent } from "@/data/talents";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
+const PAGE_SIZE = 5;
+
 export function TalentMediaKitsSection() {
   const { t } = useI18n();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
-    containScroll: "trimSnaps",
+    containScroll: false,
     loop: false,
   });
   const [selected, setSelected] = useState(0);
-  const [snaps, setSnaps] = useState<number[]>([]);
+  const totalPages = Math.ceil(talents.length / PAGE_SIZE);
+
+  const scrollToPage = useCallback(
+    (pageIndex: number) => {
+      if (!emblaApi) return;
+      const target = Math.min(pageIndex * PAGE_SIZE, talents.length - PAGE_SIZE);
+      emblaApi.scrollTo(Math.max(0, target), true);
+    },
+    [emblaApi],
+  );
+
+  const scrollNextPage = useCallback(() => {
+    scrollToPage(Math.min(selected + 1, totalPages - 1));
+  }, [scrollToPage, selected, totalPages]);
+
+  const scrollPrevPage = useCallback(() => {
+    scrollToPage(Math.max(selected - 1, 0));
+  }, [scrollToPage, selected]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
-    setSelected(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
+    const snap = emblaApi.selectedScrollSnap();
+    const page = Math.min(Math.round(snap / PAGE_SIZE), totalPages - 1);
+    setSelected(Math.max(0, page));
+  }, [emblaApi, totalPages]);
 
   useEffect(() => {
     if (!emblaApi) return;
-    setSnaps(emblaApi.scrollSnapList());
     onSelect();
     emblaApi.on("select", onSelect).on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect).off("reInit", onSelect);
+    };
   }, [emblaApi, onSelect]);
 
   function handleMediaKit(talent: Talent) {
@@ -54,13 +77,13 @@ export function TalentMediaKitsSection() {
 
           <div className="mt-8 flex items-center justify-between gap-4">
             <p aria-live="polite" className="text-xs font-semibold uppercase tracking-[0.18em] text-subtle">
-              {t.a11y.slideStatus} {selected + 1}/{Math.max(snaps.length, 1)}
+              {t.a11y.slideStatus} {selected + 1}/{totalPages}
             </p>
             <div className="flex gap-2">
               <button
                 type="button"
                 aria-label={t.a11y.prevSlide}
-                onClick={() => emblaApi?.scrollPrev()}
+                onClick={scrollPrevPage}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
               >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -68,7 +91,7 @@ export function TalentMediaKitsSection() {
               <button
                 type="button"
                 aria-label={t.a11y.nextSlide}
-                onClick={() => emblaApi?.scrollNext()}
+                onClick={scrollNextPage}
                 className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
               >
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -77,7 +100,7 @@ export function TalentMediaKitsSection() {
           </div>
 
           <div
-            className="mt-4 overflow-hidden"
+            className="mt-4 overflow-hidden px-0 sm:px-6 lg:px-12"
             ref={emblaRef}
             tabIndex={0}
             role="region"
@@ -86,11 +109,11 @@ export function TalentMediaKitsSection() {
             onKeyDown={(event) => {
               if (event.key === "ArrowRight") {
                 event.preventDefault();
-                emblaApi?.scrollNext();
+                scrollNextPage();
               }
               if (event.key === "ArrowLeft") {
                 event.preventDefault();
-                emblaApi?.scrollPrev();
+                scrollPrevPage();
               }
             }}
           >
@@ -98,7 +121,7 @@ export function TalentMediaKitsSection() {
               {talents.map((talent) => (
                 <li
                   key={talent.id}
-                  className="min-w-0 shrink-0 basis-[78%] sm:basis-[48%] lg:basis-[31%] xl:basis-[23.5%]"
+                  className="min-w-0 shrink-0 basis-[78%] sm:basis-[48%] lg:basis-[calc(20%-16px)]"
                 >
                   <TalentCard talent={talent} onMediaKit={handleMediaKit} />
                 </li>
@@ -107,13 +130,13 @@ export function TalentMediaKitsSection() {
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {snaps.map((_, index) => (
+            {Array.from({ length: totalPages }).map((_, index) => (
               <button
                 key={index}
                 type="button"
                 aria-label={`${t.a11y.goToSlide} ${index + 1}`}
                 aria-current={index === selected ? "true" : undefined}
-                onClick={() => emblaApi?.scrollTo(index)}
+                onClick={() => scrollToPage(index)}
                 className={cn(
                   "h-2 rounded-full transition-all duration-200",
                   index === selected ? "w-8 bg-primary" : "w-2 bg-border hover:bg-subtle",
@@ -125,7 +148,7 @@ export function TalentMediaKitsSection() {
           <div className="mt-8 flex justify-center">
             <a
               href="#talentos"
-              onClick={() => emblaApi?.scrollTo(0)}
+              onClick={() => scrollToPage(0)}
               className="rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
             >
               {t.talents.allButton}
