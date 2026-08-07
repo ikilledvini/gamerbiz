@@ -80,16 +80,16 @@ export function Header() {
 
         <button
           type="button"
-          className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
+          className="flex h-12 w-12 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
           aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
           onClick={() => setMenuOpen((prev) => !prev)}
         >
           {menuOpen ? (
-            <X className="h-5 w-5" aria-hidden="true" />
+            <X className="h-6 w-6" aria-hidden="true" />
           ) : (
-            <Menu className="h-5 w-5" aria-hidden="true" />
+            <Menu className="h-6 w-6" aria-hidden="true" />
           )}
         </button>
       </div>
