@@ -6,6 +6,31 @@ import legacyLogo from "@/assets/legacy-mark.png.asset.json";
 import ifoodLogo from "@/assets/ifood.png.asset.json";
 import lgLogo from "@/assets/lg.png.asset.json";
 import logitechLogo from "@/assets/logitech.png.asset.json";
+import xbetWiki from "@/assets/1xbet.png.asset.json";
+import adataXpgWiki from "@/assets/adata-xpg.png.asset.json";
+import activisionWiki from "@/assets/activision.png.asset.json";
+import betanoWiki from "@/assets/betano.png.asset.json";
+import caixaEconMicaFederalWiki from "@/assets/caixa-econ-mica-federal.png.asset.json";
+import capcomWiki from "@/assets/capcom.png.asset.json";
+import corsairWiki from "@/assets/corsair.png.asset.json";
+import doveWiki from "@/assets/dove.png.asset.json";
+import enebaWiki from "@/assets/eneba.png.asset.json";
+import epicGamesWiki from "@/assets/epic-games.png.asset.json";
+import gigabyteWiki from "@/assets/gigabyte.png.asset.json";
+import gamesirWiki from "@/assets/gamesir.png.asset.json";
+import hasbroWiki from "@/assets/hasbro.png.asset.json";
+import kabumWiki from "@/assets/kabum.png.asset.json";
+import mercadoBitcoinWiki from "@/assets/mercado-bitcoin.png.asset.json";
+import operaGxWiki from "@/assets/opera-gx.png.asset.json";
+import rebellionWiki from "@/assets/rebellion.png.asset.json";
+import riotGamesWiki from "@/assets/riot-games.png.asset.json";
+import segaWiki from "@/assets/sega.png.asset.json";
+import snkCorporationWiki from "@/assets/snk-corporation.png.asset.json";
+import sadiaWiki from "@/assets/sadia.png.asset.json";
+import samsungWiki from "@/assets/samsung.png.asset.json";
+import shureWiki from "@/assets/shure.png.asset.json";
+import tencentGamesWiki from "@/assets/tencent-games.png.asset.json";
+import ubisoftWiki from "@/assets/ubisoft.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -97,6 +122,31 @@ const LOGO_OVERRIDES: Record<string, string> = {
   "iFood": ifoodLogo.url,
   "LG Electronics": lgLogo.url,
   Logitech: logitechLogo.url,
+  "1XBET": xbetWiki.url,
+  "ADATA/XPG": adataXpgWiki.url,
+  "Activision": activisionWiki.url,
+  "Betano": betanoWiki.url,
+  "Caixa Econ\u00f4mica Federal": caixaEconMicaFederalWiki.url,
+  "Capcom": capcomWiki.url,
+  "Corsair": corsairWiki.url,
+  "Dove": doveWiki.url,
+  "Eneba": enebaWiki.url,
+  "Epic Games": epicGamesWiki.url,
+  "GIGABYTE": gigabyteWiki.url,
+  "GameSir": gamesirWiki.url,
+  "Hasbro": hasbroWiki.url,
+  "KaBuM!": kabumWiki.url,
+  "Mercado Bitcoin": mercadoBitcoinWiki.url,
+  "Opera GX": operaGxWiki.url,
+  "Rebellion": rebellionWiki.url,
+  "Riot Games": riotGamesWiki.url,
+  "SEGA": segaWiki.url,
+  "SNK Corporation": snkCorporationWiki.url,
+  "Sadia": sadiaWiki.url,
+  "Samsung": samsungWiki.url,
+  "Shure": shureWiki.url,
+  "Tencent Games": tencentGamesWiki.url,
+  "Ubisoft": ubisoftWiki.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
