@@ -1,4 +1,4 @@
-import { Instagram, Linkedin, Youtube, Mail, MapPin } from "lucide-react";
+import { Instagram, Linkedin, Youtube, Mail } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
@@ -37,20 +37,6 @@ export function Footer() {
             contato@gamerbiz.com.br
           </a>
           <p className="mt-2 font-display text-sm font-bold text-primary">@gamerbizbr</p>
-
-          <div className="mt-6 space-y-3 text-xs text-muted-foreground">
-            <p className="font-display text-sm font-bold text-foreground">CNPJ 41.605.881/0001-51</p>
-            <div className="flex items-start gap-2">
-              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-              <address className="not-italic leading-relaxed">
-                Rua Cel Conrado Siqueira Campos, 133 — Apt 103
-                <br />
-                Jardim das Acácias, São Paulo/SP
-                <br />
-                CEP 04704-900
-              </address>
-            </div>
-          </div>
         </div>
 
         <nav aria-label={t.footer.navigation}>
@@ -114,8 +100,13 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border">
-        <div className="container-gbz flex flex-col items-center justify-between gap-3 py-6 text-center md:flex-row md:text-left">
+        <div className="container-gbz flex flex-col items-center justify-between gap-4 py-6 text-center md:flex-row md:items-start md:text-left">
           <p className="text-xs text-subtle">{t.footer.rights}</p>
+          <p className="max-w-[50ch] text-xs leading-relaxed text-subtle">
+            CNPJ 41.605.881/0001-51
+            <br />
+            Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP 04704-900
+          </p>
           <p className="flex flex-wrap items-center justify-center gap-4 text-xs text-subtle">
             <span title={t.footer.legalUnavailable}>{t.footer.privacy}</span>
             <span title={t.footer.legalUnavailable}>{t.footer.terms}</span>
