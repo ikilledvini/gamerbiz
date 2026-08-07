@@ -92,21 +92,21 @@ export const en: Dict = {
   },
   brands: {
     eyebrow: "Solutions for brands",
-    title: "Campaigns that become connection, content and results",
+    title: "We connect your brand to the gaming universe",
     description:
-      "Discover the campaigns, activations and projects we build by connecting brands, talents and communities across the gaming universe.",
+      "Campaigns, activations and partnerships that put brands at the center of gaming, connecting talents, teams and communities authentically and with results.",
     phrase: { top: "GAMERBIZ", mid: "YOUR TEAM.", bottom: "OUR GAME." },
     video: "Discover more about Gamerbiz",
     services: [
       {
         key: "strategy",
         title: "Strategy",
-        text: "We create intelligent, authentic and results-driven strategies to position brands in gaming, from choosing the right talent to defining the ideal campaign format.",
+        text: "We position brands in gaming with market intelligence, the right talent choices and campaign formats that deliver results.",
       },
       {
         key: "influence",
         title: "Influence",
-        text: "We build campaigns with creators, streamers and talents who generate genuine connection, qualified reach and direct impact among gaming audiences.",
+        text: "We activate creators and streamers to build genuine connection, qualified reach and real impact among gaming audiences.",
       },
       {
         key: "experiences",
@@ -122,9 +122,9 @@ export const en: Dict = {
   },
   teams: {
     eyebrow: "Solutions for teams",
-    title: "Bring Gamerbiz onto your team",
+    title: "We strengthen your organization inside and outside the game",
     description:
-      "Backed by a history of successful partnerships, Gamerbiz delivers tailored solutions for your team's needs, so you can focus on what matters most.",
+      "We support teams and organizations with commercial, branding and performance solutions so you can focus on what really matters: winning.",
     services: [
       {
         key: "commercial",
