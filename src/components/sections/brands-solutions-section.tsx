@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Minus, Play } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
@@ -78,9 +78,6 @@ export function BrandsSolutionsSection() {
                 <span className="text-primary">{t.brands.phrase.bottom}</span>
               </p>
               <div className="mt-8 flex items-center gap-3 border-t border-border pt-6">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/60 bg-primary/10">
-                  <Play className="h-4 w-4 text-primary" aria-hidden="true" />
-                </span>
                 {/* TODO: vídeo institucional em /assets/hero-video.mp4 */}
                 <p className="text-sm font-semibold text-muted-foreground">{t.brands.video}</p>
               </div>
