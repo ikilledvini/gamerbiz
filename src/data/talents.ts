@@ -58,6 +58,7 @@ const TALENT_NAMES = [
 ] as const;
 
 const TALENT_CATEGORIES: Record<string, string> = {
+  Nofaxu: "Minecraft",
   Thalera: "Mangá/Anime + Pokémon",
   Frogman1: "PUBG",
   Speed: "Mortal Kombat",
