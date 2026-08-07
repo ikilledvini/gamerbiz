@@ -69,7 +69,7 @@ export function Header() {
       </div>
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out ${
+        className={`fixed inset-x-0 top-0 z-50 bg-black/10 backdrop-blur-[2px] transition-transform duration-300 ease-out ${
           visible || menuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
