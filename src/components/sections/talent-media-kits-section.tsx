@@ -117,7 +117,7 @@ export function TalentMediaKitsSection() {
               }
             }}
           >
-            <ul className="flex gap-5">
+            <ul className="flex gap-5 py-3">
               {talents.map((talent) => (
                 <li
                   key={talent.id}
