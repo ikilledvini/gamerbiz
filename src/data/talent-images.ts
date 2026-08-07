@@ -84,4 +84,5 @@ export const TALENT_IMAGES: Record<string, string> = {
   Tetéia: teteia.url,
   JoaoPdzin: joaopdzin.url,
   RayDiva: raydiva.url,
+  StarShimas: starshimas.url,
 };
