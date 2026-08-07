@@ -1,3 +1,5 @@
+import teamLiquidLogo from "@/assets/team-liquid.png.asset.json";
+
 export type ClientLogo = {
   name: string;
   slug: string;
