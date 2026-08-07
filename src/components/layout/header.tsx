@@ -41,12 +41,12 @@ export function Header() {
 
       <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="container-gbz flex justify-center py-3">
-          <div className="flex h-[68px] w-full max-w-4xl items-center justify-between gap-6 lg:justify-center lg:gap-8">
-            <a href="#inicio" className="flex items-center lg:absolute lg:left-0 lg:pl-6" aria-label="Gamerbiz">
+          <div className="grid h-[68px] w-full max-w-4xl grid-cols-3 items-center gap-6">
+            <a href="#inicio" className="flex items-center justify-self-start" aria-label="Gamerbiz">
               <Logo className="h-9" />
             </a>
 
-            <nav aria-label="Principal" className="hidden items-center gap-6 lg:flex">
+            <nav aria-label="Principal" className="hidden items-center justify-center gap-6 lg:flex">
               {links.map((link) => (
                 <a
                   key={link.href}
@@ -58,7 +58,7 @@ export function Header() {
               ))}
             </nav>
 
-            <div className="hidden items-center gap-2 lg:absolute lg:right-0 lg:pr-6">
+            <div className="hidden items-center justify-end gap-2 lg:flex">
               <GbzButton variant="outline" size="sm" onClick={() => openBrandModal()}>
                 {t.actions.brand}
               </GbzButton>
@@ -69,7 +69,7 @@ export function Header() {
 
             <button
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
+              className="col-start-3 flex h-11 w-11 items-center justify-center justify-self-end rounded-full border border-border text-foreground lg:hidden"
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               aria-label={menuOpen ? t.a11y.closeMenu : t.a11y.openMenu}
