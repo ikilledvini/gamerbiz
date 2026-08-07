@@ -37,6 +37,20 @@ export function Footer() {
             contato@gamerbiz.com.br
           </a>
           <p className="mt-2 font-display text-sm font-bold text-primary">@gamerbizbr</p>
+
+          <div className="mt-6 space-y-3 text-xs text-muted-foreground">
+            <p className="font-display text-sm font-bold text-foreground">CNPJ 41.605.881/0001-51</p>
+            <div className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+              <address className="not-italic leading-relaxed">
+                Rua Cel Conrado Siqueira Campos, 133 — Apt 103
+                <br />
+                Jardim das Acácias, São Paulo/SP
+                <br />
+                CEP 04704-900
+              </address>
+            </div>
+          </div>
         </div>
 
         <nav aria-label={t.footer.navigation}>
