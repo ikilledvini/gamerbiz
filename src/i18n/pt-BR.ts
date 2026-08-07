@@ -37,7 +37,7 @@ export const ptBR: Dict = {
   },
   hero: {
     eyebrow: "Do conteúdo ao competitivo, a Gamerbiz movimenta o jogo",
-    title: "É hora de Subir de Nível",
+    title: "É hora de\nSubir de Nível",
     description:
       "Conectamos marcas, talentos e comunidades através de campanhas, ativações e parcerias dentro do ecossistema gamer.",
     ctaPrimary: "Sou Marca",
