@@ -1,3 +1,5 @@
+import { TALENT_IMAGES } from "./talent-images";
+
 export type Talent = {
   id: string;
   firstName?: string;
