@@ -64,7 +64,7 @@ export function Header() {
 
   return (
     <>
-      <div className="fixed right-5 top-6 z-[60] hidden lg:block">
+      <div className="fixed right-5 top-10 z-[60] hidden lg:block">
         <LanguageSwitcher />
       </div>
 
