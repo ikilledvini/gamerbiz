@@ -13,7 +13,7 @@ export function HeroSection() {
       id="inicio"
       className="relative flex min-h-[92vh] items-center overflow-hidden pb-28 pt-[132px]"
     >
-      <div className="fixed inset-0 -z-10" aria-hidden="true">
+      <div className="absolute inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
         <div
           className="absolute inset-0 scale-[1.15] bg-cover bg-center bg-fixed bg-no-repeat"
@@ -24,7 +24,7 @@ export function HeroSection() {
         <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/10 blur-[140px]" />
       </div>
 
-      <div className="container-gbz relative flex flex-col gap-12">
+      <div className="container-gbz relative z-10 flex flex-col gap-12">
         <div className="animate-rise">
           <p className="eyebrow-gbz max-w-[40ch] leading-relaxed">{t.hero.eyebrow}</p>
           <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(3.2rem,1.4rem+8vw,8.5rem)] font-extrabold uppercase leading-[0.86] tracking-[-0.05em] whitespace-pre-line">
@@ -48,7 +48,7 @@ export function HeroSection() {
 
       <a
         href="#numeros"
-        className="container-gbz absolute inset-x-0 bottom-6 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-subtle transition-colors duration-200 hover:text-primary"
+        className="container-gbz absolute inset-x-0 bottom-6 z-10 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-subtle transition-colors duration-200 hover:text-primary"
       >
         <ChevronDown className="h-4 w-4" aria-hidden="true" />
         {t.hero.scroll}
