@@ -13,16 +13,20 @@ export function HeroSection() {
       id="inicio"
       className="relative flex min-h-[92vh] items-center overflow-hidden pb-28 pt-[132px]"
     >
-      <div className="absolute inset-0 z-0" aria-hidden="true">
+      <div
+        className="absolute inset-0 z-0 [clip-path:inset(0)]"
+        aria-hidden="true"
+      >
         <div className="absolute inset-0 bg-surface" />
         <div
-          className="absolute inset-0 scale-[1.15] bg-cover bg-center bg-fixed bg-no-repeat"
+          className="fixed inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroBg.url})` }}
         />
-        <div className="absolute inset-0 bg-background/60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-background/45 to-background/25" />
+        <div className="fixed inset-0 bg-background/60" />
+        <div className="fixed inset-0 bg-gradient-to-r from-background/70 via-background/45 to-background/25" />
         <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/10 blur-[140px]" />
       </div>
+
 
       <div className="container-gbz relative z-10 flex flex-col gap-12">
         <div className="animate-rise">
