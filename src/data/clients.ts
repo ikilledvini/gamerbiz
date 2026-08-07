@@ -44,6 +44,7 @@ export type ClientLogo = {
   logo: string | null;
   category: "brand" | "team";
   alt: string;
+  forceWhite?: boolean;
 };
 
 const BRANDS: Array<[string, string | null]> = [
