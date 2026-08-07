@@ -161,7 +161,7 @@ export const en: Dict = {
     title: "More than a roster. It's curation.",
     description:
       "Creators, streamers and professional players with engaged communities—each talent matched with the right opportunity.",
-    card: "VIEW MEDIA KIT →",
+    card: "VIEW MEDIA KIT",
     allButton: "MEET ALL OUR TALENTS",
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "A talent officially represented by Gamerbiz.",

@@ -161,7 +161,7 @@ export const ptBR: Dict = {
     title: "Não é só casting. É curadoria.",
     description:
       "Creators, streamers e jogadores profissionais com comunidades engajadas. Cada talento posicionado na oportunidade certa.",
-    card: "ACESSAR MEDIA KIT →",
+    card: "ACESSAR MEDIA KIT",
     allButton: "CONHEÇA TODOS OS TALENTOS",
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "Talento representado oficialmente pela Gamerbiz.",

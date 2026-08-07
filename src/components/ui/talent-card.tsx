@@ -82,7 +82,7 @@ export function TalentCard({
           <button
             type="button"
             onClick={() => onMediaKit(talent)}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
+            className="mt-5 flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
           >
             {t.talents.card}
           </button>
