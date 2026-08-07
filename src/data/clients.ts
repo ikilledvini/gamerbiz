@@ -34,6 +34,7 @@ import ubisoftWiki from "@/assets/ubisoft.png.asset.json";
 import gamersClubLogo from "@/assets/gamers-club.png.asset.json";
 import novadaxLogo from "@/assets/novadax.png.asset.json";
 import pichauLogo from "@/assets/pichau.png.asset.json";
+import exitlagLogo from "@/assets/exitlag.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -153,6 +154,7 @@ const LOGO_OVERRIDES: Record<string, string> = {
   "Gamers Club": gamersClubLogo.url,
   "NovaDAX": novadaxLogo.url,
   "Pichau": pichauLogo.url,
+  "ExitLag": exitlagLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
