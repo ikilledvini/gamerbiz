@@ -3,6 +3,9 @@ import furiaLogo from "@/assets/furia.png.asset.json";
 import mibrLogo from "@/assets/mibr.png.asset.json";
 import imperialLogo from "@/assets/imperial.png.asset.json";
 import legacyLogo from "@/assets/legacy-mark.png.asset.json";
+import ifoodLogo from "@/assets/ifood.png.asset.json";
+import lgLogo from "@/assets/lg.png.asset.json";
+import logitechLogo from "@/assets/logitech.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -91,6 +94,9 @@ const LOGO_OVERRIDES: Record<string, string> = {
   MIBR: mibrLogo.url,
   "Imperial Esports": imperialLogo.url,
   Legacy: legacyLogo.url,
+  "iFood": ifoodLogo.url,
+  "LG Electronics": lgLogo.url,
+  Logitech: logitechLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
