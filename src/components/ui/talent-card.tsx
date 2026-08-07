@@ -28,10 +28,10 @@ export function TalentCard({
               <button
                 type="button"
                 aria-label={`${badge.label} — ${t.a11y.info}`}
-                className={cn(
-                  "absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground",
-                  badge.tone,
-                )}
+                  className={cn(
+                    "absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground",
+                    badge.tone,
+                  )}
               >
                 {badge.label}
                 <Info className="h-3 w-3" aria-hidden="true" />
@@ -61,7 +61,7 @@ export function TalentCard({
             aria-hidden="true"
           >
             <User className="h-12 w-12" />
-            <span className="font-display text-[0.7rem] font-bold uppercase tracking-[0.18em]">
+            <span className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em]">
               {t.talents.photoPlaceholder}
             </span>
           </div>
@@ -70,19 +70,19 @@ export function TalentCard({
 
         <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col items-center p-5 pb-6 text-center">
           {talent.firstName ? (
-            <p className="font-display text-sm font-bold text-white/80">{talent.firstName}</p>
+            <p className="font-display text-xs font-bold text-white/80">{talent.firstName}</p>
           ) : null}
-          <h3 className="font-display text-2xl font-extrabold tracking-tight text-white">
+          <h3 className="font-display text-xl font-extrabold tracking-tight text-white">
             {talent.stageName}
           </h3>
-          <p className="mt-1 font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-white/60">
+          <p className="mt-1 font-display text-[0.6rem] font-bold uppercase tracking-[0.18em] text-white/60">
             {talent.category}
           </p>
 
           <button
             type="button"
             onClick={() => onMediaKit(talent)}
-            className="mt-5 flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
+            className="mt-5 flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
           >
             {t.talents.card}
           </button>
