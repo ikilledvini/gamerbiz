@@ -20,7 +20,7 @@ export function TalentCard({
         : null;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[40px] border border-border bg-surface transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/70">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[40px] border border-border bg-surface transition-transform duration-200 ease-out hover:-translate-y-1">
       <div className="relative aspect-[9/16] w-full bg-graphite">
         {badge ? (
           <Tooltip.Root>
