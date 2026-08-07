@@ -1,18 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
-import { cn } from "@/lib/utils";
 
 export function Header() {
   const { t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
-  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const lastY = useRef(0);
 
   const links = [
     { href: "#sobre", label: t.nav.about },
@@ -22,20 +19,6 @@ export function Header() {
     { href: "#talentos", label: t.nav.talents },
     { href: "#cases", label: t.nav.cases },
   ];
-
-  useEffect(() => {
-    lastY.current = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
-      const delta = y - lastY.current;
-      if (Math.abs(delta) < 6) return;
-      if (delta > 0 && y > 120) setHidden(true);
-      else if (delta < 0) setHidden(false);
-      lastY.current = y;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -56,12 +39,7 @@ export function Header() {
         <LanguageSwitcher />
       </div>
 
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out",
-          hidden && !menuOpen ? "-translate-y-[130%]" : "translate-y-0",
-        )}
-      >
+      <header className="fixed inset-x-0 top-0 z-50">
         <div className="container-gbz flex justify-center pt-4">
           <div className="flex h-[68px] w-full max-w-4xl items-center justify-between gap-6 rounded-full border border-border bg-background/85 px-5 backdrop-blur-md lg:justify-center lg:gap-8">
             <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
