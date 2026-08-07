@@ -100,7 +100,7 @@ export function TalentMediaKitsSection() {
           </div>
 
           <div
-            className="mt-4 overflow-hidden px-0 sm:px-6 lg:px-12"
+            className="mt-4 overflow-hidden px-0 pb-4 pt-4 sm:px-6 lg:px-12"
             ref={emblaRef}
             tabIndex={0}
             role="region"
@@ -117,7 +117,7 @@ export function TalentMediaKitsSection() {
               }
             }}
           >
-            <ul className="flex gap-5">
+            <ul className="flex gap-5 py-5">
               {talents.map((talent) => (
                 <li
                   key={talent.id}
