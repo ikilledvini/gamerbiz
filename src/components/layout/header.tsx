@@ -11,7 +11,6 @@ export function Header() {
   const { openBrandModal, openCreatorModal } = useModals();
   const [menuOpen, setMenuOpen] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [atTop, setAtTop] = useState(true);
 
   const links = [
     { href: "#sobre", label: t.nav.about },
