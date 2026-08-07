@@ -2,9 +2,6 @@ import { ChevronDown } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
-import heroVideo from "@/assets/gamerbiz-hero.mp4.asset.json";
-import heroPoster from "@/assets/gamerbiz-hero-poster.jpg.asset.json";
-
 
 export function HeroSection() {
   const { t } = useI18n();
@@ -15,7 +12,6 @@ export function HeroSection() {
       id="inicio"
       className="relative flex min-h-[92vh] items-center overflow-hidden pb-16 pt-[112px]"
     >
-      {/* Fundo: vídeo institucional. TODO: adicionar public/assets/hero-video.mp4 e hero-poster.webp */}
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
         <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(oklch(1_0_0/0.4)_1px,transparent_1px),linear-gradient(90deg,oklch(1_0_0/0.4)_1px,transparent_1px)] [background-size:64px_64px]" />
