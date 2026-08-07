@@ -41,7 +41,7 @@ export function Header() {
 
       <header className="fixed inset-x-0 top-0 z-50">
         <div className="container-gbz flex justify-center pt-4">
-          <div className="flex h-[68px] w-full max-w-4xl items-center justify-between gap-6 rounded-full border border-border bg-background/85 px-5 backdrop-blur-md lg:justify-center lg:gap-8">
+          <div className="flex h-[68px] w-full max-w-4xl items-center justify-between gap-6 rounded-[28px] border border-border bg-background/85 px-5 backdrop-blur-md lg:justify-center lg:gap-8">
             <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
               <Logo className="h-9" />
             </a>
