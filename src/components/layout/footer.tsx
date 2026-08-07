@@ -30,11 +30,11 @@ export function Footer() {
           <Logo className="h-10" />
           <p className="mt-5 max-w-[34ch] text-sm text-muted-foreground">{t.footer.phrase}</p>
           <a
-            href="mailto:hello@gamerbiz.com.br"
+            href="mailto:contato@gamerbiz.com.br"
             className="mt-6 inline-flex items-center gap-2 font-display text-sm font-bold text-foreground transition-colors duration-200 hover:text-primary"
           >
             <Mail className="h-4 w-4" aria-hidden="true" />
-            hello@gamerbiz.com.br
+            contato@gamerbiz.com.br
           </a>
           <p className="mt-2 font-display text-sm font-bold text-primary">@gamerbizbr</p>
         </div>
