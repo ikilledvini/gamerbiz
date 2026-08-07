@@ -31,6 +31,7 @@ import samsungWiki from "@/assets/samsung.png.asset.json";
 import shureWiki from "@/assets/shure.png.asset.json";
 import tencentGamesWiki from "@/assets/tencent-games.png.asset.json";
 import ubisoftWiki from "@/assets/ubisoft.png.asset.json";
+import gamersClubLogo from "@/assets/gamers-club.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -147,6 +148,7 @@ const LOGO_OVERRIDES: Record<string, string> = {
   "Shure": shureWiki.url,
   "Tencent Games": tencentGamesWiki.url,
   "Ubisoft": ubisoftWiki.url,
+  "Gamers Club": gamersClubLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
