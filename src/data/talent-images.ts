@@ -38,6 +38,8 @@ import vitto from "@/assets/talents/vittozao.webp.asset.json";
 import revmpt from "@/assets/talents/revmpt.jpg.asset.json";
 import joaopdzin from "@/assets/talents/joaopdzin.jpg.asset.json";
 import raydiva from "@/assets/talents/raydiva.jpg.asset.json";
+import starshimas from "@/assets/talents/starshimas.jpg.asset.json";
+
 
 
 
