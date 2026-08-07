@@ -1,3 +1,5 @@
+import teamLiquidLogo from "@/assets/team-liquid.png.asset.json";
+
 export type ClientLogo = {
   name: string;
   slug: string;
@@ -77,12 +79,18 @@ export function logoUrl(domain: string | null) {
   return `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true&fallback=404&theme=light`;
 }
 
+/** Logos oficiais enviados manualmente (PNG transparente) */
+const LOGO_OVERRIDES: Record<string, string> = {
+  "Team Liquid": teamLiquidLogo.url,
+  "Team Liquid Brazil": teamLiquidLogo.url,
+};
+
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
   return entries.map(([name, domain]) => ({
     name,
     slug: `${category}-${slugify(name)}`,
     domain,
-    logo: logoUrl(domain),
+    logo: LOGO_OVERRIDES[name] ?? logoUrl(domain),
     category,
     alt: name,
   }));
