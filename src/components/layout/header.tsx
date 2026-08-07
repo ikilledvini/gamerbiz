@@ -10,6 +10,8 @@ export function Header() {
   const { t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [atTop, setAtTop] = useState(true);
 
   const links = [
     { href: "#sobre", label: t.nav.about },
@@ -19,6 +21,35 @@ export function Header() {
     { href: "#talentos", label: t.nav.talents },
     { href: "#cases", label: t.nav.cases },
   ];
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          setAtTop(currentScrollY < 20);
+
+          if (currentScrollY < 20) {
+            setVisible(true);
+          } else if (currentScrollY > lastScrollY) {
+            setVisible(false);
+          } else {
+            setVisible(true);
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
