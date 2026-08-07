@@ -1,4 +1,7 @@
 import teamLiquidLogo from "@/assets/team-liquid.png.asset.json";
+import furiaLogo from "@/assets/furia.png.asset.json";
+import mibrLogo from "@/assets/mibr.png.asset.json";
+import imperialLogo from "@/assets/imperial.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -83,6 +86,9 @@ export function logoUrl(domain: string | null) {
 const LOGO_OVERRIDES: Record<string, string> = {
   "Team Liquid": teamLiquidLogo.url,
   "Team Liquid Brazil": teamLiquidLogo.url,
+  FURIA: furiaLogo.url,
+  MIBR: mibrLogo.url,
+  "Imperial Esports": imperialLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
