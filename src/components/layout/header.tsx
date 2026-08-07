@@ -53,7 +53,7 @@ export function Header() {
     >
       <div className="container-gbz flex h-[72px] items-center justify-between gap-6">
         <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
-          <Logo />
+          <Logo className="h-9" />
         </a>
 
         <nav aria-label="Principal" className="hidden items-center gap-7 lg:flex">
