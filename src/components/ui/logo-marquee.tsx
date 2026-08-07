@@ -33,7 +33,12 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
               alt={duplicate ? "" : item.alt}
               loading="lazy"
               onError={() => setFailed(true)}
-              className="max-h-full w-auto max-w-full object-contain opacity-60 grayscale brightness-[1.6] transition-all duration-[220ms] ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 group-focus-visible:brightness-100"
+              className={cn(
+                "max-h-full w-auto max-w-full object-contain transition-all duration-[220ms] ease-out",
+                item.forceWhite
+                  ? "opacity-100 grayscale-0 brightness-100"
+                  : "opacity-60 grayscale brightness-[1.6] group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 group-focus-visible:brightness-100",
+              )}
             />
           </div>
 

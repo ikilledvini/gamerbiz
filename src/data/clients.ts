@@ -44,6 +44,7 @@ export type ClientLogo = {
   logo: string | null;
   category: "brand" | "team";
   alt: string;
+  forceWhite?: boolean;
 };
 
 const BRANDS: Array<[string, string | null]> = [
@@ -165,6 +166,7 @@ function build(entries: Array<[string, string | null]>, category: "brand" | "tea
     logo: LOGO_OVERRIDES[name] ?? logoUrl(domain),
     category,
     alt: name,
+    forceWhite: name === "Activision",
   }));
 }
 
