@@ -55,7 +55,10 @@ const TALENT_NAMES = [
   "SpiderKong",
   "Panettoni",
   "Nivyzera",
+  "GeoPasch",
+  "Tetéia",
 ] as const;
+
 
 const TALENT_CATEGORIES: Record<string, string> = {
   Nofaxu: "Minecraft",
