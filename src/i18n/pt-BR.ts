@@ -162,7 +162,7 @@ export const ptBR: Dict = {
     description:
       "Creators, streamers e jogadores profissionais com comunidades engajadas. Cada talento posicionado na oportunidade certa.",
     card: "ACESSAR MEDIA KIT",
-    allButton: "CONHEÇA TODOS OS TALENTOS",
+    allButton: "ACESSE A PLATAFORMA DE MEDIA KIT",
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "Talento representado oficialmente pela Gamerbiz.",
     badgePartner: "Creator Parceiro",
