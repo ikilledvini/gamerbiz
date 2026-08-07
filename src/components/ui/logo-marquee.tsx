@@ -21,22 +21,25 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
     >
       <div
         tabIndex={duplicate ? -1 : 0}
-        className="group flex h-16 min-w-[150px] items-center justify-center px-6 md:h-20 md:min-w-[190px]"
+        className="group flex h-20 min-w-[170px] items-center justify-center px-4 md:h-24 md:min-w-[200px]"
       >
         {item.logo && !failed ? (
-          <img
-            src={item.logo}
-            alt={duplicate ? "" : item.alt}
-            loading="lazy"
-            onError={() => setFailed(true)}
-            className="h-10 w-auto max-w-[150px] object-contain opacity-75 transition-all duration-[220ms] ease-out group-hover:scale-[1.06] group-hover:opacity-100 group-focus-visible:opacity-100 md:h-12"
-          />
+          <div className="flex h-14 w-[150px] items-center justify-center rounded-2xl bg-white/90 px-4 py-2 opacity-70 transition-all duration-[220ms] ease-out group-hover:bg-white group-hover:opacity-100 group-focus-visible:bg-white group-focus-visible:opacity-100 md:h-16 md:w-[172px]">
+            <img
+              src={item.logo}
+              alt={duplicate ? "" : item.alt}
+              loading="lazy"
+              onError={() => setFailed(true)}
+              className="max-h-full w-auto max-w-full object-contain"
+            />
+          </div>
         ) : (
           <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[220ms] group-hover:opacity-100 md:text-lg">
             {item.name}
           </span>
         )}
       </div>
+
     </li>
   );
 }
