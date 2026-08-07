@@ -20,9 +20,9 @@ export function TalentCard({
         : null;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[26px] border border-border bg-surface transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/70">
+    <article className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-border bg-surface transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/70">
       <div className="relative aspect-[3/4] w-full bg-graphite">
-        <span className="absolute left-4 top-4 z-10 rounded-full bg-background/90 px-3 py-1.5 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="absolute left-4 top-4 z-10 rounded-full bg-black/80 px-4 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] text-white backdrop-blur-sm">
           {talent.category}
         </span>
 
@@ -70,21 +70,24 @@ export function TalentCard({
             </span>
           </div>
         )}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-surface to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black via-black/60 to-transparent" />
+
+        <div className="absolute inset-x-0 bottom-0 z-10 p-5">
+          {talent.firstName ? (
+            <p className="font-display text-sm font-bold text-white/80">{talent.firstName}</p>
+          ) : null}
+          <h3 className="font-display text-2xl font-extrabold italic tracking-tight text-primary">
+            &ldquo;{talent.stageName}&rdquo;
+          </h3>
+          <p className="mt-1 text-sm font-semibold text-white/70">{talent.shortDescription}</p>
+        </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-xl font-extrabold italic tracking-tight text-primary">
-          {talent.stageName}
-        </h3>
-        {talent.firstName ? (
-          <p className="mt-1 text-sm font-semibold text-foreground">{talent.firstName}</p>
-        ) : null}
-        <p className="mt-2 flex-1 text-sm text-muted-foreground">{talent.shortDescription}</p>
+      <div className="p-4">
         <button
           type="button"
           onClick={() => onMediaKit(talent)}
-          className="mt-5 w-full rounded-full border border-border bg-background px-4 py-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-colors duration-200 hover:bg-primary hover:text-primary-foreground"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-3.5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
         >
           {t.talents.card}
         </button>
