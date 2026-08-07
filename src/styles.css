@@ -47,6 +47,10 @@
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
 
+  --color-links: oklch(0 0 0);
+  --color-links-foreground: var(--foreground);
+  --color-links-border: oklch(0.2 0 0);
+
   --shadow-glow: 0 0 80px -20px oklch(0.6279 0.2577 29.23 / 0.45);
   --shadow-card: 0 18px 45px -30px oklch(0 0 0 / 0.9);
 

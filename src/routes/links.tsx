@@ -45,7 +45,7 @@ function LinksContent() {
 
       <main
         id="links-conteudo"
-        className="min-h-[100dvh] overflow-x-hidden bg-background"
+        className="min-h-[100dvh] overflow-x-hidden bg-links"
         style={{
           paddingTop: "calc(env(safe-area-inset-top) + 1.25rem)",
           paddingBottom: "calc(env(safe-area-inset-bottom) + 2.5rem)",
@@ -56,7 +56,7 @@ function LinksContent() {
             <Link
               to="/"
               aria-label={t.links.backToWebsite}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-black text-foreground duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.96] hover:border-primary hover:text-primary"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-links text-foreground duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.96] hover:border-primary hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -77,7 +77,7 @@ function LinksContent() {
         <section
           id="talentos"
           aria-labelledby="talentos-heading"
-          className="section-gbz bg-surface"
+          className="section-gbz bg-links"
         >
           <div className="container-gbz">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
