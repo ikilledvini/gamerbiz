@@ -1,7 +1,10 @@
-import { ChevronDown, Play } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
+import heroVideo from "@/assets/gamerbiz-hero.mp4.asset.json";
+import heroPoster from "@/assets/gamerbiz-hero-poster.jpg.asset.json";
+
 
 export function HeroSection() {
   const { t } = useI18n();
@@ -43,22 +46,21 @@ export function HeroSection() {
 
         <div className="relative">
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-border bg-graphite sm:aspect-video lg:aspect-[4/5]">
-            {/*
-              Quando o arquivo hero-video.mp4 for anexado, basta descomentar o vídeo abaixo:
-              <video className="h-full w-full object-cover" autoPlay muted loop playsInline
-                poster="/assets/hero-poster.webp" src="/assets/hero-video.mp4" />
-            */}
-            <div className="flex h-full w-full flex-col items-center justify-center gap-4 px-6 text-center">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/60 bg-primary/10">
-                <Play className="h-6 w-6 text-primary" aria-hidden="true" />
-              </span>
-              <p className="font-display text-sm font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                {t.hero.videoPlaceholder}
-              </p>
-            </div>
-            <div className="pointer-events-none absolute inset-0 bg-black/40" aria-hidden="true" />
+            <video
+              className="h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={heroPoster.url}
+              src={heroVideo.url}
+              aria-label={t.hero.videoPlaceholder}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-black/25" aria-hidden="true" />
           </div>
         </div>
+
       </div>
 
       <a
