@@ -21,7 +21,7 @@ export function TalentCard({
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[40px] border border-border bg-surface transition-transform duration-200 ease-out hover:-translate-y-1">
-      <div className="relative aspect-[9/16] w-full bg-graphite">
+      <div className="relative aspect-[9/16] w-full bg-primary">
         {badge ? (
           <Tooltip.Root>
             <Tooltip.Trigger asChild>
@@ -82,7 +82,7 @@ export function TalentCard({
           <button
             type="button"
             onClick={() => onMediaKit(talent)}
-            className="mt-5 flex w-full items-center justify-center rounded-full bg-primary px-4 py-2.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-colors duration-200 hover:bg-primary-dark"
+            className="mt-5 flex w-full items-center justify-center rounded-full border border-primary bg-black px-4 py-2.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary transition-colors duration-200 hover:bg-primary hover:text-primary-foreground"
           >
             {t.talents.card}
           </button>
