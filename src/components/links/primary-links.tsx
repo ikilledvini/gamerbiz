@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { gamerbizLinks } from "@/data/links";
 import { useI18n } from "@/i18n";
