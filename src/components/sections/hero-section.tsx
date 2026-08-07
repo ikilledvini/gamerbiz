@@ -23,7 +23,7 @@ export function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
       </div>
 
-      <div className="container-gbz relative grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="container-gbz relative flex flex-col gap-12">
         <div className="animate-rise">
           <p className="eyebrow-gbz max-w-[40ch] leading-relaxed">{t.hero.eyebrow}</p>
           <h1 className="mt-6 font-display text-[clamp(2.6rem,1.2rem+5.6vw,5.4rem)] font-extrabold uppercase leading-[0.94] tracking-[-0.04em]">
@@ -44,8 +44,8 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-border bg-graphite sm:aspect-video lg:aspect-[4/5]">
+        <div className="relative w-full">
+          <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-border bg-graphite">
             <video
               className="h-full w-full object-cover"
               autoPlay
@@ -62,6 +62,7 @@ export function HeroSection() {
         </div>
 
       </div>
+
 
       <a
         href="#numeros"
