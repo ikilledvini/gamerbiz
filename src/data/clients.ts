@@ -74,7 +74,7 @@ const LOGO_DEV_TOKEN = import.meta.env["VITE_LOVABLE_CONNECTOR_LOGO_DEV_API_KEY"
 
 export function logoUrl(domain: string | null) {
   if (!domain || !LOGO_DEV_TOKEN) return null;
-  return `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true`;
+  return `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true&fallback=404`;
 }
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
