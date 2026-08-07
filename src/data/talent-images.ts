@@ -37,6 +37,8 @@ import oilaris from "@/assets/talents/oilaris.png.asset.json";
 import vitto from "@/assets/talents/vittozao.webp.asset.json";
 import revmpt from "@/assets/talents/revmpt.jpg.asset.json";
 import joaopdzin from "@/assets/talents/joaopdzin.jpg.asset.json";
+import raydiva from "@/assets/talents/raydiva.jpg.asset.json";
+
 
 
 export const TALENT_IMAGES: Record<string, string> = {
@@ -79,4 +81,5 @@ export const TALENT_IMAGES: Record<string, string> = {
   GeoPasch: geopasch.url,
   Tetéia: teteia.url,
   JoaoPdzin: joaopdzin.url,
+  RayDiva: raydiva.url,
 };
