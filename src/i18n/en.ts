@@ -257,4 +257,32 @@ export const en: Dict = {
     profiles: "Enter at least one handle or profile link.",
     generic: "We couldn't complete this right now. Review the fields and try again.",
   },
+  links: {
+    tagline: "It's time to level up.",
+    talentsLink: "Talents",
+    websiteLink: "Official website",
+    linkedinLink: "LinkedIn",
+    backToWebsite: "Back to the Gamerbiz website",
+    sharePage: "Share the Gamerbiz page",
+    linkCopied: "Link copied",
+    copyError: "We couldn't copy the link",
+    eyebrow: "OUR CAST",
+    talentsTitle: "Gamerbiz Talents",
+    talentsDescription:
+      "Meet the creators who turn content, community, and influence into results.",
+    rights: "All rights reserved.",
+    meta: {
+      title: "Gamerbiz — Links and Talents",
+      description:
+        "Access Gamerbiz official channels and meet our talents and Media Kits.",
+    },
+    social: {
+      instagram: "Gamerbiz on Instagram",
+      youtube: "Gamerbiz on YouTube",
+      tiktok: "Gamerbiz on TikTok",
+      x: "Gamerbiz on X",
+      linkedin: "Gamerbiz on LinkedIn",
+    },
+    soon: "Coming soon",
+  },
 };
