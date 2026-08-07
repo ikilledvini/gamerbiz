@@ -161,7 +161,7 @@ export const zhCN: Dict = {
     title: "不只是阵容，更是专业甄选。",
     description: "拥有活跃社区的创作者、主播与职业选手，让每位人才匹配最合适的机会。",
     card: "查看媒体资料包",
-    allButton: "认识全部人才",
+    allButton: "访问媒体资料包平台",
     badgeTalent: "Gamerbiz 签约人才",
     tooltipTalent: "由 Gamerbiz 正式代表的签约人才。",
     badgePartner: "合作创作者",
