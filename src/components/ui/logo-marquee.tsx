@@ -24,15 +24,16 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
         className="group flex h-20 min-w-[170px] items-center justify-center px-4 md:h-24 md:min-w-[200px]"
       >
         {item.logo && !failed ? (
-          <div className="flex h-14 w-[150px] items-center justify-center rounded-2xl bg-white/95 px-4 py-2 opacity-90 transition-all duration-[220ms] ease-out group-hover:bg-white group-hover:opacity-100 group-focus-visible:bg-white group-focus-visible:opacity-100 md:h-16 md:w-[172px]">
+          <div className="flex h-14 w-[150px] items-center justify-center px-2 md:h-16 md:w-[172px]">
             <img
               src={item.logo}
               alt={duplicate ? "" : item.alt}
               loading="lazy"
               onError={() => setFailed(true)}
-              className="max-h-full w-auto max-w-full object-contain"
+              className="max-h-full w-auto max-w-full object-contain opacity-60 grayscale brightness-[1.6] transition-all duration-[220ms] ease-out group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 group-focus-visible:brightness-100"
             />
           </div>
+
         ) : (
           <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[220ms] group-hover:opacity-100 md:text-lg">
             {item.name}
