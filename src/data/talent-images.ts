@@ -1,3 +1,4 @@
+import nofaxu from "@/assets/talents/nofaxu.png.asset.json";
 import beletz from "@/assets/talents/beletz.png.asset.json";
 import biagomez from "@/assets/talents/biagomez.png.asset.json";
 import bladexzd from "@/assets/talents/bladexzd.png.asset.json";
@@ -44,6 +45,7 @@ import starshimas from "@/assets/talents/starshimas.jpg.asset.json";
 
 
 export const TALENT_IMAGES: Record<string, string> = {
+  Nofaxu: nofaxu.url,
   Thalera: thalera.url,
   Frogman1: frogman1.url,
   Speed: speed.url,
