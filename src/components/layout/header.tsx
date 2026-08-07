@@ -51,9 +51,9 @@ export function Header() {
           : "border-b border-transparent bg-background/45 backdrop-blur-sm",
       )}
     >
-      <div className="container-gbz flex h-[72px] items-center justify-between gap-6">
+      <div className="container-gbz flex h-[84px] items-center justify-between gap-6">
         <a href="#inicio" className="flex items-center" aria-label="Gamerbiz">
-          <Logo className="h-9" />
+          <Logo className="h-10" />
         </a>
 
         <nav aria-label="Principal" className="hidden items-center gap-7 lg:flex">
