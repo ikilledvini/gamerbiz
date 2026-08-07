@@ -24,13 +24,13 @@ export function PrimaryLinks() {
 
   return (
     <nav aria-label={t.links.talentsTitle} className="mt-9 flex flex-col gap-3">
-      <a href="#talentos" onClick={scrollToTalents} className={`${baseClass} ${hoverClass}`}>
+      <a href="#talentos" onClick={scrollToTalents} className={`${baseClass} ${activeClass}`}>
         <Users className="h-5 w-5 shrink-0" aria-hidden="true" />
         <span className="flex-1">{t.links.talentsLink}</span>
         <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
       </a>
 
-      <Link to="/" className={`${baseClass} ${hoverClass}`}>
+      <Link to="/" className={`${baseClass} ${activeClass}`}>
         <Globe className="h-5 w-5 shrink-0" aria-hidden="true" />
         <span className="flex-1">{t.links.websiteLink}</span>
         <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -42,7 +42,7 @@ export function PrimaryLinks() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={t.links.social.linkedin}
-          className={`${baseClass} ${hoverClass}`}
+          className={`${baseClass} ${activeClass}`}
         >
           <Linkedin className="h-5 w-5 shrink-0" aria-hidden="true" />
           <span className="flex-1">{t.links.linkedinLink}</span>
@@ -51,7 +51,7 @@ export function PrimaryLinks() {
       ) : (
         <span
           aria-disabled="true"
-          className={`${baseClass} cursor-not-allowed border border-border bg-graphite text-muted-foreground opacity-70`}
+          className={`${baseClass} cursor-not-allowed border border-border bg-graphite text-muted-foreground`}
         >
           <Linkedin className="h-5 w-5 shrink-0" aria-hidden="true" />
           <span className="flex-1">{t.links.linkedinLink}</span>
