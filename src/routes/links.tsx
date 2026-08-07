@@ -75,21 +75,32 @@ function LinksContent() {
         </section>
 
         <section
-          aria-labelledby="talentos"
-          className="mt-16 border-t border-border pt-14 sm:mt-24 sm:pt-20"
+          id="talentos"
+          aria-labelledby="talentos-heading"
+          className="section-gbz bg-surface"
         >
           <div className="container-gbz">
-            <div className="max-w-[54ch]">
-              <p className="eyebrow-gbz">{t.links.eyebrow}</p>
-              <h2
-                id="talentos"
-                className="title-gbz mt-4 scroll-mt-24"
-              >
-                {t.links.talentsTitle}
-              </h2>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                {t.links.talentsDescription}
-              </p>
+            <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
+                <h2
+                  id="talentos-heading"
+                  className="title-gbz mt-4 max-w-[16ch] scroll-mt-24"
+                >
+                  {t.talents.title}
+                </h2>
+                <a
+                  href="#talentos"
+                  className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+                >
+                  {t.talents.allButton}
+                </a>
+              </div>
+              <div>
+                <p className="max-w-[48ch] text-lg leading-relaxed text-muted-foreground">
+                  {t.talents.description}
+                </p>
+              </div>
             </div>
 
             <TalentCarousel />
