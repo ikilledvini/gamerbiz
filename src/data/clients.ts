@@ -89,6 +89,7 @@ const LOGO_OVERRIDES: Record<string, string> = {
   FURIA: furiaLogo.url,
   MIBR: mibrLogo.url,
   "Imperial Esports": imperialLogo.url,
+  Legacy: legacyLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
