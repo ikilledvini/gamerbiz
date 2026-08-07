@@ -4,7 +4,7 @@
  */
 export const gamerbizLinks = {
   website: "/",
-  linkedin: null as string | null,
+  linkedin: "https://www.linkedin.com/company/gamerbizbr/" as string | null,
   instagram: null as string | null,
   youtube: null as string | null,
   tiktok: null as string | null,
