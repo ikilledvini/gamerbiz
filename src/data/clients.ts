@@ -33,6 +33,7 @@ import tencentGamesWiki from "@/assets/tencent-games.png.asset.json";
 import ubisoftWiki from "@/assets/ubisoft.png.asset.json";
 import gamersClubLogo from "@/assets/gamers-club.png.asset.json";
 import novadaxLogo from "@/assets/novadax.png.asset.json";
+import pichauLogo from "@/assets/pichau.png.asset.json";
 
 export type ClientLogo = {
   name: string;
@@ -151,6 +152,7 @@ const LOGO_OVERRIDES: Record<string, string> = {
   "Ubisoft": ubisoftWiki.url,
   "Gamers Club": gamersClubLogo.url,
   "NovaDAX": novadaxLogo.url,
+  "Pichau": pichauLogo.url,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {
