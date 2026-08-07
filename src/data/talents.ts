@@ -1,3 +1,5 @@
+import { TALENT_IMAGES } from "./talent-images";
+
 export type Talent = {
   id: string;
   firstName?: string;
@@ -55,7 +57,10 @@ const TALENT_NAMES = [
   "SpiderKong",
   "Panettoni",
   "Nivyzera",
+  "GeoPasch",
+  "Tetéia",
 ] as const;
+
 
 const TALENT_CATEGORIES: Record<string, string> = {
   Nofaxu: "Minecraft",
@@ -105,7 +110,7 @@ const TALENT_CATEGORIES: Record<string, string> = {
   Nivyzera: "Multigame + Valorant",
 };
 
-// TODO: substituir shortDescription, relationship, image e mediaKitUrl
+// TODO: substituir shortDescription, relationship e mediaKitUrl
 // pelos dados oficiais da Gamerbiz quando forem fornecidos.
 export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => ({
   id: `talent-${String(index + 1).padStart(2, "0")}`,
@@ -113,6 +118,7 @@ export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => ({
   category: TALENT_CATEGORIES[stageName] ?? "Multigame",
   shortDescription: "[DESCRIÇÃO CURTA]",
   relationship: null,
-  image: null,
+  image: TALENT_IMAGES[stageName] ?? null,
   mediaKitUrl: null,
 }));
+
