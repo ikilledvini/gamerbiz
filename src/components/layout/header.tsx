@@ -70,8 +70,12 @@ export function Header() {
         <LanguageSwitcher />
       </div>
 
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
-        <div className="container-gbz flex justify-center py-3">
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-300 ease-out ${
+          visible || menuOpen ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
+        <div className="container-gbz flex justify-center py-4">
           <div className="grid h-[68px] w-full max-w-4xl grid-cols-3 items-center gap-6">
             <a href="#inicio" className="flex items-center justify-self-start" aria-label="Gamerbiz">
               <Logo className="h-9" />
@@ -82,7 +86,7 @@ export function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="font-display text-[0.95rem] font-bold tracking-tight text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                  className="font-display text-[0.95rem] font-bold tracking-tight text-white/80 transition-colors duration-200 hover:text-white"
                 >
                   {link.label}
                 </a>
