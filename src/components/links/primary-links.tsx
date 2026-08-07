@@ -14,10 +14,26 @@ export function PrimaryLinks() {
   return (
     <nav aria-label={t.links.primaryNav} className="mt-9 flex flex-col gap-3">
 
-      <Link to="/" className={`${baseClass} ${activeClass}`}>
-        <span className="flex-1 text-center">{t.links.websiteLink}</span>
-        <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-      </Link>
+      {gamerbizLinks.website ? (
+        <a
+          href={gamerbizLinks.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t.links.websiteLink}
+          className={`${baseClass} ${activeClass}`}
+        >
+          <span className="flex-1 text-center">{t.links.websiteLink}</span>
+          <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+        </a>
+      ) : (
+        <span
+          aria-disabled="true"
+          className={`${baseClass} cursor-not-allowed border border-border bg-graphite text-muted-foreground`}
+        >
+          <span className="flex-1 text-center">{t.links.websiteLink}</span>
+          <span className="text-[0.6rem] tracking-[0.16em]">{t.links.soon}</span>
+        </span>
+      )}
 
       {gamerbizLinks.linkedin ? (
         <a
