@@ -92,39 +92,39 @@ export const ptBR: Dict = {
   },
   brands: {
     eyebrow: "Soluções para marcas",
-    title: "Campanhas que viram conexão, conteúdo e resultado",
+    title: "Conectamos sua marca ao universo gamer",
     description:
-      "Conheça campanhas, ativações e projetos que desenvolvemos conectando marcas, talentos e comunidades dentro do universo gamer.",
+      "Campanhas, ativações e parcerias que colocam marcas no centro do gaming, conectando talentos, times e comunidades de forma autêntica e com resultados.",
     phrase: { top: "GAMERBIZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
     video: "Conheça mais sobre a Gamerbiz",
     services: [
       {
         key: "strategy",
         title: "Estratégia",
-        text: "Desenvolvemos estratégias para posicionar marcas no universo gamer com inteligência, autenticidade e foco em resultados. Da escolha do talento ao formato ideal de campanha.",
+        text: "Posicionamos marcas no gaming com inteligência de mercado, escolha certeira de talentos e formatos de campanha que geram resultado.",
       },
       {
         key: "influence",
         title: "Influência",
-        text: "Criamos campanhas com creators, streamers e talentos que geram conexão genuína, alcance qualificado e impacto direto no público gamer.",
+        text: "Ativamos creators e streamers para criar conexão genuína, alcance qualificado e impacto real no público gamer.",
       },
       {
         key: "experiences",
         title: "Experiências",
-        text: "Desenvolvemos eventos, campeonatos e ativações que aproximam marcas e comunidades através de experiências memoráveis.",
+        text: "Criamos eventos, campeonatos e ativações que aproximam marcas e comunidades através de experiências memoráveis.",
       },
       {
         key: "partnerships",
         title: "Parcerias",
-        text: "Conectamos marcas, talentos e projetos para gerar valor, crescimento e oportunidades dentro do ecossistema competitivo e de entretenimento.",
+        text: "Conectamos marcas, talentos e projetos para gerar valor, crescimento e oportunidades no ecossistema competitivo e de entretenimento.",
       },
     ],
   },
   teams: {
     eyebrow: "Soluções para times",
-    title: "Convoque a Gamerbiz para o seu time",
+    title: "Fortalecemos sua organização dentro e fora do jogo",
     description:
-      "Com um histórico de parcerias de sucesso, a Gamerbiz oferece serviços personalizados para as necessidades do seu time, deixando que você foque no que mais importa.",
+      "Apoiamos times e organizações com soluções comerciais, de branding e performance, para que você foque no que realmente importa: vencer.",
     services: [
       {
         key: "commercial",
@@ -134,7 +134,7 @@ export const ptBR: Dict = {
       {
         key: "scouting",
         title: "Scouting",
-        text: "Mapeamos talentos, lineups e projetos promissores para fortalecer organizações através de recrutamento estratégico e visão de mercado.",
+        text: "Mapeamos talentos, lineups e projetos promissores para fortalecer organizações com recrutamento estratégico e visão de mercado.",
       },
       {
         key: "performance",

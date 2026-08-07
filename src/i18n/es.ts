@@ -92,21 +92,21 @@ export const es: Dict = {
   },
   brands: {
     eyebrow: "Soluciones para marcas",
-    title: "Campañas que se convierten en conexión, contenido y resultados",
+    title: "Conectamos tu marca con el universo gamer",
     description:
-      "Conoce las campañas, activaciones y proyectos que desarrollamos conectando marcas, talentos y comunidades dentro del universo gamer.",
+      "Campañas, activaciones y alianzas que colocan a las marcas en el centro del gaming, conectando talentos, equipos y comunidades de forma auténtica y con resultados.",
     phrase: { top: "GAMERBIZ", mid: "TU EQUIPO.", bottom: "NUESTRO JUEGO." },
     video: "Conoce más sobre Gamerbiz",
     services: [
       {
         key: "strategy",
         title: "Estrategia",
-        text: "Desarrollamos estrategias para posicionar marcas en el universo gamer con inteligencia, autenticidad y foco en resultados, desde la elección del talento hasta el formato ideal de campaña.",
+        text: "Posicionamos marcas en el gaming con inteligencia de mercado, selección de talentos y formatos de campaña que generan resultados.",
       },
       {
         key: "influence",
         title: "Influencia",
-        text: "Creamos campañas con creators, streamers y talentos que generan conexión genuina, alcance cualificado e impacto directo en el público gamer.",
+        text: "Activamos creators y streamers para generar conexión genuina, alcance cualificado e impacto real en el público gamer.",
       },
       {
         key: "experiences",
@@ -122,9 +122,9 @@ export const es: Dict = {
   },
   teams: {
     eyebrow: "Soluciones para equipos",
-    title: "Convoca a Gamerbiz para tu equipo",
+    title: "Fortalecemos tu organización dentro y fuera del juego",
     description:
-      "Con un historial de alianzas exitosas, Gamerbiz ofrece servicios personalizados para las necesidades de tu equipo, para que puedas enfocarte en lo que más importa.",
+      "Apoyamos a equipos y organizaciones con soluciones comerciales, de branding y de rendimiento, para que te enfoques en lo que realmente importa: ganar.",
     services: [
       {
         key: "commercial",
