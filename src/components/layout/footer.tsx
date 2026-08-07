@@ -100,8 +100,13 @@ export function Footer() {
       </div>
 
       <div className="border-t border-border">
-        <div className="container-gbz flex flex-col items-center justify-between gap-3 py-6 text-center md:flex-row md:text-left">
+        <div className="container-gbz flex flex-col items-center justify-between gap-4 py-6 text-center md:flex-row md:items-start md:text-left">
           <p className="text-xs text-subtle">{t.footer.rights}</p>
+          <p className="max-w-[50ch] text-xs leading-relaxed text-subtle">
+            CNPJ 41.605.881/0001-51
+            <br />
+            Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP 04704-900
+          </p>
           <p className="flex flex-wrap items-center justify-center gap-4 text-xs text-subtle">
             <span title={t.footer.legalUnavailable}>{t.footer.privacy}</span>
             <span title={t.footer.legalUnavailable}>{t.footer.terms}</span>
