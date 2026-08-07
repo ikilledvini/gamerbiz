@@ -45,7 +45,7 @@ export function Footer() {
 
   const socials = [
     { label: "Instagram", icon: Instagram },
-    { label: "YouTube", icon: Youtube },
+    { label: "YouTube", icon: YouTubeIcon },
     { label: "LinkedIn", icon: LinkedInIcon },
   ];
 
