@@ -29,7 +29,7 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
             alt={duplicate ? "" : item.alt}
             loading="lazy"
             onError={() => setFailed(true)}
-            className="h-10 w-auto max-w-[150px] object-contain opacity-45 grayscale transition-all duration-[220ms] ease-out group-hover:opacity-100 group-hover:grayscale-0 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 md:h-12"
+            className="h-10 w-auto max-w-[150px] object-contain opacity-75 transition-all duration-[220ms] ease-out group-hover:scale-[1.06] group-hover:opacity-100 group-focus-visible:opacity-100 md:h-12"
           />
         ) : (
           <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[220ms] group-hover:opacity-100 md:text-lg">
