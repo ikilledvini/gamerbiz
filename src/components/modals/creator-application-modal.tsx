@@ -4,7 +4,7 @@ import { useI18n } from "@/i18n";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { Field, ModalShell, inputClass, textareaClass } from "./modal-shell";
 
-type Errors = Partial<Record<"name" | "email" | "platforms" | "type" | "profiles", string>>;
+type Errors = Partial<Record<"name" | "email" | "platforms" | "type" | "profiles", string | undefined>>;
 
 const PLATFORM_KEYS = [
   "YouTube",

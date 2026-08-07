@@ -77,10 +77,10 @@ export function Field({
 }: {
   id: string;
   label: string;
-  error?: string;
-  optionalLabel?: string;
+  error?: string | undefined;
+  optionalLabel?: string | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>

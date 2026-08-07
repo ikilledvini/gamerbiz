@@ -4,7 +4,7 @@ import { useI18n } from "@/i18n";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { Field, ModalShell, inputClass, textareaClass } from "./modal-shell";
 
-type Errors = Partial<Record<"name" | "company" | "email" | "help", string>>;
+type Errors = Partial<Record<"name" | "company" | "email" | "help", string | undefined>>;
 
 function maskBrPhone(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 13);
