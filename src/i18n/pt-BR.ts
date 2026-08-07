@@ -259,4 +259,32 @@ export const ptBR: Dict = {
     profiles: "Informe ao menos um usuário ou link de perfil.",
     generic: "Não foi possível concluir agora. Revise os campos e tente novamente.",
   },
+  links: {
+    tagline: "É hora de subir de nível.",
+    talentsLink: "Talentos",
+    websiteLink: "Site oficial",
+    linkedinLink: "LinkedIn",
+    backToWebsite: "Voltar ao site da Gamerbiz",
+    sharePage: "Compartilhar página da Gamerbiz",
+    linkCopied: "Link copiado",
+    copyError: "Não foi possível copiar o link",
+    eyebrow: "NOSSO CASTING",
+    talentsTitle: "Talentos Gamerbiz",
+    talentsDescription:
+      "Conheça os creators que transformam conteúdo, comunidade e influência em resultado.",
+    rights: "Todos os direitos reservados.",
+    meta: {
+      title: "Gamerbiz — Links e Talentos",
+      description:
+        "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.",
+    },
+    social: {
+      instagram: "Instagram da Gamerbiz",
+      youtube: "YouTube da Gamerbiz",
+      tiktok: "TikTok da Gamerbiz",
+      x: "X da Gamerbiz",
+      linkedin: "LinkedIn da Gamerbiz",
+    },
+    soon: "Em breve",
+  },
 };

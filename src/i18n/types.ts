@@ -163,4 +163,27 @@ export type Dict = {
     profiles: string;
     generic: string;
   };
+  links: {
+    tagline: string;
+    talentsLink: string;
+    websiteLink: string;
+    linkedinLink: string;
+    backToWebsite: string;
+    sharePage: string;
+    linkCopied: string;
+    copyError: string;
+    eyebrow: string;
+    talentsTitle: string;
+    talentsDescription: string;
+    rights: string;
+    meta: { title: string; description: string };
+    social: {
+      instagram: string;
+      youtube: string;
+      tiktok: string;
+      x: string;
+      linkedin: string;
+    };
+    soon: string;
+  };
 };
