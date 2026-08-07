@@ -2,6 +2,7 @@ import { ChevronDown } from "lucide-react";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
+import heroBg from "@/assets/cta-arena.jpg.asset.json";
 
 export function HeroSection() {
   const { t } = useI18n();
@@ -10,22 +11,27 @@ export function HeroSection() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-[78vh] items-center overflow-hidden pb-16 pt-[112px]"
+      className="relative flex min-h-[88vh] items-center overflow-hidden pb-20 pt-[132px]"
     >
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute inset-0 bg-surface" />
-        <div className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(oklch(1_0_0/0.4)_1px,transparent_1px),linear-gradient(90deg,oklch(1_0_0/0.4)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <img
+          src={heroBg.url}
+          alt=""
+          className="absolute inset-0 h-full w-full scale-110 object-cover opacity-50 blur-[16px]"
+        />
+        <div className="absolute inset-0 bg-background/70" />
         <div className="absolute -right-40 top-1/4 h-[520px] w-[520px] rounded-full bg-primary/20 blur-[160px]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/40" />
       </div>
 
       <div className="container-gbz relative flex flex-col gap-12">
         <div className="animate-rise">
           <p className="eyebrow-gbz max-w-[40ch] leading-relaxed">{t.hero.eyebrow}</p>
-          <h1 className="mt-6 font-display text-[clamp(2.6rem,1.2rem+5.6vw,5.4rem)] font-extrabold uppercase leading-[0.94] tracking-[-0.04em]">
+          <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(3.2rem,1.4rem+8vw,8.5rem)] font-extrabold uppercase leading-[0.86] tracking-[-0.05em]">
             {t.hero.title}
           </h1>
-          <p className="mt-6 max-w-[52ch] text-base text-muted-foreground md:text-lg">
+          <p className="mt-8 max-w-[52ch] text-base text-muted-foreground md:text-lg">
             {t.hero.description}
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -40,7 +46,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-
 
       <a
         href="#numeros"
