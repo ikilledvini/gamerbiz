@@ -1,0 +1,138 @@
+import { useCallback, useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { toast } from "sonner";
+import { TalentCard } from "@/components/ui/talent-card";
+import { talents, type Talent } from "@/data/talents";
+import { useI18n } from "@/i18n";
+import { cn } from "@/lib/utils";
+
+export function TalentMediaKitsSection() {
+  const { t } = useI18n();
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    loop: false,
+  });
+  const [selected, setSelected] = useState(0);
+  const [snaps, setSnaps] = useState<number[]>([]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelected(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    setSnaps(emblaApi.scrollSnapList());
+    onSelect();
+    emblaApi.on("select", onSelect).on("reInit", onSelect);
+  }, [emblaApi, onSelect]);
+
+  function handleMediaKit(talent: Talent) {
+    if (talent.mediaKitUrl) {
+      window.location.href = talent.mediaKitUrl;
+      return;
+    }
+    toast(t.talents.unavailable, { description: talent.stageName });
+  }
+
+  return (
+    <Tooltip.Provider delayDuration={150}>
+      <section id="talentos" className="section-gbz bg-surface">
+        <div className="container-gbz">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div>
+              <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
+              <h2 className="title-gbz mt-4 max-w-[16ch]">{t.talents.title}</h2>
+            </div>
+            <p className="max-w-[52ch] text-base text-muted-foreground">
+              {t.talents.description}
+            </p>
+          </div>
+
+          <div className="mt-12 flex items-center justify-between gap-4">
+            <p aria-live="polite" className="text-xs font-semibold uppercase tracking-[0.18em] text-subtle">
+              {t.a11y.slideStatus} {selected + 1}/{Math.max(snaps.length, 1)}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                aria-label={t.a11y.prevSlide}
+                onClick={() => emblaApi?.scrollPrev()}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+              >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                aria-label={t.a11y.nextSlide}
+                onClick={() => emblaApi?.scrollNext()}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+              >
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="mt-6 overflow-hidden"
+            ref={emblaRef}
+            tabIndex={0}
+            role="region"
+            aria-roledescription="carousel"
+            aria-label={t.talents.eyebrow}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                emblaApi?.scrollNext();
+              }
+              if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                emblaApi?.scrollPrev();
+              }
+            }}
+          >
+            <ul className="flex gap-5">
+              {talents.map((talent) => (
+                <li
+                  key={talent.id}
+                  className="min-w-0 shrink-0 basis-[78%] sm:basis-[48%] lg:basis-[31%] xl:basis-[23.5%]"
+                >
+                  <TalentCard talent={talent} onMediaKit={handleMediaKit} />
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            {snaps.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={`${t.a11y.goToSlide} ${index + 1}`}
+                aria-current={index === selected ? "true" : undefined}
+                onClick={() => emblaApi?.scrollTo(index)}
+                className={cn(
+                  "h-2 rounded-full transition-all duration-200",
+                  index === selected ? "w-8 bg-primary" : "w-2 bg-border hover:bg-subtle",
+                )}
+              />
+            ))}
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <a
+              href="#talentos"
+              onClick={() => emblaApi?.scrollTo(0)}
+              className="rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+            >
+              {t.talents.allButton}
+            </a>
+          </div>
+        </div>
+      </section>
+    </Tooltip.Provider>
+  );
+}
