@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Info, Instagram, Music, Share2, Twitch, Twitter, User, Youtube } from "lucide-react";
+import { Gamepad2, Info, Instagram, Mail, MapPin, Music, Share2, Twitch, Twitter, User, Youtube } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
