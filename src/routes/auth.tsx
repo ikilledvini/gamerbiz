@@ -27,28 +27,11 @@ function AuthRoute() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
     setLoading(true);
     setError(null);
-
-    if (mode === "signup") {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/auth` },
-      });
-      setLoading(false);
-      if (signUpError) {
-        setError(signUpError.message);
-        return;
-      }
-      setError("Conta criada. Confirme o e-mail para entrar.");
-      setMode("signin");
-      return;
-    }
 
     const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
@@ -102,15 +85,7 @@ function AuthRoute() {
           disabled={loading}
           className="mt-6 h-12 w-full rounded-full bg-primary font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
         >
-          {loading ? "Aguarde..." : mode === "signup" ? "Criar conta" : "Entrar"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-          className="mt-4 w-full text-center text-xs uppercase tracking-[0.16em] text-subtle duration-200 hover:text-primary"
-        >
-          {mode === "signup" ? "Já tenho conta" : "Criar conta"}
+          {loading ? "Aguarde..." : "Entrar"}
         </button>
       </form>
     </main>
