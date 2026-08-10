@@ -303,7 +303,7 @@ export const zhCN: Dict = {
     engagement: "互动率",
     audience: "受众",
     achievements: "成就与案例",
-    contact: "商务联系",
+    contact: "电子邮箱",
     sendProposal: "发送合作方案",
     contactSubject: "商业合作方案：",
     analyticsUi: {
