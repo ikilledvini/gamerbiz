@@ -17,9 +17,7 @@ export function BrandsSolutionsSection() {
             <p className="eyebrow-gbz">{t.brands.eyebrow}</p>
             <h2 className="title-gbz mt-4 max-w-[18ch]">{t.brands.title}</h2>
           </div>
-          <p className="max-w-[52ch] text-base text-muted-foreground">
-            {t.brands.description}
-          </p>
+          <p className="max-w-[52ch] text-base text-muted-foreground">{t.brands.description}</p>
         </div>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-2">
@@ -35,11 +33,11 @@ export function BrandsSolutionsSection() {
                       aria-expanded={isActive}
                       aria-controls={`brand-panel-${service.key}`}
                       onClick={() => setActive(index)}
-                      className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                      className="gbz-interactive flex w-full items-center justify-between gap-6 py-6 text-left transition-transform duration-[120ms] ease-[var(--ease-out-gbz)] active:scale-[0.99]"
                     >
                       <span
                         className={cn(
-                          "font-display text-2xl font-bold tracking-tight transition-colors duration-200 md:text-3xl",
+                          "font-display text-2xl font-bold tracking-tight transition-colors duration-[160ms] md:text-3xl",
                           isActive ? "text-primary" : "text-foreground",
                         )}
                       >
@@ -83,14 +81,9 @@ export function BrandsSolutionsSection() {
               </div>
             </div>
 
-            <div
-              key={current.key}
-              className="hidden animate-rise rounded-3xl border border-border bg-surface p-8 lg:block"
-            >
+            <div className="hidden rounded-3xl border border-border bg-surface p-8 lg:block">
               <h3 className="font-display text-xl font-bold text-primary">{current.title}</h3>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                {current.text}
-              </p>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground">{current.text}</p>
             </div>
           </div>
         </div>

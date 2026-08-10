@@ -42,7 +42,7 @@ export function AboutSection() {
             <button
               type="button"
               onClick={() => setIsMuted((prev) => !prev)}
-              className="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary hover:text-primary"
+              className="gbz-interactive absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background/80 text-foreground backdrop-blur-sm transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.96] fine-hover:hover:border-primary fine-hover:hover:text-primary"
               aria-label={isMuted ? "Ativar som" : "Desativar som"}
             >
               {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
@@ -54,12 +54,10 @@ export function AboutSection() {
           {t.about.pillars.map((pillar) => (
             <article
               key={pillar.key}
-              className="rounded-3xl border border-border bg-background p-8 transition-all duration-200 ease-out hover:-translate-y-1 hover:border-primary/60"
+              className="motion-lift-gbz rounded-3xl border border-border bg-background p-8 transition-[transform,border-color] duration-[180ms] ease-[var(--ease-out-gbz)] fine-hover:hover:-translate-y-1 fine-hover:hover:border-primary/60"
             >
               <h3 className="font-display text-xl font-bold">{pillar.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {pillar.text}
-              </p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{pillar.text}</p>
             </article>
           ))}
         </div>

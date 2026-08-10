@@ -20,8 +20,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             aria-current={active ? "true" : undefined}
             onClick={() => setLang(option.code)}
             className={cn(
-              "text-sm font-bold tracking-tight transition-colors duration-200",
-              active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+              "gbz-interactive text-sm font-bold tracking-tight transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.96]",
+              active ? "text-primary" : "text-muted-foreground fine-hover:hover:text-foreground",
             )}
           >
             {option.label}

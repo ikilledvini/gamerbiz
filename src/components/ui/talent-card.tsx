@@ -20,7 +20,7 @@ export function TalentCard({
         : null;
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[40px] border border-border bg-surface transition-transform duration-200 ease-out hover:-translate-y-1">
+    <article className="motion-lift-gbz group flex h-full flex-col overflow-hidden rounded-[40px] border border-border bg-surface transition-transform duration-[180ms] ease-[var(--ease-out-gbz)] fine-hover:hover:-translate-y-1">
       <div className="relative aspect-[9/16] w-full bg-muted">
         {badge ? (
           <Tooltip.Root>
@@ -28,10 +28,10 @@ export function TalentCard({
               <button
                 type="button"
                 aria-label={`${badge.label} — ${t.a11y.info}`}
-                  className={cn(
-                    "absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground",
-                    badge.tone,
-                  )}
+                className={cn(
+                  "absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground",
+                  badge.tone,
+                )}
               >
                 {badge.label}
                 <Info className="h-3 w-3" aria-hidden="true" />
@@ -40,7 +40,7 @@ export function TalentCard({
             <Tooltip.Portal>
               <Tooltip.Content
                 side="bottom"
-                className="z-[120] max-w-[240px] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card"
+                className="z-[120] max-w-[240px] origin-[var(--radix-tooltip-content-transform-origin)] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=delayed-open]:duration-[140ms]"
               >
                 {badge.tip}
               </Tooltip.Content>
@@ -82,7 +82,7 @@ export function TalentCard({
           <button
             type="button"
             onClick={() => onMediaKit(talent)}
-            className="mt-5 flex w-full items-center justify-center rounded-full border border-primary bg-black px-4 py-2.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary transition-colors duration-200 hover:bg-primary hover:text-primary-foreground"
+            className="gbz-interactive mt-5 flex w-full items-center justify-center rounded-full border border-primary bg-black px-4 py-2.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary fine-hover:hover:text-primary-foreground"
           >
             {t.talents.card}
           </button>

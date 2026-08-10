@@ -226,7 +226,7 @@ export const en: Dict = {
     help: "How can we help?",
     helpPlaceholder: "Tell us a little about your project or goal...",
     submit: "Send message →",
-    success: "Your message is ready. Our team will get back to you soon.",
+    success: "Your message was received. Our team will get back to you soon.",
     optional: "optional",
   },
   creatorModal: {
@@ -247,7 +247,7 @@ export const en: Dict = {
     profiles: "Where can we find you online?",
     profilesPlaceholder: "e.g. @yourhandle or links to your profiles",
     submit: "Send application →",
-    success: "Your application is ready. Our team will be in touch soon.",
+    success: "Your application was received. Our team will be in touch soon.",
     optional: "optional",
   },
   validation: {
@@ -342,8 +342,7 @@ export const en: Dict = {
     rights: "All rights reserved.",
     meta: {
       title: "Gamerbiz — Links and Talents",
-      description:
-        "Access Gamerbiz official channels and meet our talents and Media Kits.",
+      description: "Access Gamerbiz official channels and meet our talents and Media Kits.",
     },
     social: {
       instagram: "Gamerbiz on Instagram",

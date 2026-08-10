@@ -166,8 +166,7 @@ export const es: Dict = {
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "Talento representado oficialmente por Gamerbiz.",
     badgePartner: "Creator Aliado",
-    tooltipPartner:
-      "Creator aliado disponible para proyectos seleccionados con Gamerbiz.",
+    tooltipPartner: "Creator aliado disponible para proyectos seleccionados con Gamerbiz.",
     unavailable: "Media Kit próximamente",
     photoPlaceholder: "Foto del creator",
   },
@@ -228,7 +227,7 @@ export const es: Dict = {
     help: "¿Cómo podemos ayudarte?",
     helpPlaceholder: "Cuéntanos un poco sobre tu proyecto u objetivo...",
     submit: "Enviar mensaje →",
-    success: "Tu mensaje está listo. Nuestro equipo se pondrá en contacto contigo pronto.",
+    success: "Recibimos tu mensaje. Nuestro equipo se pondrá en contacto contigo pronto.",
     optional: "opcional",
   },
   creatorModal: {
@@ -249,8 +248,7 @@ export const es: Dict = {
     profiles: "¿Cómo podemos encontrarte en las plataformas?",
     profilesPlaceholder: "Ej.: @tuusuario o enlaces a tus perfiles",
     submit: "Enviar candidatura →",
-    success:
-      "Tu candidatura está lista. Nuestro equipo se pondrá en contacto contigo pronto.",
+    success: "Recibimos tu candidatura. Nuestro equipo se pondrá en contacto contigo pronto.",
     optional: "opcional",
   },
   validation: {
@@ -281,7 +279,8 @@ export const es: Dict = {
     resultsMany: "resultados",
     open: "Abrir Media Kit",
     empty: "No encontramos talentos con estos filtros.",
-    emptyAll: "Los Media Kits de Gamerbiz se están preparando. Pronto podrás explorar los perfiles aquí.",
+    emptyAll:
+      "Los Media Kits de Gamerbiz se están preparando. Pronto podrás explorar los perfiles aquí.",
     notFoundTitle: "Media Kit no encontrado",
     notFoundText: "Este perfil no está disponible públicamente.",
     backToDirectory: "Volver a los Media Kits",
