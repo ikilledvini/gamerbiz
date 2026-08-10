@@ -5,14 +5,16 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
-import { getTalentBySlug, type Talent } from "@/data/talents";
+import { type Talent } from "@/data/talents";
+import { listPublicTalents } from "@/lib/talents.functions";
 
 const SITE = "https://idea-to-site-muse.lovable.app";
 
 export const Route = createFileRoute("/mediakit/$slug")({
-  loader: ({ params }) => {
-    const talent = getTalentBySlug(params.slug);
-    if (!talent || talent.status !== "published") throw notFound();
+  loader: async ({ params }) => {
+    const talents = await listPublicTalents();
+    const talent = talents.find((item) => item.slug === params.slug);
+    if (!talent) throw notFound();
     return { talent };
   },
   head: ({ params, loaderData }) => {
