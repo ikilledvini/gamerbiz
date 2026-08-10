@@ -192,15 +192,51 @@ function DirectoryContent() {
                 grouped.map(([letter, list]) => (
                   <section key={letter} className="mt-12">
                     <h2 className="font-display text-2xl font-extrabold text-primary">{letter}</h2>
-                    <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-                      {list.map((talent) => (
-                        <li key={talent.id}>
-                          <TalentCard talent={talent} onMediaKit={openMediaKit} />
-                        </li>
-                      ))}
-                    </ul>
+                    {view === "grid" ? (
+                      <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+                        {list.map((talent) => (
+                          <li key={talent.id}>
+                            <TalentCard talent={talent} onMediaKit={openMediaKit} />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <ul className="mt-5 grid grid-cols-1 gap-x-10 gap-y-1 md:grid-cols-2">
+                        {list.map((talent) => (
+                          <li key={talent.id}>
+                            <Link
+                              to="/mediakit/$slug"
+                              params={{ slug: talent.slug }}
+                              className="flex items-center gap-4 rounded-2xl px-3 py-3 duration-200 hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                            >
+                              <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
+                                {talent.image ? (
+                                  <img
+                                    src={talent.image}
+                                    alt={talent.stageName}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <User className="h-5 w-5 text-subtle" aria-hidden="true" />
+                                )}
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block truncate font-display text-base font-bold text-foreground">
+                                  {talent.stageName}
+                                </span>
+                                <span className="block truncate text-sm text-muted-foreground">
+                                  {talent.username ? `@${talent.username}` : talent.category}
+                                </span>
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </section>
                 ))
+
               )}
             </>
           )}
