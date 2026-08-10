@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 import { TalentCard } from "@/components/ui/talent-card";
-import { talents, type Talent } from "@/data/talents";
+import { publishedTalents as talents, type Talent } from "@/data/talents";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,7 @@ const PAGE_SIZE = 5;
  */
 export function TalentCarousel() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
@@ -58,11 +59,7 @@ export function TalentCarousel() {
   }, [emblaApi, onSelect]);
 
   function handleMediaKit(talent: Talent) {
-    if (talent.mediaKitUrl) {
-      window.location.href = talent.mediaKitUrl;
-      return;
-    }
-    toast(t.talents.unavailable, { description: talent.stageName });
+    void navigate({ to: "/mediakit/$slug", params: { slug: talent.slug } });
   }
 
   return (

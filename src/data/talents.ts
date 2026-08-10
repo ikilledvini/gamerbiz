@@ -1,12 +1,19 @@
 import { TALENT_IMAGES } from "./talent-images";
+import { toSlug } from "@/lib/slug";
+
+export type PublishStatus = "draft" | "published" | "hidden";
 
 export type Talent = {
   id: string;
+  slug: string;
   firstName?: string;
   stageName: string;
+  username: string | null;
   category: string;
   shortDescription: string;
   relationship: "gamerbiz-talent" | "creator-parceiro" | null;
+  status: PublishStatus;
+  city: string | null;
   image: string | null;
   mediaKitUrl: string | null;
 };
@@ -110,15 +117,30 @@ const TALENT_CATEGORIES: Record<string, string> = {
   Nivyzera: "Multigame + Valorant",
 };
 
-// TODO: substituir shortDescription, relationship e mediaKitUrl
-// pelos dados oficiais da Gamerbiz quando forem fornecidos.
-export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => ({
-  id: `talent-${String(index + 1).padStart(2, "0")}`,
-  stageName,
-  category: TALENT_CATEGORIES[stageName] ?? "Multigame",
-  shortDescription: "[DESCRIÇÃO CURTA]",
-  relationship: null,
-  image: TALENT_IMAGES[stageName] ?? null,
-  mediaKitUrl: null,
-}));
+// Dados reais apenas. Campos ainda não fornecidos pela Gamerbiz ficam nulos
+// e serão preenchidos no painel interno (etapa seguinte).
+// Um perfil só é publicado quando já possui foto real cadastrada.
+export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => {
+  const image = TALENT_IMAGES[stageName] ?? null;
+  return {
+    id: `talent-${String(index + 1).padStart(2, "0")}`,
+    slug: toSlug(stageName),
+    stageName,
+    username: null,
+    category: TALENT_CATEGORIES[stageName] ?? "Multigame",
+    shortDescription: "",
+    relationship: null,
+    status: image ? ("published" as const) : ("draft" as const),
+    city: null,
+    image,
+    mediaKitUrl: null,
+  };
+});
+
+export const publishedTalents = talents.filter((t) => t.status === "published");
+
+export function getTalentBySlug(slug: string) {
+  return talents.find((t) => t.slug === slug) ?? null;
+}
+
 
