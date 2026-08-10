@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { GripVertical, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Logo } from "@/components/ui/logo";
@@ -11,6 +11,7 @@ import {
   adminDeleteTalent,
   adminIsAdmin,
   adminListTalents,
+  adminReorderTalents,
   adminSaveTalent,
 } from "@/lib/talents.functions";
 import type { TalentRow } from "@/lib/talent-mapper";
@@ -58,9 +59,12 @@ function AdminRoute() {
   const checkAdmin = useServerFn(adminIsAdmin);
   const saveTalent = useServerFn(adminSaveTalent);
   const deleteTalent = useServerFn(adminDeleteTalent);
+  const reorderTalents = useServerFn(adminReorderTalents);
 
   const [term, setTerm] = useState("");
   const [editing, setEditing] = useState<TalentRow | null>(null);
+  const [order, setOrder] = useState<TalentRow[] | null>(null);
+  const [dragId, setDragId] = useState<string | null>(null);
 
   const adminQuery = useQuery({ queryKey: ["is-admin"], queryFn: () => checkAdmin({}) });
   const isAdmin = adminQuery.data?.isAdmin === true;
@@ -106,14 +110,46 @@ function AdminRoute() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: (ids: string[]) => reorderTalents({ data: { ids } }),
+    onSuccess: () => {
+      toast.success("Ordem atualizada.");
+      void queryClient.invalidateQueries({ queryKey: ["admin-talents"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+      setOrder(null);
+    },
+  });
+
+  const baseList = order ?? talentsQuery.data ?? [];
+  const canReorder = normalizeForSearch(term).length === 0;
+
   const rows = useMemo(() => {
-    const list = talentsQuery.data ?? [];
     const needle = normalizeForSearch(term);
-    if (!needle) return list;
-    return list.filter((row) =>
+    if (!needle) return baseList;
+    return baseList.filter((row) =>
       normalizeForSearch(`${row.stage_name} ${row.username ?? ""} ${row.category}`).includes(needle),
     );
-  }, [talentsQuery.data, term]);
+  }, [baseList, term]);
+
+  useEffect(() => {
+    setOrder(null);
+  }, [talentsQuery.data]);
+
+  function handleDrop(targetId: string) {
+    if (!dragId || dragId === targetId) return;
+    const list = [...baseList];
+    const from = list.findIndex((row) => row.id === dragId);
+    const to = list.findIndex((row) => row.id === targetId);
+    if (from < 0 || to < 0) return;
+    const [moved] = list.splice(from, 1);
+    if (!moved) return;
+    list.splice(to, 0, moved);
+    setOrder(list);
+    setDragId(null);
+    reorderMutation.mutate(list.map((row) => row.id));
+  }
 
   useEffect(() => {
     if (adminQuery.isSuccess && !isAdmin) {
@@ -196,6 +232,7 @@ function AdminRoute() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-surface text-[0.65rem] uppercase tracking-[0.16em] text-subtle">
                   <tr>
+                    <th className="w-10 px-3 py-4" />
                     <th className="px-5 py-4">Nome</th>
                     <th className="px-5 py-4">@</th>
                     <th className="px-5 py-4">Nicho</th>
@@ -206,13 +243,34 @@ function AdminRoute() {
                 <tbody>
                   {talentsQuery.isLoading ? (
                     <tr>
-                      <td colSpan={5} className="px-5 py-6 text-muted-foreground">
+                      <td colSpan={6} className="px-5 py-6 text-muted-foreground">
                         Carregando talentos...
                       </td>
                     </tr>
                   ) : (
                     rows.map((row) => (
-                      <tr key={row.id} className="border-t border-border">
+                      <tr
+                        key={row.id}
+                        draggable={canReorder}
+                        onDragStart={() => setDragId(row.id)}
+                        onDragEnd={() => setDragId(null)}
+                        onDragOver={(event) => {
+                          if (canReorder && dragId) event.preventDefault();
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          if (canReorder) handleDrop(row.id);
+                        }}
+                        className={`border-t border-border ${canReorder ? "cursor-grab active:cursor-grabbing" : ""} ${
+                          dragId === row.id ? "opacity-50" : ""
+                        }`}
+                      >
+                        <td className="px-3 py-4 text-subtle">
+                          <GripVertical
+                            className={`h-4 w-4 ${canReorder ? "" : "opacity-30"}`}
+                            aria-hidden="true"
+                          />
+                        </td>
                         <td className="px-5 py-4 font-display font-bold text-foreground">
                           {row.stage_name}
                         </td>
