@@ -305,7 +305,7 @@ export const en: Dict = {
     engagement: "Engagement",
     audience: "Audience",
     achievements: "Achievements & case studies",
-    contact: "Business contact",
+    contact: "Email",
     sendProposal: "Send proposal",
     contactSubject: "Commercial proposal for",
     analyticsUi: {

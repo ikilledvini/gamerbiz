@@ -308,7 +308,7 @@ export const es: Dict = {
     engagement: "Engagement",
     audience: "Audiencia",
     achievements: "Logros y casos",
-    contact: "Contacto comercial",
+    contact: "Email",
     sendProposal: "Enviar propuesta",
     contactSubject: "Propuesta comercial para",
     analyticsUi: {

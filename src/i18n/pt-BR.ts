@@ -307,7 +307,7 @@ export const ptBR: Dict = {
     engagement: "Engajamento",
     audience: "Audiência",
     achievements: "Conquistas e cases",
-    contact: "Contato comercial",
+    contact: "E-mail",
     sendProposal: "Enviar proposta",
     contactSubject: "Proposta comercial para",
     analyticsUi: {
