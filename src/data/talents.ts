@@ -1,12 +1,19 @@
 import { TALENT_IMAGES } from "./talent-images";
+import { toSlug } from "@/lib/slug";
+
+export type PublishStatus = "draft" | "published" | "hidden";
 
 export type Talent = {
   id: string;
+  slug: string;
   firstName?: string;
   stageName: string;
+  username: string | null;
   category: string;
   shortDescription: string;
   relationship: "gamerbiz-talent" | "creator-parceiro" | null;
+  status: PublishStatus;
+  city: string | null;
   image: string | null;
   mediaKitUrl: string | null;
 };
