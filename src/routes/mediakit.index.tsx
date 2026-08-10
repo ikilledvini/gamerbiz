@@ -1,7 +1,7 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Search, X } from "lucide-react";
+import { LayoutGrid, List, Search, User, X } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
@@ -45,6 +45,7 @@ function DirectoryContent() {
   const navigate = useNavigate({ from: "/mediakit" });
   const { q, cat } = Route.useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [view, setView] = useState<"list" | "grid">("list");
 
   const categories = useMemo(
     () => Array.from(new Set(publishedTalents.map((talent) => talent.category))).sort(),
@@ -170,6 +171,32 @@ function DirectoryContent() {
                     {t.mediakit.clearFilters}
                   </button>
                 ) : null}
+
+                <div
+                  role="group"
+                  aria-label={t.mediakit.viewLabel}
+                  className="flex h-12 items-center gap-1 rounded-full border border-border bg-surface p-1 md:ml-auto"
+                >
+                  {([
+                    { key: "list" as const, label: t.mediakit.viewList, Icon: List },
+                    { key: "grid" as const, label: t.mediakit.viewGrid, Icon: LayoutGrid },
+                  ]).map(({ key, label, Icon }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={view === key}
+                      onClick={() => setView(key)}
+                      className={`inline-flex h-10 items-center gap-2 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] duration-200 active:scale-[0.97] ${
+                        view === key
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <p aria-live="polite" className="mt-4 text-xs uppercase tracking-[0.18em] text-subtle">
