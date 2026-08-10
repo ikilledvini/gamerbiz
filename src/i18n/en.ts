@@ -295,6 +295,9 @@ export const en: Dict = {
     workWithText: "Talk to the Gamerbiz team to build a campaign with",
     lastUpdate: "Last updated",
     share: "Share",
+    viewList: "List",
+    viewGrid: "Grid",
+    viewLabel: "View",
     ctaHome: "Explore Media Kits",
   },
   links: {

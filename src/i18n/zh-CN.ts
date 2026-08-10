@@ -293,6 +293,9 @@ export const zhCN: Dict = {
     workWithText: "联系 Gamerbiz 团队，共同策划合作项目：",
     lastUpdate: "最后更新",
     share: "分享",
+    viewList: "列表",
+    viewGrid: "网格",
+    viewLabel: "视图",
     ctaHome: "查看媒体资料",
   },
   links: {

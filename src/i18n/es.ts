@@ -298,6 +298,9 @@ export const es: Dict = {
     workWithText: "Habla con el equipo de Gamerbiz para armar una campaña con",
     lastUpdate: "Última actualización",
     share: "Compartir",
+    viewList: "Lista",
+    viewGrid: "Cuadrícula",
+    viewLabel: "Vista",
     ctaHome: "Ver Media Kits",
   },
   links: {

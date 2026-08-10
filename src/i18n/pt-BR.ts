@@ -297,6 +297,9 @@ export const ptBR: Dict = {
     workWithText: "Fale com o time da Gamerbiz para montar uma campanha com",
     lastUpdate: "Última atualização",
     share: "Compartilhar",
+    viewList: "Lista",
+    viewGrid: "Grade",
+    viewLabel: "Visualização",
     ctaHome: "Acessar Media Kits",
   },
   links: {
