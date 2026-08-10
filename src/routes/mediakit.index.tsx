@@ -45,7 +45,7 @@ function byName(a: Talent, b: Talent) {
 
 function DirectoryContent() {
   const { t } = useI18n();
-  const navigate = useNavigate({ from: "/mediakit" });
+  const navigate = useNavigate({ from: "/mediakit/" });
   const { q, cat, page } = Route.useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<"list" | "grid">("list");
