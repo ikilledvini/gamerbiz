@@ -17,6 +17,7 @@ export type Database = {
       talents: {
         Row: {
           achievements: string | null
+          analytics: Json | null
           audience: string | null
           avg_views: string | null
           bio: string | null
@@ -43,6 +44,7 @@ export type Database = {
         }
         Insert: {
           achievements?: string | null
+          analytics?: Json | null
           audience?: string | null
           avg_views?: string | null
           bio?: string | null
@@ -69,6 +71,7 @@ export type Database = {
         }
         Update: {
           achievements?: string | null
+          analytics?: Json | null
           audience?: string | null
           avg_views?: string | null
           bio?: string | null

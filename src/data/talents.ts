@@ -3,6 +3,23 @@ import { toSlug } from "@/lib/slug";
 
 export type PublishStatus = "draft" | "published" | "hidden";
 
+export type AnalyticsPoint = { label: string; value: number };
+
+export type PlatformAnalytics = {
+  metrics?: { label: string; value: string }[];
+  age?: AnalyticsPoint[];
+  gender?: AnalyticsPoint[];
+  countries?: AnalyticsPoint[];
+  languages?: AnalyticsPoint[];
+};
+
+export type TalentAnalytics = {
+  summary?: PlatformAnalytics | null;
+  youtube?: PlatformAnalytics | null;
+  instagram?: PlatformAnalytics | null;
+  tiktok?: PlatformAnalytics | null;
+};
+
 export type Talent = {
   id: string;
   slug: string;
@@ -32,6 +49,7 @@ export type Talent = {
   };
   achievements: string | null;
   contactEmail: string | null;
+  analytics?: TalentAnalytics | null;
 };
 
 const TALENT_NAMES = [

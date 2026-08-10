@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
+import { MediaKitAnalytics } from "@/components/media-kit/analytics-panel";
 import { type Talent } from "@/data/talents";
 import { listPublicTalents } from "@/lib/talents.functions";
 
@@ -435,12 +436,10 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                     />
                   ))}
                 </div>
-              ) : (
-                <div className="rounded-[24px] border border-border bg-surface p-8">
-                  <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.analytics} />
-                  <p className="mt-5 text-muted-foreground">{t.mediakit.analyticsEmpty}</p>
-                </div>
-              )}
+              ) : null}
+
+              <MediaKitAnalytics analytics={talent.analytics ?? null} />
+
 
               {talent.achievements ? (
                 <div className="rounded-[24px] border border-border bg-surface p-8">

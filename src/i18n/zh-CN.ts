@@ -306,6 +306,15 @@ export const zhCN: Dict = {
     contact: "商务联系",
     sendProposal: "发送合作方案",
     contactSubject: "商业合作方案：",
+    analyticsUi: {
+      summary: "总览",
+      reach: "触达受众",
+      media: "媒体",
+      age: "年龄分布",
+      gender: "性别",
+      countries: "国家",
+      languages: "语言",
+    },
     platforms: {
       instagram: "Instagram",
       tiktok: "TikTok",

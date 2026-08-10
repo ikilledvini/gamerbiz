@@ -213,6 +213,15 @@ export type Dict = {
     contact: string;
     sendProposal: string;
     contactSubject: string;
+    analyticsUi: {
+      summary: string;
+      reach: string;
+      media: string;
+      age: string;
+      gender: string;
+      countries: string;
+      languages: string;
+    };
     platforms: {
       instagram: string;
       tiktok: string;

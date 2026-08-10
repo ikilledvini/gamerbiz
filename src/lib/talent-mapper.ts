@@ -1,5 +1,5 @@
 import { TALENT_IMAGES } from "@/data/talent-images";
-import type { PublishStatus, Talent } from "@/data/talents";
+import type { PublishStatus, Talent, TalentAnalytics } from "@/data/talents";
 
 export type TalentRow = {
   id: string;
@@ -24,6 +24,7 @@ export type TalentRow = {
   audience: string | null;
   achievements: string | null;
   contact_email: string | null;
+  analytics?: TalentAnalytics | null;
 };
 
 export function splitCategories(value: string): string[] {
@@ -64,8 +65,9 @@ export function mapTalentRow(row: TalentRow): Talent {
     },
     achievements: row.achievements ?? null,
     contactEmail: row.contact_email ?? null,
+    analytics: row.analytics ?? null,
   };
 }
 
 export const TALENT_COLUMNS =
-  "id, slug, stage_name, username, category, city, bio, image_url, media_kit_url, status, sort_order, instagram_url, tiktok_url, youtube_url, twitch_url, twitter_url, followers, avg_views, engagement, audience, achievements, contact_email";
+  "id, slug, stage_name, username, category, city, bio, image_url, media_kit_url, status, sort_order, instagram_url, tiktok_url, youtube_url, twitch_url, twitter_url, followers, avg_views, engagement, audience, achievements, contact_email, analytics";

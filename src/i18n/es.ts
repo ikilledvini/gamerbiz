@@ -311,6 +311,15 @@ export const es: Dict = {
     contact: "Contacto comercial",
     sendProposal: "Enviar propuesta",
     contactSubject: "Propuesta comercial para",
+    analyticsUi: {
+      summary: "Resumen",
+      reach: "Público alcanzado",
+      media: "Medios",
+      age: "Rango de edad",
+      gender: "Género",
+      countries: "Países",
+      languages: "Idiomas",
+    },
     platforms: {
       instagram: "Instagram",
       tiktok: "TikTok",
