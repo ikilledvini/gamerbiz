@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { GripVertical, Plus, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { Logo } from "@/components/ui/logo";
@@ -11,6 +11,7 @@ import {
   adminDeleteTalent,
   adminIsAdmin,
   adminListTalents,
+  adminReorderTalents,
   adminSaveTalent,
 } from "@/lib/talents.functions";
 import type { TalentRow } from "@/lib/talent-mapper";
