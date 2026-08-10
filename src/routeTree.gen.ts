@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LinksRouteImport } from './routes/links'
 import { Route as MediakitIndexRouteImport } from './routes/mediakit.index'
 import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
@@ -17,6 +18,11 @@ import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LinksRoute = LinksRouteImport.update({
@@ -37,12 +43,14 @@ const MediakitSlugRoute = MediakitSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit': typeof MediakitIndexRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/links' | '/mediakit/$slug' | '/mediakit/'
+  fullPaths: '/' | '/auth' | '/links' | '/mediakit/$slug' | '/mediakit/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/links' | '/mediakit/$slug' | '/mediakit'
-  id: '__root__' | '/' | '/links' | '/mediakit/$slug' | '/mediakit/'
+  to: '/' | '/auth' | '/links' | '/mediakit/$slug' | '/mediakit'
+  id: '__root__' | '/' | '/auth' | '/links' | '/mediakit/$slug' | '/mediakit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   LinksRoute: typeof LinksRoute
   MediakitSlugRoute: typeof MediakitSlugRoute
   MediakitIndexRoute: typeof MediakitIndexRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/links': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   LinksRoute: LinksRoute,
   MediakitSlugRoute: MediakitSlugRoute,
   MediakitIndexRoute: MediakitIndexRoute,
