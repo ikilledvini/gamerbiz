@@ -81,7 +81,7 @@ function DirectoryContent() {
 
   function setSearch(next: Partial<MediaKitSearch>) {
     void navigate({
-      search: (prev: MediaKitSearch) => ({ page: 1, ...prev, ...next }),
+      search: (prev: MediaKitSearch) => ({ ...prev, ...next }),
       replace: true,
     });
   }
