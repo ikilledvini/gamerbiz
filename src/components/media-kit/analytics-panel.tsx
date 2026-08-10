@@ -49,7 +49,7 @@ function AgeChart({ data, eyebrow, title }: { data: { label: string; value: numb
       <PanelHeading eyebrow={eyebrow} title={title} />
       <div className="mt-6 h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+          <BarChart data={data} barCategoryGap="18%" maxBarSize={90} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
             <XAxis
               dataKey="label"
               tickLine={false}

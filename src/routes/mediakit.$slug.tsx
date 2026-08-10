@@ -438,7 +438,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                 </div>
               ) : null}
 
-              <MediaKitAnalytics analytics={talent.analytics ?? null} />
+
+
 
 
               {talent.achievements ? (
@@ -473,6 +474,11 @@ function MediaKitContent({ talent }: { talent: Talent }) {
               </div>
             </div>
           </div>
+
+          <div className="mt-5">
+            <MediaKitAnalytics analytics={talent.analytics ?? null} />
+          </div>
+
         </div>
       </section>
     </Tooltip.Provider>
