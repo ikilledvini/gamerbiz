@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
 import { TalentCard } from "@/components/ui/talent-card";
+import { listPublicTalents } from "@/lib/talents.functions";
 import {
-  publishedTalents,
   talentCategoryGroups,
   getTalentCategoryGroups,
   type Talent,
@@ -41,7 +41,9 @@ export const Route = createFileRoute("/mediakit/")({
     ],
     links: [{ rel: "canonical", href: URL }],
   }),
+  loader: () => listPublicTalents(),
   component: MediaKitDirectoryRoute,
+  errorComponent: () => <MediaKitShell><div className="section-gbz container-gbz">Não foi possível carregar os media kits.</div></MediaKitShell>,
 });
 
 function byName(a: Talent, b: Talent) {
@@ -52,6 +54,7 @@ function DirectoryContent() {
   const { t } = useI18n();
   const navigate = useNavigate({ from: "/mediakit/" });
   const { q, cat, page } = Route.useSearch();
+  const publishedTalents = Route.useLoaderData() as Talent[];
   const inputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<"list" | "grid">("list");
 
