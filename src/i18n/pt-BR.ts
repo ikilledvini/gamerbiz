@@ -310,6 +310,15 @@ export const ptBR: Dict = {
     contact: "Contato comercial",
     sendProposal: "Enviar proposta",
     contactSubject: "Proposta comercial para",
+    analyticsUi: {
+      summary: "Resumo",
+      reach: "Público alcançado",
+      media: "Mídia",
+      age: "Faixa etária",
+      gender: "Gênero",
+      countries: "Países",
+      languages: "Idiomas",
+    },
     platforms: {
       instagram: "Instagram",
       tiktok: "TikTok",
