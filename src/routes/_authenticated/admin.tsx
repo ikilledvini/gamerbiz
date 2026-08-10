@@ -59,9 +59,12 @@ function AdminRoute() {
   const checkAdmin = useServerFn(adminIsAdmin);
   const saveTalent = useServerFn(adminSaveTalent);
   const deleteTalent = useServerFn(adminDeleteTalent);
+  const reorderTalents = useServerFn(adminReorderTalents);
 
   const [term, setTerm] = useState("");
   const [editing, setEditing] = useState<TalentRow | null>(null);
+  const [order, setOrder] = useState<TalentRow[] | null>(null);
+  const [dragId, setDragId] = useState<string | null>(null);
 
   const adminQuery = useQuery({ queryKey: ["is-admin"], queryFn: () => checkAdmin({}) });
   const isAdmin = adminQuery.data?.isAdmin === true;
