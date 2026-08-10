@@ -157,3 +157,50 @@ export function getTalentBySlug(slug: string) {
 export const talentCategories = Array.from(
   new Set(talents.filter((t) => t.status === "published").flatMap((t) => t.categories)),
 ).sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+// Agrupamento macro usado APENAS no filtro do diretório.
+// A categoria exibida em cada card continua sendo a original.
+const CATEGORY_GROUPS: Record<string, string> = {
+  "Call of Duty": "FPS",
+  "Counter-Strike 2": "FPS",
+  Valorant: "FPS",
+  PUBG: "FPS",
+  "Arena Breakout": "FPS",
+  "Point Blank": "FPS",
+  Overwatch: "Hero Shooter",
+  "Marvel Rivals": "Hero Shooter",
+  "League of Legends": "MOBA",
+  "Wild Rift": "MOBA",
+  "Teamfight Tactics": "MOBA",
+  Minecraft: "Sandbox",
+  Roblox: "Sandbox",
+  "GTA V": "Mundo Aberto",
+  "Red Dead Redemption": "Mundo Aberto",
+  EAFC: "Esportes",
+  "Rocket League": "Esportes",
+  "Dead by Daylight": "Terror & Survival",
+  "Don't Starve": "Terror & Survival",
+  "Genshin Impact": "RPG & Anime",
+  Diablo: "RPG & Anime",
+  "Mangá/Anime": "RPG & Anime",
+  "Anime/Geek": "RPG & Anime",
+  Pokémon: "RPG & Anime",
+  "Mortal Kombat": "Luta",
+  "Brawl Stars": "Casual & Mobile",
+  Multigame: "Variedades",
+  "Just Chatting": "Variedades",
+};
+
+export function getTalentCategoryGroups(talent: Talent): string[] {
+  return Array.from(
+    new Set(talent.categories.map((c) => CATEGORY_GROUPS[c] ?? c)),
+  );
+}
+
+export const talentCategoryGroups = Array.from(
+  new Set(
+    talents
+      .filter((t) => t.status === "published")
+      .flatMap((t) => getTalentCategoryGroups(t)),
+  ),
+).sort((a, b) => a.localeCompare(b, "pt-BR"));
