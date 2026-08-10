@@ -110,14 +110,45 @@ function AdminRoute() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const reorderMutation = useMutation({
+    mutationFn: (ids: string[]) => reorderTalents({ data: { ids } }),
+    onSuccess: () => {
+      toast.success("Ordem atualizada.");
+      void queryClient.invalidateQueries({ queryKey: ["admin-talents"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+      setOrder(null);
+    },
+  });
+
+  const baseList = order ?? talentsQuery.data ?? [];
+  const canReorder = normalizeForSearch(term).length === 0;
+
   const rows = useMemo(() => {
-    const list = talentsQuery.data ?? [];
     const needle = normalizeForSearch(term);
-    if (!needle) return list;
-    return list.filter((row) =>
+    if (!needle) return baseList;
+    return baseList.filter((row) =>
       normalizeForSearch(`${row.stage_name} ${row.username ?? ""} ${row.category}`).includes(needle),
     );
-  }, [talentsQuery.data, term]);
+  }, [baseList, term]);
+
+  useEffect(() => {
+    setOrder(null);
+  }, [talentsQuery.data]);
+
+  function handleDrop(targetId: string) {
+    if (!dragId || dragId === targetId) return;
+    const list = [...baseList];
+    const from = list.findIndex((row) => row.id === dragId);
+    const to = list.findIndex((row) => row.id === targetId);
+    if (from < 0 || to < 0) return;
+    const [moved] = list.splice(from, 1);
+    list.splice(to, 0, moved);
+    setOrder(list);
+    setDragId(null);
+    reorderMutation.mutate(list.map((row) => row.id));
+  }
 
   useEffect(() => {
     if (adminQuery.isSuccess && !isAdmin) {
