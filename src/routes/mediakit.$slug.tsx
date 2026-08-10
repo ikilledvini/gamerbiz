@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
+import { MediaKitAnalytics } from "@/components/media-kit/analytics-panel";
 import { type Talent } from "@/data/talents";
 import { listPublicTalents } from "@/lib/talents.functions";
 

@@ -24,7 +24,7 @@ export type TalentRow = {
   audience: string | null;
   achievements: string | null;
   contact_email: string | null;
-  analytics: TalentAnalytics | null;
+  analytics?: TalentAnalytics | null;
 };
 
 export function splitCategories(value: string): string[] {
