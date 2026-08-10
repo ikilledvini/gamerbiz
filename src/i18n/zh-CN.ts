@@ -200,7 +200,7 @@ export const zhCN: Dict = {
   },
   footer: {
     phrase: "从内容到竞技，Gamerbiz 推动游戏生态向前。",
-    navigation: "导航",
+    navigation: "GAMERBIZ",
     services: "服务",
     social: "社交媒体",
     rights: "© 2026 Gamerbiz。保留所有权利。",

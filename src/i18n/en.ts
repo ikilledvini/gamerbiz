@@ -202,7 +202,7 @@ export const en: Dict = {
   },
   footer: {
     phrase: "From content to competition, Gamerbiz moves the game forward.",
-    navigation: "NAVIGATION",
+    navigation: "GAMERBIZ",
     services: "SERVICES",
     social: "SOCIAL",
     rights: "© 2026 Gamerbiz. All rights reserved.",

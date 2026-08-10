@@ -203,7 +203,7 @@ export const es: Dict = {
   },
   footer: {
     phrase: "Del contenido a la competencia, Gamerbiz mueve el juego.",
-    navigation: "NAVEGACIÓN",
+    navigation: "GAMERBIZ",
     services: "SERVICIOS",
     social: "SOCIAL",
     rights: "© 2026 Gamerbiz. Todos los derechos reservados.",
