@@ -451,27 +451,6 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                 </div>
               ) : null}
 
-              <div className="rounded-[24px] border border-border bg-surface p-8">
-                <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.workWith} />
-                <p className="mt-4 text-muted-foreground">
-                  {t.mediakit.workWithText} {talent.stageName}.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <a
-                    href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
-                    className="inline-flex min-h-[44px] items-center rounded-full bg-primary px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.97]"
-                  >
-                    {t.mediakit.sendProposal}
-                  </a>
-                  <Link
-                    to="/mediakit"
-                    search={{ q: "", cat: "", page: 1 }}
-                    className="inline-flex min-h-[44px] items-center rounded-full border border-border px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground duration-200 hover:border-primary hover:text-primary active:scale-[0.97]"
-                  >
-                    {t.mediakit.backToDirectory}
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
 
