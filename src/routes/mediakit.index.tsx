@@ -66,16 +66,13 @@ function DirectoryContent() {
       .sort(byName);
   }, [q, cat]);
 
-  const grouped = useMemo(() => {
-    const map = new Map<string, Talent[]>();
-    for (const talent of results) {
-      const letter = talent.stageName[0]?.toUpperCase() ?? "#";
-      const list = map.get(letter) ?? [];
-      list.push(talent);
-      map.set(letter, list);
-    }
-    return Array.from(map.entries());
-  }, [results]);
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const currentPage = Math.min(Math.max(1, page), totalPages);
+  const pageItems = useMemo(
+    () => results.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [results, currentPage],
+  );
+
 
   const hasFilters = Boolean(q || cat);
 
