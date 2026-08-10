@@ -82,6 +82,20 @@ export const adminSaveTalent = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminReorderTalents = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { ids: string[] }) => input)
+  .handler(async ({ data, context }) => {
+    for (const [index, id] of data.ids.entries()) {
+      const { error } = await context.supabase
+        .from("talents")
+        .update({ sort_order: index + 1 })
+        .eq("id", id);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
 export const adminDeleteTalent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { id: string }) => input)
