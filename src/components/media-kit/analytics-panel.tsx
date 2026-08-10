@@ -10,7 +10,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { FileText, Instagram, Music, Youtube } from "lucide-react";
+import { FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { FileText } from "lucide-react";
 import { useI18n } from "@/i18n";
 import type { PlatformAnalytics, TalentAnalytics } from "@/data/talents";
 
@@ -158,9 +159,9 @@ function MetricGrid({ items }: { items: { label: string; value: string }[] }) {
 
 const TAB_ICONS: Record<string, React.ReactNode> = {
   summary: <FileText className="h-4 w-4" aria-hidden="true" />,
-  youtube: <Youtube className="h-4 w-4" aria-hidden="true" />,
-  instagram: <Instagram className="h-4 w-4" aria-hidden="true" />,
-  tiktok: <Music className="h-4 w-4" aria-hidden="true" />,
+  youtube: <FaYoutube className="h-4 w-4 text-white" aria-hidden="true" />,
+  instagram: <FaInstagram className="h-4 w-4 text-white" aria-hidden="true" />,
+  tiktok: <FaTiktok className="h-4 w-4 text-white" aria-hidden="true" />,
 };
 
 export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | null }) {
