@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
 import { TalentCard } from "@/components/ui/talent-card";
-import { publishedTalents, type Talent } from "@/data/talents";
+import { publishedTalents, talentCategories, type Talent } from "@/data/talents";
 import { normalizeForSearch } from "@/lib/slug";
 
 const TITLE = "Media Kits Gamerbiz — Encontre o creator ideal";
@@ -51,18 +51,18 @@ function DirectoryContent() {
   const [view, setView] = useState<"list" | "grid">("list");
 
   const categories = useMemo(
-    () => Array.from(new Set(publishedTalents.map((talent) => talent.category))).sort(),
+    () => talentCategories,
     [],
   );
 
   const results = useMemo(() => {
     const term = normalizeForSearch(q);
     return publishedTalents
-      .filter((talent) => (cat ? talent.category === cat : true))
+      .filter((talent) => (cat ? talent.categories.includes(cat) : true))
       .filter((talent) => {
         if (!term) return true;
         const haystack = normalizeForSearch(
-          [talent.stageName, talent.username ?? "", talent.category, talent.city ?? ""].join(" "),
+          [talent.stageName, talent.username ?? "", talent.categories.join(" "), talent.city ?? ""].join(" "),
         );
         return haystack.includes(term);
       })
