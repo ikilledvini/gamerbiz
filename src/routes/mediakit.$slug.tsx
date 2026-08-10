@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Gamepad2, Info, Instagram, Mail, MapPin, Music, Share2, Twitch, Twitter, User, Youtube } from "lucide-react";
+import { FaInstagram, FaYoutube, FaTiktok, FaTwitch, FaXTwitter } from "react-icons/fa6";
+import { Gamepad2, Info, Mail, MapPin, Share2, User } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
@@ -207,31 +208,31 @@ function MediaKitContent({ talent }: { talent: Talent }) {
         key: "instagram",
         url: talent.socials.instagram,
         label: t.mediakit.platforms.instagram,
-        icon: <Instagram className="h-4 w-4" />,
+        icon: <FaInstagram className="h-4 w-4 text-white" />,
       },
       {
         key: "youtube",
         url: talent.socials.youtube,
         label: t.mediakit.platforms.youtube,
-        icon: <Youtube className="h-4 w-4" />,
+        icon: <FaYoutube className="h-4 w-4 text-white" />,
       },
       {
         key: "tiktok",
         url: talent.socials.tiktok,
         label: t.mediakit.platforms.tiktok,
-        icon: <Music className="h-4 w-4" />,
+        icon: <FaTiktok className="h-4 w-4 text-white" />,
       },
       {
         key: "twitch",
         url: talent.socials.twitch,
         label: t.mediakit.platforms.twitch,
-        icon: <Twitch className="h-4 w-4" />,
+        icon: <FaTwitch className="h-4 w-4 text-white" />,
       },
       {
         key: "twitter",
         url: talent.socials.twitter,
         label: t.mediakit.platforms.twitter,
-        icon: <Twitter className="h-4 w-4" />,
+        icon: <FaXTwitter className="h-4 w-4 text-white" />,
       },
     ] as { key: string; url: string | null; label: string; icon: React.ReactNode }[]
   ).filter((item) => item.url);
@@ -250,7 +251,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
     {
       key: "instagram",
       title: t.mediakit.platforms.instagram,
-      icon: <Instagram className="h-5 w-5" />,
+      icon: <FaInstagram className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.instagram),
       items: [
         { label: t.mediakit.followers, value: talent.stats.followers },
@@ -260,7 +261,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
     {
       key: "youtube",
       title: t.mediakit.platforms.youtube,
-      icon: <Youtube className="h-5 w-5" />,
+      icon: <FaYoutube className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.youtube),
       items: [
         { label: t.mediakit.avgViews, value: talent.stats.avgViews },
@@ -270,7 +271,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
     {
       key: "tiktok",
       title: t.mediakit.platforms.tiktok,
-      icon: <Music className="h-5 w-5" />,
+      icon: <FaTiktok className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.tiktok),
       items: [
         { label: t.mediakit.followers, value: talent.stats.followers },
