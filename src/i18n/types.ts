@@ -204,6 +204,22 @@ export type Dict = {
     viewGrid: string;
     viewLabel: string;
     ctaHome: string;
+    socials: string;
+    followers: string;
+    avgViews: string;
+    engagement: string;
+    audience: string;
+    achievements: string;
+    contact: string;
+    sendProposal: string;
+    contactSubject: string;
+    platforms: {
+      instagram: string;
+      tiktok: string;
+      youtube: string;
+      twitch: string;
+      twitter: string;
+    };
   };
   links: {
     tagline: string;

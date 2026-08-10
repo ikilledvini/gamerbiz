@@ -16,6 +16,17 @@ type TalentInput = {
   media_kit_url: string | null;
   status: "draft" | "published" | "hidden";
   sort_order: number;
+  instagram_url: string | null;
+  tiktok_url: string | null;
+  youtube_url: string | null;
+  twitch_url: string | null;
+  twitter_url: string | null;
+  followers: string | null;
+  avg_views: string | null;
+  engagement: string | null;
+  audience: string | null;
+  achievements: string | null;
+  contact_email: string | null;
 };
 
 function serverPublicClient() {

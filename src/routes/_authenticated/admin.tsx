@@ -44,6 +44,17 @@ const EMPTY: TalentRow = {
   media_kit_url: null,
   status: "draft",
   sort_order: 999,
+  instagram_url: null,
+  tiktok_url: null,
+  youtube_url: null,
+  twitch_url: null,
+  twitter_url: null,
+  followers: null,
+  avg_views: null,
+  engagement: null,
+  audience: null,
+  achievements: null,
+  contact_email: null,
 };
 
 const STATUS_LABEL: Record<TalentRow["status"], string> = {
@@ -90,6 +101,17 @@ function AdminRoute() {
           media_kit_url: values.media_kit_url || null,
           status: values.status,
           sort_order: Number(values.sort_order) || 0,
+          instagram_url: values.instagram_url || null,
+          tiktok_url: values.tiktok_url || null,
+          youtube_url: values.youtube_url || null,
+          twitch_url: values.twitch_url || null,
+          twitter_url: values.twitter_url || null,
+          followers: values.followers || null,
+          avg_views: values.avg_views || null,
+          engagement: values.engagement || null,
+          audience: values.audience || null,
+          achievements: values.achievements || null,
+          contact_email: values.contact_email || null,
         },
       }),
     onSuccess: () => {
@@ -313,7 +335,7 @@ function AdminRoute() {
               event.preventDefault();
               saveMutation.mutate(editing);
             }}
-            className="w-full max-w-2xl rounded-3xl border border-border bg-surface p-8"
+            className="my-6 w-full max-w-3xl rounded-3xl border border-border bg-surface p-8"
           >
             <h2 className="font-display text-xl font-bold uppercase text-foreground">
               {editing.id ? `Editar ${editing.stage_name}` : "Novo talento"}
@@ -392,6 +414,75 @@ function AdminRoute() {
                   <option value="published">Publicado</option>
                   <option value="hidden">Oculto</option>
                 </select>
+              </label>
+
+              <Field
+                label="E-mail comercial"
+                value={editing.contact_email ?? ""}
+                onChange={(value) => setEditing({ ...editing, contact_email: value })}
+              />
+
+              <h3 className="pt-2 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground md:col-span-2">
+                Redes sociais
+              </h3>
+              <Field
+                label="Instagram"
+                value={editing.instagram_url ?? ""}
+                onChange={(value) => setEditing({ ...editing, instagram_url: value })}
+              />
+              <Field
+                label="TikTok"
+                value={editing.tiktok_url ?? ""}
+                onChange={(value) => setEditing({ ...editing, tiktok_url: value })}
+              />
+              <Field
+                label="YouTube"
+                value={editing.youtube_url ?? ""}
+                onChange={(value) => setEditing({ ...editing, youtube_url: value })}
+              />
+              <Field
+                label="Twitch"
+                value={editing.twitch_url ?? ""}
+                onChange={(value) => setEditing({ ...editing, twitch_url: value })}
+              />
+              <Field
+                label="X / Twitter"
+                value={editing.twitter_url ?? ""}
+                onChange={(value) => setEditing({ ...editing, twitter_url: value })}
+              />
+
+              <h3 className="pt-2 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground md:col-span-2">
+                Métricas (texto livre)
+              </h3>
+              <Field
+                label="Seguidores"
+                value={editing.followers ?? ""}
+                onChange={(value) => setEditing({ ...editing, followers: value })}
+              />
+              <Field
+                label="Visualizações médias"
+                value={editing.avg_views ?? ""}
+                onChange={(value) => setEditing({ ...editing, avg_views: value })}
+              />
+              <Field
+                label="Engajamento"
+                value={editing.engagement ?? ""}
+                onChange={(value) => setEditing({ ...editing, engagement: value })}
+              />
+              <Field
+                label="Audiência"
+                value={editing.audience ?? ""}
+                onChange={(value) => setEditing({ ...editing, audience: value })}
+              />
+
+              <label className="text-xs font-bold uppercase tracking-[0.16em] text-subtle md:col-span-2">
+                Conquistas e cases
+                <textarea
+                  value={editing.achievements ?? ""}
+                  onChange={(event) => setEditing({ ...editing, achievements: event.target.value })}
+                  rows={3}
+                  className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm normal-case tracking-normal text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                />
               </label>
             </div>
 
