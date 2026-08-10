@@ -232,6 +232,7 @@ function AdminRoute() {
               <table className="w-full text-left text-sm">
                 <thead className="bg-surface text-[0.65rem] uppercase tracking-[0.16em] text-subtle">
                   <tr>
+                    <th className="w-10 px-3 py-4" />
                     <th className="px-5 py-4">Nome</th>
                     <th className="px-5 py-4">@</th>
                     <th className="px-5 py-4">Nicho</th>
@@ -242,13 +243,34 @@ function AdminRoute() {
                 <tbody>
                   {talentsQuery.isLoading ? (
                     <tr>
-                      <td colSpan={5} className="px-5 py-6 text-muted-foreground">
+                      <td colSpan={6} className="px-5 py-6 text-muted-foreground">
                         Carregando talentos...
                       </td>
                     </tr>
                   ) : (
                     rows.map((row) => (
-                      <tr key={row.id} className="border-t border-border">
+                      <tr
+                        key={row.id}
+                        draggable={canReorder}
+                        onDragStart={() => setDragId(row.id)}
+                        onDragEnd={() => setDragId(null)}
+                        onDragOver={(event) => {
+                          if (canReorder && dragId) event.preventDefault();
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          if (canReorder) handleDrop(row.id);
+                        }}
+                        className={`border-t border-border ${canReorder ? "cursor-grab active:cursor-grabbing" : ""} ${
+                          dragId === row.id ? "opacity-50" : ""
+                        }`}
+                      >
+                        <td className="px-3 py-4 text-subtle">
+                          <GripVertical
+                            className={`h-4 w-4 ${canReorder ? "" : "opacity-30"}`}
+                            aria-hidden="true"
+                          />
+                        </td>
                         <td className="px-5 py-4 font-display font-bold text-foreground">
                           {row.stage_name}
                         </td>
