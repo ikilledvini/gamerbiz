@@ -79,7 +79,7 @@ function DirectoryContent() {
   const hasFilters = Boolean(q || cat);
 
   function setSearch(next: Partial<MediaKitSearch>) {
-    void navigate({ search: (prev) => ({ ...prev, ...next }), replace: true });
+    void navigate({ search: (prev: MediaKitSearch) => ({ ...prev, ...next }), replace: true });
   }
 
   function openMediaKit(talent: Talent) {
