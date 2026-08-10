@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
 import { TalentCard } from "@/components/ui/talent-card";
-import { publishedTalents, type Talent } from "@/data/talents";
+import { publishedTalents, talentCategories, type Talent } from "@/data/talents";
 import { normalizeForSearch } from "@/lib/slug";
 
 const TITLE = "Media Kits Gamerbiz — Encontre o creator ideal";
