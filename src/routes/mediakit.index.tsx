@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { LayoutGrid, List, Search, User, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, LayoutGrid, List, Search, User, X } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
@@ -14,12 +14,15 @@ const DESCRIPTION =
   "Explore os talentos da Gamerbiz, compare perfis e acesse informações comerciais, plataformas, conteúdos e audiência.";
 const URL = "https://idea-to-site-muse.lovable.app/mediakit";
 
-type MediaKitSearch = { q: string; cat: string };
+const PAGE_SIZE = 12;
+
+type MediaKitSearch = { q: string; cat: string; page: number };
 
 export const Route = createFileRoute("/mediakit/")({
   validateSearch: (search: Record<string, unknown>): MediaKitSearch => ({
     q: typeof search["q"] === "string" ? search["q"] : "",
     cat: typeof search["cat"] === "string" ? search["cat"] : "",
+    page: Number(search["page"]) > 0 ? Math.floor(Number(search["page"])) : 1,
   }),
   head: () => ({
     meta: [
@@ -43,7 +46,7 @@ function byName(a: Talent, b: Talent) {
 function DirectoryContent() {
   const { t } = useI18n();
   const navigate = useNavigate({ from: "/mediakit" });
-  const { q, cat } = Route.useSearch();
+  const { q, cat, page } = Route.useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
   const [view, setView] = useState<"list" | "grid">("list");
 
@@ -77,7 +80,10 @@ function DirectoryContent() {
   const hasFilters = Boolean(q || cat);
 
   function setSearch(next: Partial<MediaKitSearch>) {
-    void navigate({ search: (prev: MediaKitSearch) => ({ ...prev, ...next }), replace: true });
+    void navigate({
+      search: (prev: MediaKitSearch) => ({ page: 1, ...prev, ...next }),
+      replace: true,
+    });
   }
 
   function openMediaKit(talent: Talent) {
@@ -122,9 +128,9 @@ function DirectoryContent() {
                     value={q}
                     aria-label={t.mediakit.searchLabel}
                     placeholder={t.mediakit.searchPlaceholder}
-                    onChange={(event) => setSearch({ q: event.target.value })}
+                    onChange={(event) => setSearch({ q: event.target.value, page: 1 })}
                     onKeyDown={(event) => {
-                      if (event.key === "Escape") setSearch({ q: "" });
+                      if (event.key === "Escape") setSearch({ q: "", page: 1 });
                     }}
                     className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-11 text-sm text-foreground outline-offset-2 placeholder:text-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
                   />
@@ -133,7 +139,7 @@ function DirectoryContent() {
                       type="button"
                       aria-label={t.mediakit.clearSearch}
                       onClick={() => {
-                        setSearch({ q: "" });
+                        setSearch({ q: "", page: 1 });
                         inputRef.current?.focus();
                       }}
                       className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground duration-200 hover:text-primary active:scale-[0.97]"
@@ -147,7 +153,7 @@ function DirectoryContent() {
                   <span className="sr-only">{t.mediakit.category}</span>
                   <select
                     value={cat}
-                    onChange={(event) => setSearch({ cat: event.target.value })}
+                    onChange={(event) => setSearch({ cat: event.target.value, page: 1 })}
                     className="h-12 rounded-full border border-border bg-surface px-5 text-sm text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
                   >
                     <option value="">{t.mediakit.allCategories}</option>
@@ -162,7 +168,7 @@ function DirectoryContent() {
                 {hasFilters ? (
                   <button
                     type="button"
-                    onClick={() => setSearch({ q: "", cat: "" })}
+                    onClick={() => setSearch({ q: "", cat: "", page: 1 })}
                     className="h-12 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground duration-200 hover:border-primary hover:text-primary active:scale-[0.97]"
                   >
                     {t.mediakit.clearFilters}
@@ -206,7 +212,7 @@ function DirectoryContent() {
                   <p className="text-muted-foreground">{t.mediakit.empty}</p>
                   <button
                     type="button"
-                    onClick={() => setSearch({ q: "", cat: "" })}
+                    onClick={() => setSearch({ q: "", cat: "", page: 1 })}
                     className="mt-5 rounded-full border border-primary px-6 py-3 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary duration-200 hover:bg-primary hover:text-primary-foreground active:scale-[0.97]"
                   >
                     {t.mediakit.clearFilters}
