@@ -17,6 +17,21 @@ export type Talent = {
   city: string | null;
   image: string | null;
   mediaKitUrl: string | null;
+  socials: {
+    instagram: string | null;
+    tiktok: string | null;
+    youtube: string | null;
+    twitch: string | null;
+    twitter: string | null;
+  };
+  stats: {
+    followers: string | null;
+    avgViews: string | null;
+    engagement: string | null;
+    audience: string | null;
+  };
+  achievements: string | null;
+  contactEmail: string | null;
 };
 
 const TALENT_NAMES = [
@@ -143,6 +158,10 @@ export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => {
     city: null,
     image,
     mediaKitUrl: null,
+    socials: { instagram: null, tiktok: null, youtube: null, twitch: null, twitter: null },
+    stats: { followers: null, avgViews: null, engagement: null, audience: null },
+    achievements: null,
+    contactEmail: null,
   };
 });
 

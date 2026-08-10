@@ -16,49 +16,82 @@ export type Database = {
     Tables: {
       talents: {
         Row: {
+          achievements: string | null
+          audience: string | null
+          avg_views: string | null
           bio: string | null
           category: string
           city: string | null
+          contact_email: string | null
           created_at: string
+          engagement: string | null
+          followers: string | null
           id: string
           image_url: string | null
+          instagram_url: string | null
           media_kit_url: string | null
           slug: string
           sort_order: number
           stage_name: string
           status: Database["public"]["Enums"]["publish_status"]
+          tiktok_url: string | null
+          twitch_url: string | null
+          twitter_url: string | null
           updated_at: string
           username: string | null
+          youtube_url: string | null
         }
         Insert: {
+          achievements?: string | null
+          audience?: string | null
+          avg_views?: string | null
           bio?: string | null
           category?: string
           city?: string | null
+          contact_email?: string | null
           created_at?: string
+          engagement?: string | null
+          followers?: string | null
           id?: string
           image_url?: string | null
+          instagram_url?: string | null
           media_kit_url?: string | null
           slug: string
           sort_order?: number
           stage_name: string
           status?: Database["public"]["Enums"]["publish_status"]
+          tiktok_url?: string | null
+          twitch_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
           username?: string | null
+          youtube_url?: string | null
         }
         Update: {
+          achievements?: string | null
+          audience?: string | null
+          avg_views?: string | null
           bio?: string | null
           category?: string
           city?: string | null
+          contact_email?: string | null
           created_at?: string
+          engagement?: string | null
+          followers?: string | null
           id?: string
           image_url?: string | null
+          instagram_url?: string | null
           media_kit_url?: string | null
           slug?: string
           sort_order?: number
           stage_name?: string
           status?: Database["public"]["Enums"]["publish_status"]
+          tiktok_url?: string | null
+          twitch_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
           username?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
