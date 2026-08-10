@@ -144,6 +144,7 @@ function AdminRoute() {
     const to = list.findIndex((row) => row.id === targetId);
     if (from < 0 || to < 0) return;
     const [moved] = list.splice(from, 1);
+    if (!moved) return;
     list.splice(to, 0, moved);
     setOrder(list);
     setDragId(null);
