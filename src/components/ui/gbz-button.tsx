@@ -3,17 +3,15 @@ import { cn } from "@/lib/utils";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 export const gbzButton = cva(
-  "inline-flex items-center justify-center gap-2 rounded-full font-display font-bold tracking-tight transition-all duration-200 ease-out disabled:pointer-events-none disabled:opacity-60 whitespace-nowrap",
+  "gbz-interactive inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-display font-bold tracking-tight transition-[transform,background-color,border-color,color,opacity] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] disabled:pointer-events-none disabled:opacity-60",
   {
     variants: {
       variant: {
-        primary:
-          "bg-primary text-primary-foreground hover:bg-primary-dark shadow-glow",
+        primary: "bg-primary text-primary-foreground shadow-glow fine-hover:hover:bg-primary-dark",
         outline:
-          "border border-border bg-background text-foreground hover:border-primary hover:text-primary",
-        ghost: "text-muted-foreground hover:text-foreground",
-        solidLight:
-          "bg-foreground text-background hover:bg-foreground/85",
+          "border border-border bg-background text-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary",
+        ghost: "text-muted-foreground fine-hover:hover:text-foreground",
+        solidLight: "bg-foreground text-background fine-hover:hover:bg-foreground/85",
       },
       size: {
         sm: "h-11 px-5 text-sm",

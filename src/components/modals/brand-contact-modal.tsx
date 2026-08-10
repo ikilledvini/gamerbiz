@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { GbzButton } from "@/components/ui/gbz-button";
+import { submitLeadSubmission } from "@/lib/lead-submissions";
 import { Field, ModalShell, inputClass, textareaClass } from "./modal-shell";
 
 type Errors = Partial<Record<"name" | "company" | "email" | "help", string | undefined>>;
@@ -24,10 +25,12 @@ export function BrandContactModal({
   open,
   onOpenChange,
   subject,
+  motion,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   subject?: string | null;
+  motion: boolean;
 }) {
   const { t, lang } = useI18n();
   const m = t.brandModal;
@@ -41,6 +44,7 @@ export function BrandContactModal({
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const set = (key: keyof typeof values) => (value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -68,16 +72,34 @@ export function BrandContactModal({
     if (Object.values(next).some(Boolean)) return;
 
     setSending(true);
-    // TODO: conectar a persistência/envio real quando a Gamerbiz definir o destino.
-    // Nenhum dado é armazenado ou enviado a serviços externos nesta versão.
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setSending(false);
-    setDone(true);
+    setSubmitError(null);
+    try {
+      await submitLeadSubmission({
+        kind: "brand",
+        name: values.name.trim(),
+        company: values.company.trim(),
+        email: values.email.trim().toLowerCase(),
+        whatsapp: values.whatsapp.trim() || null,
+        message: values.help.trim(),
+        subject: subject?.trim() || null,
+        locale: lang,
+      });
+      setDone(true);
+    } catch {
+      setSubmitError(t.validation.generic);
+    } finally {
+      setSending(false);
+    }
   }
 
   function handleOpenChange(next: boolean) {
     onOpenChange(next);
-    if (!next) setTimeout(() => setDone(false), 200);
+    if (!next) {
+      setTimeout(() => {
+        setDone(false);
+        setSubmitError(null);
+      }, 200);
+    }
   }
 
   return (
@@ -89,6 +111,7 @@ export function BrandContactModal({
       titleHighlight={m.titleHighlight}
       description={m.description}
       labelledBy="brand-modal-title"
+      motion={motion}
     >
       {done ? (
         <div
@@ -158,19 +181,12 @@ export function BrandContactModal({
               placeholder={m.whatsappPlaceholder}
               value={values.whatsapp}
               onChange={(e) =>
-                set("whatsapp")(
-                  lang === "pt-BR" ? maskBrPhone(e.target.value) : e.target.value,
-                )
+                set("whatsapp")(lang === "pt-BR" ? maskBrPhone(e.target.value) : e.target.value)
               }
             />
           </Field>
 
-          <Field
-            id="brand-help"
-            label={m.help}
-            error={errors.help}
-            className="md:col-span-2"
-          >
+          <Field id="brand-help" label={m.help} error={errors.help} className="md:col-span-2">
             <textarea
               id="brand-help"
               className={textareaClass}
@@ -185,6 +201,11 @@ export function BrandContactModal({
           </Field>
 
           <div className="md:col-span-2">
+            {submitError ? (
+              <p role="alert" className="mb-4 text-sm font-semibold text-primary">
+                {submitError}
+              </p>
+            ) : null}
             <GbzButton type="submit" size="full" disabled={sending}>
               {m.submit}
             </GbzButton>

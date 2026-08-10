@@ -32,7 +32,7 @@ export function Footer() {
           <p className="mt-5 max-w-[34ch] text-sm text-muted-foreground">{t.footer.phrase}</p>
           <a
             href="mailto:contato@gamerbiz.com.br"
-            className="mt-6 inline-flex items-center gap-2 font-display text-sm font-bold text-foreground transition-colors duration-200 hover:text-primary"
+            className="mt-6 inline-flex items-center gap-2 font-display text-sm font-bold text-foreground transition-colors duration-[160ms] fine-hover:hover:text-primary"
           >
             <Mail className="h-4 w-4" aria-hidden="true" />
             contato@gamerbiz.com.br
@@ -49,7 +49,7 @@ export function Footer() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="text-sm text-muted-foreground transition-colors duration-200 hover:text-primary"
+                  className="text-sm text-muted-foreground transition-colors duration-[160ms] fine-hover:hover:text-primary"
                 >
                   {link.label}
                 </a>
@@ -77,14 +77,13 @@ export function Footer() {
             {socials.map((social) => (
               <li key={social.label}>
                 {/* TODO: substituir por URLs oficiais quando fornecidas */}
-                <a
-                  href="#contato"
-                  aria-disabled="true"
+                <span
                   aria-label={social.label}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-white transition-colors duration-200 hover:border-primary hover:text-primary"
+                  title={t.footer.legalUnavailable}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-subtle"
                 >
                   <social.icon className="h-4 w-4" aria-hidden="true" />
-                </a>
+                </span>
               </li>
             ))}
           </ul>
@@ -106,7 +105,8 @@ export function Footer() {
           <p className="max-w-[50ch] text-xs leading-relaxed text-subtle">
             CNPJ 41.605.881/0001-51
             <br />
-            Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP 04704-900
+            Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP
+            04704-900
           </p>
           <p className="flex flex-wrap items-center justify-center gap-4 text-xs text-subtle">
             <span title={t.footer.legalUnavailable}>{t.footer.privacy}</span>

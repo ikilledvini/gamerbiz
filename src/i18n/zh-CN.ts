@@ -3,8 +3,7 @@ import type { Dict } from "./types";
 export const zhCN: Dict = {
   meta: {
     title: "Gamerbiz — 游戏营销、人才与电竞",
-    description:
-      "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
+    description: "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
   },
   a11y: {
     skipToContent: "跳到主要内容",
@@ -38,8 +37,7 @@ export const zhCN: Dict = {
   hero: {
     eyebrow: "从内容到竞技，Gamerbiz 推动游戏生态向前",
     title: "是时候升级了",
-    description:
-      "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
+    description: "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
     ctaPrimary: "我是品牌方",
     ctaSecondary: "认识我们的达人",
     scroll: "向下滚动探索",
@@ -123,8 +121,7 @@ export const zhCN: Dict = {
   teams: {
     eyebrow: "战队解决方案",
     title: "在赛场内外加速你的战队成长",
-    description:
-      "我们为希望在竞技领域成长的组织提供商务、品牌和结构支持。",
+    description: "我们为希望在竞技领域成长的组织提供商务、品牌和结构支持。",
     services: [
       {
         key: "commercial",
@@ -224,7 +221,7 @@ export const zhCN: Dict = {
     help: "我们可以如何帮助您？",
     helpPlaceholder: "请简单介绍您的项目或目标……",
     submit: "发送消息 →",
-    success: "信息已准备完成，我们的团队将尽快与您联系。",
+    success: "信息已成功收到，我们的团队将尽快与您联系。",
     optional: "选填",
   },
   creatorModal: {
@@ -245,7 +242,7 @@ export const zhCN: Dict = {
     profiles: "我们可以在哪里找到您？",
     profilesPlaceholder: "例如：@用户名或您的主页链接",
     submit: "提交申请 →",
-    success: "申请已准备完成，我们的团队将尽快与您联系。",
+    success: "申请已成功收到，我们的团队将尽快与您联系。",
     optional: "选填",
   },
   validation: {
@@ -259,8 +256,7 @@ export const zhCN: Dict = {
     nav: "媒体资料",
     eyebrow: "GAMERBIZ · 媒体资料",
     title: "为您的下一次营销活动找到合适的创作者。",
-    description:
-      "探索 Gamerbiz 旗下人才，比较资料，并查看商业信息、平台、内容和受众数据。",
+    description: "探索 Gamerbiz 旗下人才，比较资料，并查看商业信息、平台、内容和受众数据。",
     breadcrumbHome: "首页",
     breadcrumbCurrent: "媒体资料",
     countOne: "位人才",

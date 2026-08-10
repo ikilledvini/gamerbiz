@@ -27,37 +27,33 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
         className="group flex h-20 min-w-[170px] items-center justify-center px-4 md:h-24 md:min-w-[200px]"
       >
         {item.logo && !failed ? (
-          <div className="flex h-14 w-[150px] items-center justify-center px-2 md:h-16 md:w-[172px]">
+          <div className="relative flex h-14 w-[150px] items-center justify-center px-2 md:h-16 md:w-[172px]">
             <img
               src={item.logo}
               alt={duplicate ? "" : item.alt}
               loading="lazy"
               onError={() => setFailed(true)}
-              className={cn(
-                "max-h-full w-auto max-w-full object-contain transition-all duration-[220ms] ease-out",
-                "opacity-60 grayscale brightness-[1.6] group-hover:opacity-100 group-hover:grayscale-0 group-hover:brightness-100 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 group-focus-visible:brightness-100",
-              )}
+              className="max-h-full w-auto max-w-full object-contain opacity-60 grayscale brightness-[1.6]"
+            />
+            <img
+              src={item.logo}
+              alt=""
+              loading="lazy"
+              onError={() => setFailed(true)}
+              className="absolute inset-0 m-auto max-h-full w-auto max-w-full object-contain opacity-0 transition-opacity duration-[180ms] ease-[var(--ease-out-gbz)] group-focus-visible:opacity-100 fine-hover:group-hover:opacity-100"
             />
           </div>
-
         ) : (
-          <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[220ms] group-hover:opacity-100 md:text-lg">
+          <span className="whitespace-nowrap font-display text-base font-bold uppercase tracking-[0.06em] text-foreground opacity-45 transition-opacity duration-[180ms] group-focus-visible:opacity-100 fine-hover:group-hover:opacity-100 md:text-lg">
             {item.name}
           </span>
         )}
       </div>
-
     </li>
   );
 }
 
-
-export function LogoMarquee({
-  items,
-  label,
-  reverse = false,
-  durationSeconds,
-}: LogoMarqueeProps) {
+export function LogoMarquee({ items, label, reverse = false, durationSeconds }: LogoMarqueeProps) {
   const reduced = usePrefersReducedMotion();
   const [paused, setPaused] = useState(false);
 
@@ -72,12 +68,7 @@ export function LogoMarquee({
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div
-        className={cn(
-          "flex",
-          reduced && "overflow-x-auto [scrollbar-width:thin]",
-        )}
-      >
+      <div className={cn("flex", reduced && "overflow-x-auto [scrollbar-width:thin]")}>
         <ul
           aria-label={label}
           style={{ ["--marquee-duration" as string]: `${computedDuration}s` }}
@@ -91,9 +82,7 @@ export function LogoMarquee({
             <LogoItem key={item.slug} item={item} duplicate={false} />
           ))}
           {!reduced &&
-            items.map((item) => (
-              <LogoItem key={`dup-${item.slug}`} item={item} duplicate />
-            ))}
+            items.map((item) => <LogoItem key={`dup-${item.slug}`} item={item} duplicate />)}
         </ul>
       </div>
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent md:w-28" />

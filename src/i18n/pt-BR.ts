@@ -166,8 +166,7 @@ export const ptBR: Dict = {
     badgeTalent: "Gamerbiz Talent",
     tooltipTalent: "Talento representado oficialmente pela Gamerbiz.",
     badgePartner: "Creator Parceiro",
-    tooltipPartner:
-      "Creator parceiro disponível para projetos selecionados com a Gamerbiz.",
+    tooltipPartner: "Creator parceiro disponível para projetos selecionados com a Gamerbiz.",
     unavailable: "Media Kit em breve",
     photoPlaceholder: "Foto do creator",
   },
@@ -227,7 +226,7 @@ export const ptBR: Dict = {
     help: "Como podemos ajudar?",
     helpPlaceholder: "Conte um pouco sobre seu projeto ou objetivo...",
     submit: "Enviar mensagem →",
-    success: "Mensagem preparada com sucesso. Nossa equipe retornará em breve.",
+    success: "Mensagem recebida com sucesso. Nossa equipe retornará em breve.",
     optional: "opcional",
   },
   creatorModal: {
@@ -248,8 +247,7 @@ export const ptBR: Dict = {
     profiles: "Como te encontrar nas plataformas?",
     profilesPlaceholder: "Ex.: @seuusuario ou links dos seus perfis",
     submit: "Enviar candidatura →",
-    success:
-      "Candidatura preparada com sucesso. Nossa equipe entrará em contato em breve.",
+    success: "Candidatura recebida com sucesso. Nossa equipe entrará em contato em breve.",
     optional: "opcional",
   },
   validation: {
@@ -280,7 +278,8 @@ export const ptBR: Dict = {
     resultsMany: "resultados",
     open: "Abrir Media Kit",
     empty: "Nenhum talento encontrado com esses filtros.",
-    emptyAll: "Os Media Kits da Gamerbiz estão sendo preparados. Em breve você poderá explorar os perfis por aqui.",
+    emptyAll:
+      "Os Media Kits da Gamerbiz estão sendo preparados. Em breve você poderá explorar os perfis por aqui.",
     notFoundTitle: "Media Kit não encontrado",
     notFoundText: "Este perfil não está disponível publicamente.",
     backToDirectory: "Voltar para os Media Kits",
@@ -344,8 +343,7 @@ export const ptBR: Dict = {
     rights: "Todos os direitos reservados.",
     meta: {
       title: "Gamerbiz — Links e Talentos",
-      description:
-        "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.",
+      description: "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.",
     },
     social: {
       instagram: "Instagram da Gamerbiz",

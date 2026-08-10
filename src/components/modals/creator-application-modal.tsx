@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { GbzButton } from "@/components/ui/gbz-button";
+import { submitLeadSubmission } from "@/lib/lead-submissions";
 import { Field, ModalShell, inputClass, textareaClass } from "./modal-shell";
 
 type Errors = Partial<Record<"name" | "email" | "type" | "profiles", string | undefined>>;
@@ -9,11 +10,13 @@ type Errors = Partial<Record<"name" | "email" | "type" | "profiles", string | un
 export function CreatorApplicationModal({
   open,
   onOpenChange,
+  motion,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  motion: boolean;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const m = t.creatorModal;
   const [values, setValues] = useState({
     name: "",
@@ -25,14 +28,14 @@ export function CreatorApplicationModal({
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const set = (key: keyof typeof values) => (value: string) =>
     setValues((prev) => ({ ...prev, [key]: value }));
 
   function validateField(key: keyof typeof values, value: string): string | undefined {
     if (key === "whatsapp") return undefined;
-    if (!value.trim())
-      return key === "profiles" ? t.validation.profiles : t.validation.required;
+    if (!value.trim()) return key === "profiles" ? t.validation.profiles : t.validation.required;
     if (key === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim()))
       return t.validation.email;
     return undefined;
@@ -54,15 +57,33 @@ export function CreatorApplicationModal({
     if (Object.values(next).some(Boolean)) return;
 
     setSending(true);
-    // TODO: conectar a persistência/envio real quando a Gamerbiz definir o destino.
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setSending(false);
-    setDone(true);
+    setSubmitError(null);
+    try {
+      await submitLeadSubmission({
+        kind: "creator",
+        name: values.name.trim(),
+        email: values.email.trim().toLowerCase(),
+        whatsapp: values.whatsapp.trim() || null,
+        creator_type: values.type.trim(),
+        profiles: values.profiles.trim(),
+        locale: lang,
+      });
+      setDone(true);
+    } catch {
+      setSubmitError(t.validation.generic);
+    } finally {
+      setSending(false);
+    }
   }
 
   function handleOpenChange(next: boolean) {
     onOpenChange(next);
-    if (!next) setTimeout(() => setDone(false), 200);
+    if (!next) {
+      setTimeout(() => {
+        setDone(false);
+        setSubmitError(null);
+      }, 200);
+    }
   }
 
   return (
@@ -74,6 +95,7 @@ export function CreatorApplicationModal({
       titleHighlight={m.titleHighlight}
       description={m.description}
       labelledBy="creator-modal-title"
+      motion={motion}
     >
       {done ? (
         <div
@@ -131,7 +153,6 @@ export function CreatorApplicationModal({
             />
           </Field>
 
-
           <Field id="creator-type" label={m.type} error={errors.type} className="md:col-span-2">
             <textarea
               id="creator-type"
@@ -166,6 +187,11 @@ export function CreatorApplicationModal({
           </Field>
 
           <div className="md:col-span-2">
+            {submitError ? (
+              <p role="alert" className="mb-4 text-sm font-semibold text-primary">
+                {submitError}
+              </p>
+            ) : null}
             <GbzButton type="submit" size="full" disabled={sending}>
               {m.submit}
             </GbzButton>

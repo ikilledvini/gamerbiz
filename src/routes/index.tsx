@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { ModalProvider } from "@/components/modals/modal-provider";
@@ -14,6 +15,7 @@ import { ClientsMarqueeSection } from "@/components/sections/clients-marquee-sec
 import { TalentMediaKitsSection } from "@/components/sections/talent-media-kits-section";
 import { CasesSection } from "@/components/sections/cases-section";
 import { FinalCtaSection } from "@/components/sections/final-cta-section";
+import { usePrefersReducedMotion } from "@/hooks/use-motion";
 
 const TITLE = "Gamerbiz — Marketing, Talentos e Esports";
 const DESCRIPTION =
@@ -35,6 +37,40 @@ export const Route = createFileRoute("/")({
 
 function HomeContent() {
   const { t } = useI18n();
+  const reducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const handleAnchorClick = (event: MouseEvent) => {
+      if (
+        reducedMotion ||
+        event.defaultPrevented ||
+        event.detail === 0 ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      const source = event.target;
+      if (!(source instanceof Element)) return;
+      const anchor = source.closest<HTMLAnchorElement>('a[href^="#"]');
+      const hash = anchor?.getAttribute("href");
+      if (!hash || hash === "#") return;
+
+      const target = document.querySelector(hash);
+      if (!target) return;
+
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.pushState(null, "", hash);
+    };
+
+    document.addEventListener("click", handleAnchorClick);
+    return () => document.removeEventListener("click", handleAnchorClick);
+  }, [reducedMotion]);
 
   return (
     <>

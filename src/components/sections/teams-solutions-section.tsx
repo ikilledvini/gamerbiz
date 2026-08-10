@@ -18,9 +18,7 @@ export function TeamsSolutionsSection() {
         <div>
           <p className="eyebrow-gbz">{t.teams.eyebrow}</p>
           <h2 className="title-gbz mt-4 max-w-[16ch]">{t.teams.title}</h2>
-          <p className="mt-6 max-w-[52ch] text-base text-muted-foreground">
-            {t.teams.description}
-          </p>
+          <p className="mt-6 max-w-[52ch] text-base text-muted-foreground">{t.teams.description}</p>
           <div className="mt-8">
             <GbzButton onClick={() => openBrandModal(t.teams.subject)}>
               {t.teams.button}
@@ -28,14 +26,9 @@ export function TeamsSolutionsSection() {
             </GbzButton>
           </div>
 
-          <div
-            key={current.key}
-            className="mt-10 hidden animate-rise rounded-3xl border border-border bg-background p-8 lg:block"
-          >
+          <div className="mt-10 hidden rounded-3xl border border-border bg-background p-8 lg:block">
             <h3 className="font-display text-xl font-bold text-primary">{current.title}</h3>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              {current.text}
-            </p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">{current.text}</p>
           </div>
         </div>
 
@@ -49,11 +42,11 @@ export function TeamsSolutionsSection() {
                   aria-expanded={isActive}
                   aria-controls={`team-panel-${service.key}`}
                   onClick={() => setActive(index)}
-                  className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  className="gbz-interactive flex w-full items-center justify-between gap-6 py-6 text-left transition-transform duration-[120ms] ease-[var(--ease-out-gbz)] active:scale-[0.99]"
                 >
                   <span
                     className={cn(
-                      "font-display text-2xl font-bold tracking-tight transition-colors duration-200 md:text-3xl",
+                      "font-display text-2xl font-bold tracking-tight transition-colors duration-[160ms] md:text-3xl",
                       isActive ? "text-primary" : "text-foreground",
                     )}
                   >
@@ -69,14 +62,8 @@ export function TeamsSolutionsSection() {
                     0{index + 1}
                   </span>
                 </button>
-                <div
-                  id={`team-panel-${service.key}`}
-                  hidden={!isActive}
-                  className="pb-6 lg:hidden"
-                >
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {service.text}
-                  </p>
+                <div id={`team-panel-${service.key}`} hidden={!isActive} className="pb-6 lg:hidden">
+                  <p className="text-sm leading-relaxed text-muted-foreground">{service.text}</p>
                 </div>
               </li>
             );

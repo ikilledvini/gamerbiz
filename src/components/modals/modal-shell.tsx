@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { usePrefersReducedMotion } from "@/hooks/use-motion";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +14,7 @@ export function ModalShell({
   description,
   children,
   labelledBy,
+  motion,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -22,24 +24,43 @@ export function ModalShell({
   description: string;
   children: ReactNode;
   labelledBy: string;
+  motion: boolean;
 }) {
   const { t } = useI18n();
+  const reducedMotion = usePrefersReducedMotion();
+  const [instantClose, setInstantClose] = useState(false);
+  const shouldAnimate = motion && !reducedMotion && !instantClose;
+
+  useEffect(() => {
+    if (open) setInstantClose(false);
+  }, [open]);
+
+  const overlayAnimation = shouldAnimate
+    ? "modal-motion-gbz data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:duration-[180ms] data-[state=open]:ease-[var(--ease-out-gbz)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:duration-[140ms]"
+    : "";
+  const contentAnimation = shouldAnimate
+    ? "modal-motion-gbz data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=open]:duration-[220ms] data-[state=open]:ease-[var(--ease-out-gbz)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=closed]:duration-[150ms]"
+    : "";
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
+        <Dialog.Overlay
+          className={`fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm ${overlayAnimation}`}
+        />
         <Dialog.Content
           aria-describedby={`${labelledBy}-desc`}
+          onEscapeKeyDown={() => setInstantClose(true)}
           className={cn(
-            "fixed left-1/2 top-1/2 z-[101] flex max-h-[92dvh] w-[calc(100vw-24px)] max-w-[720px] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-glow",
-            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
+            "fixed left-1/2 top-1/2 z-[101] flex max-h-[92dvh] w-[calc(100vw-24px)] max-w-[720px] origin-center -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-3xl border border-border bg-surface shadow-glow",
+            contentAnimation,
           )}
         >
           <div className="overflow-y-auto px-6 py-8 md:px-10 md:py-10">
             <Dialog.Close
-              className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+              className="gbz-interactive absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-muted-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.96] fine-hover:hover:border-primary fine-hover:hover:text-primary"
               aria-label={t.actions.close}
+              onClick={(event) => setInstantClose(event.detail === 0 || reducedMotion)}
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </Dialog.Close>
