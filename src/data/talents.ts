@@ -10,6 +10,7 @@ export type Talent = {
   stageName: string;
   username: string | null;
   category: string;
+  categories: string[];
   shortDescription: string;
   relationship: "gamerbiz-talent" | "creator-parceiro" | null;
   status: PublishStatus;
@@ -120,6 +121,13 @@ const TALENT_CATEGORIES: Record<string, string> = {
 // Dados reais apenas. Campos ainda não fornecidos pela Gamerbiz ficam nulos
 // e serão preenchidos no painel interno (etapa seguinte).
 // Um perfil só é publicado quando já possui foto real cadastrada.
+function splitCategories(value: string): string[] {
+  return value
+    .split("+")
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => {
   const image = TALENT_IMAGES[stageName] ?? null;
   return {
@@ -128,6 +136,7 @@ export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => {
     stageName,
     username: null,
     category: TALENT_CATEGORIES[stageName] ?? "Multigame",
+    categories: splitCategories(TALENT_CATEGORIES[stageName] ?? "Multigame"),
     shortDescription: "",
     relationship: null,
     status: image ? ("published" as const) : ("draft" as const),
@@ -144,3 +153,7 @@ export function getTalentBySlug(slug: string) {
 }
 
 
+
+export const talentCategories = Array.from(
+  new Set(talents.filter((t) => t.status === "published").flatMap((t) => t.categories)),
+).sort((a, b) => a.localeCompare(b, "pt-BR"));
