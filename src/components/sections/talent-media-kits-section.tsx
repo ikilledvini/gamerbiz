@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { TalentCarousel } from "@/components/ui/talent-carousel";
 import { useI18n } from "@/i18n";
 
@@ -11,12 +12,12 @@ export function TalentMediaKitsSection() {
           <div>
             <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
             <h2 className="title-gbz mt-4 max-w-[16ch]">{t.talents.title}</h2>
-            <a
-              href="#talentos"
+            <Link
+              to="/mediakit"
               className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
             >
-              {t.talents.allButton}
-            </a>
+              {t.mediakit.ctaHome}
+            </Link>
           </div>
           <div>
             <p className="max-w-[48ch] text-lg leading-relaxed text-muted-foreground">

@@ -89,12 +89,12 @@ function LinksContent() {
                 >
                   {t.talents.title}
                 </h2>
-                <a
-                  href="#talentos"
+                <Link
+                  to="/mediakit"
                   className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
                 >
-                  {t.talents.allButton}
-                </a>
+                  {t.mediakit.ctaHome}
+                </Link>
               </div>
               <div>
                 <p className="max-w-[48ch] text-lg leading-relaxed text-muted-foreground">
