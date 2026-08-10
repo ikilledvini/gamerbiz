@@ -85,7 +85,7 @@ function GenderChart({ data, eyebrow, title }: { data: { label: string; value: n
       <div className="mt-6 h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="label" innerRadius="55%" outerRadius="85%" paddingAngle={1} stroke="none">
+            <Pie data={data} dataKey="value" nameKey="label" cx="50%" cy="50%" innerRadius={70} outerRadius={115} paddingAngle={1} stroke="none" isAnimationActive={false}>
               {data.map((entry, index) => (
                 <Cell key={entry.label} fill={GENDER_COLORS[index % GENDER_COLORS.length]} />
               ))}
