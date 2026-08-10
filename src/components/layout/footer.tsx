@@ -81,7 +81,7 @@ export function Footer() {
                   href="#contato"
                   aria-disabled="true"
                   aria-label={social.label}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-white transition-colors duration-200 hover:border-primary hover:text-primary"
                 >
                   <social.icon className="h-4 w-4" aria-hidden="true" />
                 </a>
