@@ -200,6 +200,9 @@ export type Dict = {
     workWithText: string;
     lastUpdate: string;
     share: string;
+    viewList: string;
+    viewGrid: string;
+    viewLabel: string;
     ctaHome: string;
   };
   links: {

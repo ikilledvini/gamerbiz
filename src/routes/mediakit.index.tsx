@@ -1,7 +1,7 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
-import { Search, X } from "lucide-react";
+import { LayoutGrid, List, Search, User, X } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
@@ -45,6 +45,7 @@ function DirectoryContent() {
   const navigate = useNavigate({ from: "/mediakit" });
   const { q, cat } = Route.useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [view, setView] = useState<"list" | "grid">("list");
 
   const categories = useMemo(
     () => Array.from(new Set(publishedTalents.map((talent) => talent.category))).sort(),
@@ -170,6 +171,32 @@ function DirectoryContent() {
                     {t.mediakit.clearFilters}
                   </button>
                 ) : null}
+
+                <div
+                  role="group"
+                  aria-label={t.mediakit.viewLabel}
+                  className="flex h-12 items-center gap-1 rounded-full border border-border bg-surface p-1 md:ml-auto"
+                >
+                  {([
+                    { key: "list" as const, label: t.mediakit.viewList, Icon: List },
+                    { key: "grid" as const, label: t.mediakit.viewGrid, Icon: LayoutGrid },
+                  ]).map(({ key, label, Icon }) => (
+                    <button
+                      key={key}
+                      type="button"
+                      aria-pressed={view === key}
+                      onClick={() => setView(key)}
+                      className={`inline-flex h-10 items-center gap-2 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] duration-200 active:scale-[0.97] ${
+                        view === key
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:text-primary"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <p aria-live="polite" className="mt-4 text-xs uppercase tracking-[0.18em] text-subtle">
@@ -192,15 +219,51 @@ function DirectoryContent() {
                 grouped.map(([letter, list]) => (
                   <section key={letter} className="mt-12">
                     <h2 className="font-display text-2xl font-extrabold text-primary">{letter}</h2>
-                    <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-                      {list.map((talent) => (
-                        <li key={talent.id}>
-                          <TalentCard talent={talent} onMediaKit={openMediaKit} />
-                        </li>
-                      ))}
-                    </ul>
+                    {view === "grid" ? (
+                      <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+                        {list.map((talent) => (
+                          <li key={talent.id}>
+                            <TalentCard talent={talent} onMediaKit={openMediaKit} />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <ul className="mt-5 grid grid-cols-1 gap-x-10 gap-y-1 md:grid-cols-2">
+                        {list.map((talent) => (
+                          <li key={talent.id}>
+                            <Link
+                              to="/mediakit/$slug"
+                              params={{ slug: talent.slug }}
+                              className="flex items-center gap-4 rounded-2xl px-3 py-3 duration-200 hover:bg-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                            >
+                              <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-muted">
+                                {talent.image ? (
+                                  <img
+                                    src={talent.image}
+                                    alt={talent.stageName}
+                                    loading="lazy"
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <User className="h-5 w-5 text-subtle" aria-hidden="true" />
+                                )}
+                              </span>
+                              <span className="min-w-0">
+                                <span className="block truncate font-display text-base font-bold text-foreground">
+                                  {talent.stageName}
+                                </span>
+                                <span className="block truncate text-sm text-muted-foreground">
+                                  {talent.username ? `@${talent.username}` : talent.category}
+                                </span>
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </section>
                 ))
+
               )}
             </>
           )}
