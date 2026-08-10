@@ -266,7 +266,7 @@ function DirectoryContent() {
                   {totalPages > 1 ? (
                     <nav
                       aria-label={t.mediakit.breadcrumbCurrent}
-                      className="mt-12 flex items-center gap-4"
+                      className="mt-12 flex items-center justify-start gap-4"
                     >
                       <button
                         type="button"
