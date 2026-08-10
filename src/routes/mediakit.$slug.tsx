@@ -438,7 +438,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                 </div>
               ) : null}
 
-              <MediaKitAnalytics analytics={talent.analytics ?? null} />
+
+
 
 
               {talent.achievements ? (
