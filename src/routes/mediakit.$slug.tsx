@@ -59,6 +59,7 @@ function FallbackContent() {
         <p className="mt-4 text-muted-foreground">{t.mediakit.notFoundText}</p>
         <Link
           to="/mediakit"
+              search={{ q: "", cat: "", page: 1 }}
           className="mt-8 inline-flex rounded-full border border-primary px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary duration-200 hover:bg-primary hover:text-primary-foreground active:scale-[0.97]"
         >
           {t.mediakit.backToDirectory}
@@ -101,7 +102,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
               {t.mediakit.breadcrumbHome}
             </Link>
             <span aria-hidden="true"> / </span>
-            <Link to="/mediakit" className="transition-colors duration-200 hover:text-primary">
+            <Link to="/mediakit"
+              search={{ q: "", cat: "", page: 1 }} className="transition-colors duration-200 hover:text-primary">
               {t.mediakit.breadcrumbCurrent}
             </Link>
             <span aria-hidden="true"> / </span>
@@ -209,6 +211,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
             </p>
             <Link
               to="/mediakit"
+              search={{ q: "", cat: "", page: 1 }}
               className="mt-6 inline-flex rounded-full border border-primary px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary duration-200 hover:bg-primary hover:text-primary-foreground active:scale-[0.97]"
             >
               {t.mediakit.backToDirectory}

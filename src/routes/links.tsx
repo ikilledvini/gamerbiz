@@ -91,6 +91,7 @@ function LinksContent() {
                 </h2>
                 <Link
                   to="/mediakit"
+              search={{ q: "", cat: "", page: 1 }}
                   className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
                 >
                   {t.mediakit.ctaHome}
