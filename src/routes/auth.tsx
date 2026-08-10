@@ -85,15 +85,7 @@ function AuthRoute() {
           disabled={loading}
           className="mt-6 h-12 w-full rounded-full bg-primary font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
         >
-          {loading ? "Aguarde..." : mode === "signup" ? "Criar conta" : "Entrar"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-          className="mt-4 w-full text-center text-xs uppercase tracking-[0.16em] text-subtle duration-200 hover:text-primary"
-        >
-          {mode === "signup" ? "Já tenho conta" : "Criar conta"}
+          {loading ? "Aguarde..." : "Entrar"}
         </button>
       </form>
     </main>
