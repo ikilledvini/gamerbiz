@@ -59,8 +59,17 @@ type TalentInput = {
 };
 
 function serverPublicClient() {
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-  return createClient<Database>(process.env["SUPABASE_URL"]!, key, {
+  // Lovable injects the VITE_* variables into the published SSR bundle. Prefer
+  // those values so server loaders use the same Supabase project as the browser.
+  const url = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"];
+  const key =
+    import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_PUBLISHABLE_KEY"];
+
+  if (!url || !key) {
+    throw new Error("Supabase public connection is not configured for the published site.");
+  }
+
+  return createClient<Database>(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: {
       fetch: (input, init) => {
@@ -73,6 +82,14 @@ function serverPublicClient() {
       },
     },
   });
+}
+
+function isMissingOptionalSocialMetricsTable(error: { code?: string; message?: string }) {
+  const message = `${error.code ?? ""} ${error.message ?? ""}`.toLowerCase();
+  return (
+    error.code === "PGRST205" ||
+    (message.includes("public.social_connections") && message.includes("schema cache"))
+  );
 }
 
 /** Lista pública: apenas talentos publicados. */
@@ -95,7 +112,12 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
       "talent_id",
       rows.map((row) => row.id),
     );
-  if (socialError) throw new Error(socialError.message);
+  // Social metrics are an enhancement for public Media Kits. If a newly
+  // published Lovable environment has not refreshed PostgREST's schema cache
+  // yet, keep the directory and profiles available without those metrics.
+  if (socialError && !isMissingOptionalSocialMetricsTable(socialError)) {
+    throw new Error(socialError.message);
+  }
 
   const metricsByTalent = new Map<
     string,
