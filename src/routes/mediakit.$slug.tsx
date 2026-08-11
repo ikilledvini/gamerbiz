@@ -177,6 +177,20 @@ function MetricCard({
 function MediaKitContent({ talent }: { talent: Talent }) {
   const { t } = useI18n();
 
+  const formatSyncedMetric = (value: number | null | undefined) =>
+    typeof value === "number"
+      ? new Intl.NumberFormat(undefined, {
+          notation: "compact",
+          maximumFractionDigits: 1,
+        }).format(value)
+      : null;
+
+  const youtubeMetrics = talent.socialMetrics?.youtube;
+  const syncedYoutubeAverageViews =
+    youtubeMetrics?.totalViews && youtubeMetrics.videoCount
+      ? youtubeMetrics.totalViews / youtubeMetrics.videoCount
+      : null;
+
   const badge =
     talent.relationship === "gamerbiz-talent"
       ? { label: t.talents.badgeTalent, tip: t.talents.tooltipTalent }
@@ -249,8 +263,14 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       icon: <FaYoutube className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.youtube),
       items: [
-        { label: t.mediakit.avgViews, value: talent.stats.avgViews },
-        { label: t.mediakit.audience, value: talent.stats.audience },
+        {
+          label: t.mediakit.followers,
+          value: formatSyncedMetric(youtubeMetrics?.subscribers) ?? talent.stats.followers,
+        },
+        {
+          label: t.mediakit.avgViews,
+          value: formatSyncedMetric(syncedYoutubeAverageViews) ?? talent.stats.avgViews,
+        },
       ],
     },
     {
@@ -305,151 +325,155 @@ function MediaKitContent({ talent }: { talent: Talent }) {
             <span aria-current="page">{talent.stageName}</span>
           </nav>
 
-          <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:items-stretch">
-            <article className="overflow-hidden rounded-[40px] border border-border bg-surface p-6 md:p-10">
-              <div className="grid items-center gap-8 md:grid-cols-[minmax(180px,260px)_minmax(0,1fr)]">
-                <div className="mx-auto aspect-[4/5] w-full max-w-[260px] overflow-hidden rounded-[32px] border border-border bg-muted">
-                  {talent.image ? (
-                    <img
-                      src={talent.image}
-                      alt={talent.stageName}
-                      className="h-full w-full object-contain object-bottom"
-                    />
-                  ) : (
-                    <div
-                      className="grid h-full w-full place-items-center text-subtle"
-                      aria-hidden="true"
-                    >
-                      <User className="h-12 w-12" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="min-w-0">
-                  <p className="eyebrow-gbz">{t.mediakit.eyebrow}</p>
-                  <h1 className="title-gbz mt-4 break-words text-foreground">{talent.stageName}</h1>
-                  {talent.username ? (
-                    <p className="mt-3 text-base text-muted-foreground md:text-lg">
-                      @{talent.username}
-                    </p>
-                  ) : null}
-                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground md:text-base">
-                    <p className="flex items-center gap-2">
-                      <Gamepad2 className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                      <span>{talent.category}</span>
-                    </p>
-                    {talent.city ? (
-                      <p className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
-                        <span>{talent.city}</span>
-                      </p>
-                    ) : null}
+          <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(300px,0.8fr)_minmax(0,2fr)] lg:items-start">
+            <div className="flex flex-col gap-6">
+              <article className="rounded-[32px] border border-border bg-surface px-6 pb-8 pt-6">
+                <div className="grid grid-cols-[112px_minmax(0,1fr)] items-center gap-5">
+                  <div className="aspect-square overflow-hidden rounded-full border-4 border-primary bg-muted p-1">
+                    {talent.image ? (
+                      <img
+                        src={talent.image}
+                        alt={talent.stageName}
+                        className="h-full w-full rounded-full object-cover object-top"
+                      />
+                    ) : (
+                      <div
+                        className="grid h-full w-full place-items-center rounded-full text-subtle"
+                        aria-hidden="true"
+                      >
+                        <User className="h-10 w-10" />
+                      </div>
+                    )}
                   </div>
 
-                  {badge ? (
-                    <Tooltip.Root>
-                      <Tooltip.Trigger asChild>
-                        <button
-                          type="button"
-                          aria-label={`${badge.label} — ${t.a11y.info}`}
-                          className="gbz-interactive mt-7 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-transform duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97]"
-                        >
-                          {badge.label}
-                          <Info className="h-3 w-3" aria-hidden="true" />
-                        </button>
-                      </Tooltip.Trigger>
-                      <Tooltip.Portal>
-                        <Tooltip.Content
-                          side="bottom"
-                          className="z-[120] max-w-[260px] origin-[var(--radix-tooltip-content-transform-origin)] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=delayed-open]:duration-[140ms]"
-                        >
-                          {badge.tip}
-                        </Tooltip.Content>
-                      </Tooltip.Portal>
-                    </Tooltip.Root>
-                  ) : null}
-                </div>
-              </div>
-            </article>
+                  <div className="min-w-0">
+                    <h1 className="break-words font-display text-2xl font-bold leading-tight tracking-[-0.035em] text-foreground md:text-3xl">
+                      {talent.stageName}
+                    </h1>
+                    {talent.username ? (
+                      <p className="mt-1.5 text-sm text-muted-foreground">@{talent.username}</p>
+                    ) : null}
+                    <div className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground">
+                      <p className="flex items-start gap-2">
+                        <Gamepad2
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          aria-hidden="true"
+                        />
+                        <span>{talent.category}</span>
+                      </p>
+                      {talent.city ? (
+                        <p className="flex items-start gap-2">
+                          <MapPin
+                            className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                            aria-hidden="true"
+                          />
+                          <span>{talent.city}</span>
+                        </p>
+                      ) : null}
+                    </div>
 
-            <aside className="rounded-[40px] border border-border bg-surface p-6 md:p-8">
-              <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.socials} />
-              <ul className="mt-8 flex flex-col gap-4">
-                <InfoRow
-                  icon={<Mail className="h-4 w-4" />}
-                  label={t.mediakit.contact}
-                  value={contactEmail}
-                  href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
-                />
-                {socialRows.map((item) => (
+                    {badge ? (
+                      <Tooltip.Root>
+                        <Tooltip.Trigger asChild>
+                          <button
+                            type="button"
+                            aria-label={`${badge.label} — ${t.a11y.info}`}
+                            className="gbz-interactive mt-4 inline-flex min-h-9 items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 font-display text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-transform duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97]"
+                          >
+                            {badge.label}
+                            <Info className="h-3 w-3" aria-hidden="true" />
+                          </button>
+                        </Tooltip.Trigger>
+                        <Tooltip.Portal>
+                          <Tooltip.Content
+                            side="bottom"
+                            className="z-[120] max-w-[260px] origin-[var(--radix-tooltip-content-transform-origin)] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=delayed-open]:duration-[140ms]"
+                          >
+                            {badge.tip}
+                          </Tooltip.Content>
+                        </Tooltip.Portal>
+                      </Tooltip.Root>
+                    ) : null}
+                  </div>
+                </div>
+              </article>
+
+              <aside className="rounded-[32px] border border-border bg-surface p-6 md:p-7">
+                <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.socials} />
+                <ul className="mt-7 flex flex-col gap-4">
                   <InfoRow
-                    key={item.key}
-                    icon={item.icon}
-                    label={item.label}
-                    value={handleLabel(item.url!)}
-                    href={item.url!}
+                    icon={<Mail className="h-4 w-4" />}
+                    label={t.mediakit.contact}
+                    value={contactEmail}
+                    href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
                   />
-                ))}
-              </ul>
+                  {socialRows.map((item) => (
+                    <InfoRow
+                      key={item.key}
+                      icon={item.icon}
+                      label={item.label}
+                      value={handleLabel(item.url!)}
+                      href={item.url!}
+                    />
+                  ))}
+                </ul>
 
-              <div className="mt-8 flex flex-col gap-3">
-                <a
-                  href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
-                  className="gbz-interactive inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary-dark"
-                >
-                  {t.mediakit.sendProposal}
-                </a>
-                <button
-                  type="button"
-                  onClick={share}
-                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                >
-                  <Share2 className="h-4 w-4" aria-hidden="true" />
-                  {t.mediakit.share}
-                </button>
-              </div>
-            </aside>
-          </div>
-
-          <div className={`mt-6 grid gap-6 ${talent.achievements ? "lg:grid-cols-2" : ""}`}>
-            <section className="rounded-[40px] border border-border bg-surface p-6 md:p-10">
-              <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.about} />
-              <p className="mt-6 max-w-[68ch] text-base leading-relaxed text-muted-foreground md:text-lg">
-                {talent.shortDescription || t.mediakit.aboutEmpty}
-              </p>
-            </section>
-
-            {talent.achievements ? (
-              <section className="rounded-[40px] border border-border bg-surface p-6 md:p-10">
-                <MediaKitSectionHeading
-                  eyebrow={t.mediakit.eyebrow}
-                  title={t.mediakit.achievements}
-                />
-                <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-muted-foreground md:text-lg">
-                  {talent.achievements}
+                <div className="mt-7 flex flex-col gap-3">
+                  <a
+                    href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary-dark"
+                  >
+                    {t.mediakit.sendProposal}
+                  </a>
+                  <button
+                    type="button"
+                    onClick={share}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                  >
+                    <Share2 className="h-4 w-4" aria-hidden="true" />
+                    {t.mediakit.share}
+                  </button>
                 </div>
-              </section>
-            ) : null}
-          </div>
+              </aside>
+            </div>
 
-          {metricCards.length > 0 ? (
-            <section className="mt-6" aria-label={t.mediakit.analytics}>
-              <MediaKitSectionHeading
-                eyebrow={t.mediakit.eyebrow}
-                title={t.mediakit.analyticsUi.summary}
-              />
-              <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                {metricCards.map((card) => (
-                  <MetricCard
-                    key={card.key}
-                    icon={card.icon}
-                    title={card.title}
-                    items={card.items}
+            <div className="flex flex-col gap-6">
+              <section className="rounded-[32px] border border-border bg-surface p-6 md:p-9">
+                <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.about} />
+                <p className="mt-6 max-w-[68ch] text-base leading-relaxed text-muted-foreground md:text-lg">
+                  {talent.shortDescription || t.mediakit.aboutEmpty}
+                </p>
+              </section>
+
+              {metricCards.length > 0 ? (
+                <section aria-label={t.mediakit.analyticsUi.summary}>
+                  <h2 className="sr-only">{t.mediakit.analyticsUi.summary}</h2>
+                  <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                    {metricCards.map((card) => (
+                      <MetricCard
+                        key={card.key}
+                        icon={card.icon}
+                        title={card.title}
+                        items={card.items}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+
+              {talent.achievements ? (
+                <section className="rounded-[32px] border border-border bg-surface p-6 md:p-9">
+                  <MediaKitSectionHeading
+                    eyebrow={t.mediakit.eyebrow}
+                    title={t.mediakit.achievements}
                   />
-                ))}
-              </div>
-            </section>
-          ) : null}
+                  <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-muted-foreground md:text-lg">
+                    {talent.achievements}
+                  </div>
+                </section>
+              ) : null}
+            </div>
+          </div>
 
           <div className="mt-6">
             <MediaKitAnalytics analytics={talent.analytics ?? null} />

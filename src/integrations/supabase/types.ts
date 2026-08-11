@@ -56,6 +56,129 @@ export type Database = {
         };
         Relationships: [];
       };
+      creator_talent_access: {
+        Row: {
+          created_at: string;
+          talent_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          talent_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          talent_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      profiles: {
+        Row: {
+          created_at: string;
+          display_name: string | null;
+          email: string;
+          must_change_password: boolean;
+          updated_at: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          display_name?: string | null;
+          email: string;
+          must_change_password?: boolean;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          display_name?: string | null;
+          email?: string;
+          must_change_password?: boolean;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      social_connections: {
+        Row: {
+          connected_at: string | null;
+          connected_by: string | null;
+          connection_status: string;
+          created_at: string;
+          current_metrics: Json;
+          external_account_id: string | null;
+          handle: string | null;
+          id: string;
+          last_sync_error: string | null;
+          last_synced_at: string | null;
+          platform: Database["public"]["Enums"]["social_platform"];
+          profile_url: string | null;
+          sync_enabled: boolean;
+          talent_id: string;
+          updated_at: string;
+        };
+        Insert: {
+          connected_at?: string | null;
+          connected_by?: string | null;
+          connection_status?: string;
+          created_at?: string;
+          current_metrics?: Json;
+          external_account_id?: string | null;
+          handle?: string | null;
+          id?: string;
+          last_sync_error?: string | null;
+          last_synced_at?: string | null;
+          platform: Database["public"]["Enums"]["social_platform"];
+          profile_url?: string | null;
+          sync_enabled?: boolean;
+          talent_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          connected_at?: string | null;
+          connected_by?: string | null;
+          connection_status?: string;
+          created_at?: string;
+          current_metrics?: Json;
+          external_account_id?: string | null;
+          handle?: string | null;
+          id?: string;
+          last_sync_error?: string | null;
+          last_synced_at?: string | null;
+          platform?: Database["public"]["Enums"]["social_platform"];
+          profile_url?: string | null;
+          sync_enabled?: boolean;
+          talent_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      social_metric_snapshots: {
+        Row: {
+          captured_at: string;
+          connection_id: string;
+          id: number;
+          metrics: Json;
+        };
+        Insert: {
+          captured_at?: string;
+          connection_id: string;
+          id?: number;
+          metrics: Json;
+        };
+        Update: {
+          captured_at?: string;
+          connection_id?: string;
+          id?: number;
+          metrics?: Json;
+        };
+        Relationships: [];
+      };
       talents: {
         Row: {
           achievements: string | null;
@@ -166,6 +289,37 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_assign_creator: {
+        Args: {
+          p_talent_id: string;
+          p_user_id: string;
+        };
+        Returns: undefined;
+      };
+      admin_remove_creator_access: {
+        Args: {
+          p_user_id: string;
+        };
+        Returns: undefined;
+      };
+      creator_disconnect_social_connection: {
+        Args: {
+          p_platform: Database["public"]["Enums"]["social_platform"];
+        };
+        Returns: undefined;
+      };
+      complete_first_password_change: {
+        Args: Record<PropertyKey, never>;
+        Returns: undefined;
+      };
+      creator_upsert_social_connection: {
+        Args: {
+          p_handle?: string | null;
+          p_platform: Database["public"]["Enums"]["social_platform"];
+          p_profile_url: string;
+        };
+        Returns: Database["public"]["Tables"]["social_connections"]["Row"];
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];
@@ -175,10 +329,11 @@ export type Database = {
       };
     };
     Enums: {
-      app_role: "admin" | "editor" | "user";
+      app_role: "admin" | "creator" | "editor" | "user";
       lead_kind: "brand" | "creator";
       lead_status: "new" | "contacted" | "archived";
       publish_status: "draft" | "published" | "hidden";
+      social_platform: "youtube" | "instagram" | "tiktok" | "twitch" | "twitter";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -300,10 +455,11 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "editor", "user"],
+      app_role: ["admin", "creator", "editor", "user"],
       lead_kind: ["brand", "creator"],
       lead_status: ["new", "contacted", "archived"],
       publish_status: ["draft", "published", "hidden"],
+      social_platform: ["youtube", "instagram", "tiktok", "twitch", "twitter"],
     },
   },
 } as const;
