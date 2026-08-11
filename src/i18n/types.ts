@@ -184,6 +184,9 @@ export type Dict = {
     open: string;
     empty: string;
     emptyAll: string;
+    loadError: string;
+    loadErrorText: string;
+    tryAgain: string;
     notFoundTitle: string;
     notFoundText: string;
     backToDirectory: string;

@@ -280,6 +280,10 @@ export const ptBR: Dict = {
     empty: "Nenhum talento encontrado com esses filtros.",
     emptyAll:
       "Os Media Kits da Gamerbiz estão sendo preparados. Em breve você poderá explorar os perfis por aqui.",
+    loadError: "Não foi possível carregar os Media Kits.",
+    loadErrorText:
+      "A conexão falhou temporariamente. Tente novamente para acessar os perfis públicos.",
+    tryAgain: "Tentar novamente",
     notFoundTitle: "Media Kit não encontrado",
     notFoundText: "Este perfil não está disponível publicamente.",
     backToDirectory: "Voltar para os Media Kits",

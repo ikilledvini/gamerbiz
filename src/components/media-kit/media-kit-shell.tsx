@@ -18,29 +18,45 @@ export function MediaKitShell({ children }: { children: ReactNode }) {
         {t.a11y.skipToContent}
       </a>
 
-      <header className="border-b border-border">
-        <div className="container-gbz flex items-center justify-between gap-4 py-5">
-          <Link to="/" aria-label={t.links.backToWebsite} className="flex items-center gap-3">
-            <ArrowLeft className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            <Logo className="h-8" />
+      <header className="sticky top-0 z-[100] border-b border-border bg-background/90 backdrop-blur-xl">
+        <div className="container-gbz flex min-h-20 items-center justify-between gap-4 py-3">
+          <Link
+            to="/"
+            aria-label={t.links.backToWebsite}
+            className="gbz-interactive group inline-flex min-h-12 items-center gap-3 rounded-full pr-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+          >
+            <span className="grid h-10 w-10 place-items-center rounded-full border border-border transition-[border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:group-hover:border-primary fine-hover:group-hover:text-primary">
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <Logo className="h-9 w-auto md:h-10" />
+            <span className="hidden lg:inline">{t.links.backToWebsite}</span>
           </Link>
           <LanguageSwitcher className="gap-3" />
         </div>
       </header>
 
-      <main id="mediakit-conteudo" className="min-h-[70vh]">
+      <main id="mediakit-conteudo" className="min-h-[70svh]">
         {children}
       </main>
 
-      <footer className="container-gbz mt-16 flex flex-col items-center gap-3 border-t border-border py-10 text-center">
-        <Logo className="h-7" />
-        <p className="text-xs text-subtle">© Gamerbiz. {t.links.rights}</p>
-        <Link
-          to="/"
-          className="font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-200 hover:text-primary"
-        >
-          {t.links.websiteLink}
-        </Link>
+      <footer className="border-t border-border">
+        <div className="container-gbz flex flex-col gap-8 py-12 md:flex-row md:items-end md:justify-between md:py-16">
+          <div>
+            <Logo className="h-9 w-auto" />
+            <p className="mt-4 font-display text-lg font-bold tracking-[-0.02em] text-foreground">
+              {t.links.tagline}
+            </p>
+          </div>
+          <div className="flex flex-col items-start gap-3 md:items-end">
+            <Link
+              to="/"
+              className="gbz-interactive font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+            >
+              {t.links.websiteLink}
+            </Link>
+            <p className="text-xs text-subtle">© Gamerbiz. {t.links.rights}</p>
+          </div>
+        </div>
       </footer>
     </>
   );
