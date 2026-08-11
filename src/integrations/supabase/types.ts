@@ -109,6 +109,7 @@ export type Database = {
           connected_at: string | null;
           connected_by: string | null;
           connection_status: string;
+          connection_method: string;
           created_at: string;
           current_metrics: Json;
           external_account_id: string | null;
@@ -126,6 +127,7 @@ export type Database = {
           connected_at?: string | null;
           connected_by?: string | null;
           connection_status?: string;
+          connection_method?: string;
           created_at?: string;
           current_metrics?: Json;
           external_account_id?: string | null;
@@ -143,6 +145,7 @@ export type Database = {
           connected_at?: string | null;
           connected_by?: string | null;
           connection_status?: string;
+          connection_method?: string;
           created_at?: string;
           current_metrics?: Json;
           external_account_id?: string | null;
@@ -176,6 +179,66 @@ export type Database = {
           connection_id?: string;
           id?: number;
           metrics?: Json;
+        };
+        Relationships: [];
+      };
+      social_oauth_states: {
+        Row: {
+          created_at: string;
+          expires_at: string;
+          platform: Database["public"]["Enums"]["social_platform"];
+          state: string;
+          talent_id: string;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          expires_at: string;
+          platform: Database["public"]["Enums"]["social_platform"];
+          state: string;
+          talent_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          expires_at?: string;
+          platform?: Database["public"]["Enums"]["social_platform"];
+          state?: string;
+          talent_id?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      social_oauth_tokens: {
+        Row: {
+          access_token: string | null;
+          access_token_expires_at: string | null;
+          connection_id: string;
+          created_at: string;
+          provider: string;
+          refresh_token: string;
+          scope: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          access_token?: string | null;
+          access_token_expires_at?: string | null;
+          connection_id: string;
+          created_at?: string;
+          provider: string;
+          refresh_token: string;
+          scope?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          access_token?: string | null;
+          access_token_expires_at?: string | null;
+          connection_id?: string;
+          created_at?: string;
+          provider?: string;
+          refresh_token?: string;
+          scope?: string | null;
+          updated_at?: string;
         };
         Relationships: [];
       };

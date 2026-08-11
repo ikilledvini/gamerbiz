@@ -132,7 +132,6 @@ export const adminDashboardOverview = createServerFn({ method: "GET" })
       profiles.error,
       access.error,
       roles.error,
-      authUsers.error,
     ].find(Boolean);
     if (firstError) throw new Error(firstError.message);
 
@@ -149,6 +148,7 @@ export const adminDashboardOverview = createServerFn({ method: "GET" })
         .filter((role) => role.role === "admin")
         .map((role) => role.user_id),
       authUsers: authUsers.data?.users ?? [],
+      authUsersError: authUsers.error?.message ?? null,
     };
   });
 
@@ -180,7 +180,20 @@ export const adminManageUser = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await requireAdmin(context.supabase, context.userId);
     const result = await context.supabase.functions.invoke("admin-users", { body: data });
-    if (result.error) throw new Error(result.error.message);
+    if (result.error) {
+      let message = result.error.message;
+      const response = "context" in result.error ? result.error.context : undefined;
+      if (response instanceof Response) {
+        try {
+          const payload = (await response.clone().json()) as { error?: string; message?: string };
+          const details = payload.error || payload.message;
+          if (details) message = `${message}: ${details}`;
+        } catch {
+          // Keep the SDK error when the function response is not JSON.
+        }
+      }
+      throw new Error(message);
+    }
     return result.data as { ok?: boolean; user?: AdminUserRow };
   });
 
@@ -265,6 +278,55 @@ export const creatorPortalData = createServerFn({ method: "GET" })
       profile: profileResult.data,
       talent: mapTalentRow(talentResult.data as TalentRow),
       connections: connectionsResult.data ?? [],
+    };
+  });
+
+export const creatorStartYouTubeOAuth = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireCreator(context.supabase, context.userId);
+
+    const clientId =
+      import.meta.env["VITE_GOOGLE_YOUTUBE_CLIENT_ID"] || process.env["GOOGLE_YOUTUBE_CLIENT_ID"];
+    if (!clientId) {
+      throw new Error("A conexão do YouTube ainda não foi configurada pelo administrador.");
+    }
+
+    const { data: access, error: accessError } = await context.supabase
+      .from("creator_talent_access")
+      .select("talent_id")
+      .eq("user_id", context.userId)
+      .maybeSingle();
+    if (accessError) throw new Error(accessError.message);
+    if (!access) throw new Error("Nenhum Media Kit está atribuído a esta conta.");
+
+    const state = `${crypto.randomUUID()}${crypto.randomUUID()}`;
+    const { error: stateError } = await context.supabase.from("social_oauth_states").insert({
+      state,
+      user_id: context.userId,
+      talent_id: access.talent_id,
+      platform: "youtube",
+      expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+    });
+    if (stateError) throw new Error(stateError.message);
+
+    const supabaseUrl = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"];
+    if (!supabaseUrl) throw new Error("A URL do Supabase não está configurada.");
+
+    const redirectUri = `${supabaseUrl.replace(/\/$/, "")}/functions/v1/youtube-oauth-callback`;
+    const query = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      access_type: "offline",
+      prompt: "consent",
+      include_granted_scopes: "true",
+      scope: "https://www.googleapis.com/auth/youtube.readonly",
+      state,
+    });
+
+    return {
+      authorizationUrl: `https://accounts.google.com/o/oauth2/v2/auth?${query.toString()}`,
     };
   });
 

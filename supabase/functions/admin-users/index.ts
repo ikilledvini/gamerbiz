@@ -1,4 +1,6 @@
-import { createClient, type User } from "npm:@supabase/supabase-js@2";
+import { createClient } from "npm:@supabase/supabase-js@2";
+
+type AuthUser = { id: string };
 
 type AppRole = "admin" | "creator";
 
@@ -66,7 +68,7 @@ Deno.serve(async (request) => {
     const isBootstrap =
       body.action === "bootstrap" && Boolean(setupKey) && suppliedSetupKey === setupKey;
 
-    let actor: User | null = null;
+    let actor: AuthUser | null = null;
     if (!isBootstrap) {
       const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
       if (!token) return respond({ error: "Authentication required" }, 401);
