@@ -1,38 +1,60 @@
-import { useEffect, useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { GripVertical, Plus, Search, Trash2 } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ArrowUpRight,
+  CircleUserRound,
+  Clock3,
+  MessageSquareText,
+  Pencil,
+  Plus,
+  RefreshCw,
+  Search,
+  ShieldCheck,
+  UsersRound,
+  WifiOff,
+} from "lucide-react";
 import { toast } from "sonner";
+import { PortalShell } from "@/components/dashboard/portal-shell";
+import { TalentEditorDialog } from "@/components/dashboard/talent-editor-dialog";
+import { UserEditorDialog, type ManagedUserDraft } from "@/components/dashboard/user-editor-dialog";
 import { Toaster } from "@/components/ui/sonner";
-import { Logo } from "@/components/ui/logo";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  adminDeleteTalent,
-  adminIsAdmin,
-  adminListTalents,
-  adminReorderTalents,
-  adminSaveTalent,
-} from "@/lib/talents.functions";
+  adminAssignCreator,
+  adminDashboardOverview,
+  adminManageUser,
+  adminRemoveCreatorAccess,
+  adminUpdateLeadStatus,
+  getCurrentPortalAccess,
+  type LeadRow,
+  type SocialConnectionRow,
+} from "@/lib/portal.functions";
+import { adminDeleteTalent, adminSaveTalent } from "@/lib/talents.functions";
 import type { TalentRow } from "@/lib/talent-mapper";
 import { normalizeForSearch, toSlug } from "@/lib/slug";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Painel de Media Kits — Gamerbiz" },
-      { name: "description", content: "Painel interno para gerenciar os media kits da Gamerbiz." },
+      { title: "Central de operação — Gamerbiz" },
+      {
+        name: "description",
+        content: "Painel administrativo para Media Kits, conexões, acessos e oportunidades.",
+      },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Painel de Media Kits — Gamerbiz" },
-      { property: "og:description", content: "Painel interno de gestão de talentos." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminRoute,
 });
 
-const EMPTY: TalentRow = {
+type AdminView = "overview" | "talents" | "leads" | "access";
+type LeadFilter = "all" | LeadRow["kind"];
+
+const EMPTY_TALENT: TalentRow = {
   id: "",
   slug: "",
   stage_name: "",
@@ -57,34 +79,143 @@ const EMPTY: TalentRow = {
   contact_email: null,
 };
 
+const EMPTY_USER: ManagedUserDraft = {
+  userId: null,
+  email: "",
+  displayName: "",
+  password: "",
+  role: "creator",
+  talentId: "",
+};
+
+const VIEW_ITEMS: Array<{
+  key: AdminView;
+  label: string;
+  icon: typeof Activity;
+}> = [
+  { key: "overview", label: "Visão geral", icon: Activity },
+  { key: "talents", label: "Media Kits", icon: UsersRound },
+  { key: "leads", label: "Oportunidades", icon: MessageSquareText },
+  { key: "access", label: "Acessos", icon: ShieldCheck },
+];
+
 const STATUS_LABEL: Record<TalentRow["status"], string> = {
   draft: "Rascunho",
-  published: "Publicado",
   hidden: "Oculto",
+  published: "Publicado",
 };
+
+const CONNECTION_LABEL: Record<string, string> = {
+  connected: "Atualizada",
+  disconnected: "Desconectada",
+  error: "Com erro",
+  pending: "Aguardando sync",
+};
+
+function talentHealth(talent: TalentRow) {
+  const fields = [
+    ["Bio", talent.bio],
+    ["Foto", talent.image_url],
+    ["E-mail comercial", talent.contact_email],
+    ["Cidade", talent.city],
+    ["Conquistas", talent.achievements],
+  ] as const;
+  const missing = fields.filter(([, value]) => !value?.trim()).map(([label]) => label);
+  return { missing, score: Math.round(((fields.length - missing.length) / fields.length) * 100) };
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  urgent,
+}: {
+  icon: typeof Activity;
+  label: string;
+  value: number;
+  detail: string;
+  urgent?: boolean;
+}) {
+  return (
+    <article className="rounded-[28px] border border-border bg-surface p-5 md:p-6">
+      <div className="flex items-center justify-between gap-4">
+        <span
+          className={`grid h-11 w-11 place-items-center rounded-2xl ${urgent ? "bg-primary/15 text-primary" : "bg-muted text-foreground"}`}
+        >
+          <Icon className="h-5 w-5" aria-hidden="true" />
+        </span>
+        {urgent && value > 0 ? (
+          <span className="rounded-full bg-primary/15 px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.14em] text-primary">
+            atenção
+          </span>
+        ) : null}
+      </div>
+      <p className="mt-6 font-display text-4xl font-bold tracking-[-0.05em] text-foreground">
+        {value}
+      </p>
+      <p className="mt-2 font-display text-xs font-bold uppercase tracking-[0.14em] text-foreground">
+        {label}
+      </p>
+      <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{detail}</p>
+    </article>
+  );
+}
+
+function StatusPill({ status }: { status: string }) {
+  const isGood = status === "connected" || status === "published" || status === "contacted";
+  const isBad = status === "error" || status === "new";
+  return (
+    <span
+      className={`inline-flex rounded-full px-3 py-1 text-[0.6rem] font-bold uppercase tracking-[0.12em] ${
+        isGood
+          ? "bg-emerald-500/15 text-emerald-400"
+          : isBad
+            ? "bg-primary/15 text-primary"
+            : "bg-muted text-muted-foreground"
+      }`}
+    >
+      {CONNECTION_LABEL[status] ?? STATUS_LABEL[status as TalentRow["status"]] ?? status}
+    </span>
+  );
+}
 
 function AdminRoute() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const listTalents = useServerFn(adminListTalents);
-  const checkAdmin = useServerFn(adminIsAdmin);
+  const getAccess = useServerFn(getCurrentPortalAccess);
+  const loadDashboard = useServerFn(adminDashboardOverview);
   const saveTalent = useServerFn(adminSaveTalent);
   const deleteTalent = useServerFn(adminDeleteTalent);
-  const reorderTalents = useServerFn(adminReorderTalents);
+  const updateLeadStatus = useServerFn(adminUpdateLeadStatus);
+  const assignCreator = useServerFn(adminAssignCreator);
+  const removeCreatorAccess = useServerFn(adminRemoveCreatorAccess);
+  const manageUser = useServerFn(adminManageUser);
 
+  const [view, setView] = useState<AdminView>("overview");
   const [term, setTerm] = useState("");
+  const [leadFilter, setLeadFilter] = useState<LeadFilter>("all");
   const [editing, setEditing] = useState<TalentRow | null>(null);
-  const [order, setOrder] = useState<TalentRow[] | null>(null);
-  const [dragId, setDragId] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<ManagedUserDraft | null>(null);
 
-  const adminQuery = useQuery({ queryKey: ["is-admin"], queryFn: () => checkAdmin({}) });
-  const isAdmin = adminQuery.data?.isAdmin === true;
-
-  const talentsQuery = useQuery({
-    queryKey: ["admin-talents"],
-    queryFn: () => listTalents({}),
+  const accessQuery = useQuery({ queryKey: ["portal-access"], queryFn: () => getAccess({}) });
+  const isAdmin = accessQuery.data?.role === "admin";
+  const dashboardQuery = useQuery({
+    queryKey: ["admin-dashboard"],
+    queryFn: () => loadDashboard({}),
     enabled: isAdmin,
   });
+
+  const refreshDashboard = () => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
 
   const saveMutation = useMutation({
     mutationFn: (values: TalentRow) =>
@@ -115,9 +246,9 @@ function AdminRoute() {
         },
       }),
     onSuccess: () => {
-      toast.success("Talento salvo.");
+      toast.success("Media Kit salvo.");
       setEditing(null);
-      void queryClient.invalidateQueries({ queryKey: ["admin-talents"] });
+      void refreshDashboard();
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -125,59 +256,152 @@ function AdminRoute() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteTalent({ data: { id } }),
     onSuccess: () => {
-      toast.success("Talento removido.");
+      toast.success("Media Kit removido.");
       setEditing(null);
-      void queryClient.invalidateQueries({ queryKey: ["admin-talents"] });
+      void refreshDashboard();
     },
     onError: (error: Error) => toast.error(error.message),
   });
 
-  const reorderMutation = useMutation({
-    mutationFn: (ids: string[]) => reorderTalents({ data: { ids } }),
+  const leadMutation = useMutation({
+    mutationFn: (input: { id: string; status: LeadRow["status"] }) =>
+      updateLeadStatus({ data: input }),
     onSuccess: () => {
-      toast.success("Ordem atualizada.");
-      void queryClient.invalidateQueries({ queryKey: ["admin-talents"] });
+      toast.success("Oportunidade atualizada.");
+      void refreshDashboard();
     },
-    onError: (error: Error) => {
-      toast.error(error.message);
-      setOrder(null);
-    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
-  const baseList = order ?? talentsQuery.data ?? [];
-  const canReorder = normalizeForSearch(term).length === 0;
+  const accessMutation = useMutation({
+    mutationFn: (input: { userId: string; talentId: string | null }) =>
+      input.talentId
+        ? assignCreator({ data: { userId: input.userId, talentId: input.talentId } })
+        : removeCreatorAccess({ data: { userId: input.userId } }),
+    onSuccess: () => {
+      toast.success("Acesso do creator atualizado.");
+      void refreshDashboard();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
-  const rows = useMemo(() => {
-    const needle = normalizeForSearch(term);
-    if (!needle) return baseList;
-    return baseList.filter((row) =>
-      normalizeForSearch(`${row.stage_name} ${row.username ?? ""} ${row.category}`).includes(needle),
-    );
-  }, [baseList, term]);
+  const userMutation = useMutation({
+    mutationFn: (draft: ManagedUserDraft) =>
+      draft.userId
+        ? manageUser({
+            data: {
+              action: "update",
+              userId: draft.userId,
+              email: draft.email,
+              displayName: draft.displayName || null,
+              role: draft.role,
+              talentId: draft.role === "creator" ? draft.talentId : null,
+              ...(draft.password ? { password: draft.password } : {}),
+            },
+          })
+        : manageUser({
+            data: {
+              action: "create",
+              email: draft.email,
+              password: draft.password,
+              displayName: draft.displayName || null,
+              role: draft.role,
+              talentId: draft.role === "creator" ? draft.talentId : null,
+            },
+          }),
+    onSuccess: () => {
+      toast.success(editingUser?.userId ? "Usuário atualizado." : "Usuário criado.");
+      setEditingUser(null);
+      void refreshDashboard();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
-  useEffect(() => {
-    setOrder(null);
-  }, [talentsQuery.data]);
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId: string) => manageUser({ data: { action: "delete", userId } }),
+    onSuccess: () => {
+      toast.success("Usuário excluído.");
+      setEditingUser(null);
+      void refreshDashboard();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
-  function handleDrop(targetId: string) {
-    if (!dragId || dragId === targetId) return;
-    const list = [...baseList];
-    const from = list.findIndex((row) => row.id === dragId);
-    const to = list.findIndex((row) => row.id === targetId);
-    if (from < 0 || to < 0) return;
-    const [moved] = list.splice(from, 1);
-    if (!moved) return;
-    list.splice(to, 0, moved);
-    setOrder(list);
-    setDragId(null);
-    reorderMutation.mutate(list.map((row) => row.id));
-  }
-
-  useEffect(() => {
-    if (adminQuery.isSuccess && !isAdmin) {
-      toast.error("Sua conta não tem permissão de administrador.");
+  const dashboard = dashboardQuery.data;
+  const connectionsByTalent = useMemo(() => {
+    const map = new Map<string, SocialConnectionRow[]>();
+    for (const connection of dashboard?.connections ?? []) {
+      const rows = map.get(connection.talent_id) ?? [];
+      rows.push(connection);
+      map.set(connection.talent_id, rows);
     }
-  }, [adminQuery.isSuccess, isAdmin]);
+    return map;
+  }, [dashboard?.connections]);
+
+  const accessByTalent = useMemo(
+    () => new Map((dashboard?.access ?? []).map((entry) => [entry.talent_id, entry.user_id])),
+    [dashboard?.access],
+  );
+  const accessByUser = useMemo(
+    () => new Map((dashboard?.access ?? []).map((entry) => [entry.user_id, entry.talent_id])),
+    [dashboard?.access],
+  );
+  const profilesById = useMemo(
+    () => new Map((dashboard?.profiles ?? []).map((profile) => [profile.user_id, profile])),
+    [dashboard?.profiles],
+  );
+  const adminUserIds = useMemo(
+    () => new Set(dashboard?.adminUserIds ?? []),
+    [dashboard?.adminUserIds],
+  );
+
+  const talentRows = useMemo(() => {
+    const needle = normalizeForSearch(term);
+    const rows = dashboard?.talents ?? [];
+    if (!needle) return rows;
+    return rows.filter((talent) =>
+      normalizeForSearch(
+        `${talent.stage_name} ${talent.username ?? ""} ${talent.category} ${talent.status}`,
+      ).includes(needle),
+    );
+  }, [dashboard?.talents, term]);
+
+  const filteredLeads = useMemo(
+    () =>
+      (dashboard?.leads ?? []).filter((lead) => leadFilter === "all" || lead.kind === leadFilter),
+    [dashboard?.leads, leadFilter],
+  );
+
+  const publishedTalents = (dashboard?.talents ?? []).filter(
+    (talent) => talent.status === "published",
+  );
+  const newLeads = (dashboard?.leads ?? []).filter((lead) => lead.status === "new");
+  const missingData = publishedTalents.filter((talent) => talentHealth(talent).score < 80);
+  const missingConnections = publishedTalents.filter(
+    (talent) =>
+      !(connectionsByTalent.get(talent.id) ?? []).some(
+        (connection) => connection.sync_enabled && connection.profile_url,
+      ),
+  );
+  const syncErrors = (dashboard?.connections ?? []).filter(
+    (connection) => connection.connection_status === "error" || connection.last_sync_error,
+  );
+  const staleThreshold = Date.now() - 48 * 60 * 60 * 1000;
+  const pendingMetricConnections = (dashboard?.connections ?? []).filter(
+    (connection) =>
+      Boolean(connection.profile_url) &&
+      connection.sync_enabled &&
+      connection.connection_status !== "error" &&
+      (connection.connection_status !== "connected" ||
+        !connection.last_synced_at ||
+        new Date(connection.last_synced_at).getTime() < staleThreshold),
+  );
+  const pendingMetricTalentIds = new Set(
+    pendingMetricConnections.map((connection) => connection.talent_id),
+  );
+  const pendingMetricConnectionIds = new Set(
+    pendingMetricConnections.map((connection) => connection.id),
+  );
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -186,364 +410,594 @@ function AdminRoute() {
     void navigate({ to: "/auth", replace: true });
   }
 
+  if (accessQuery.isLoading) {
+    return <div className="min-h-screen bg-background" />;
+  }
+
   return (
-    <main className="min-h-screen bg-background">
+    <PortalShell
+      eyebrow="Central administrativa"
+      title="Operação dos Media Kits"
+      description="Acompanhe publicação, qualidade dos dados, conexões sociais, acessos e oportunidades comerciais em um só lugar."
+      onSignOut={() => void handleSignOut()}
+    >
       <Toaster />
-      <header className="border-b border-border">
-        <div className="container-gbz flex flex-wrap items-center justify-between gap-4 py-5">
-          <div className="flex items-center gap-4">
-            <Logo className="h-8" />
-            <span className="font-display text-xs font-bold uppercase tracking-[0.18em] text-subtle">
-              Painel de Media Kits
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => void handleSignOut()}
-            className="rounded-full border border-border px-5 py-2.5 font-display text-[0.65rem] font-bold uppercase tracking-[0.16em] text-muted-foreground duration-200 hover:border-primary hover:text-primary"
+      {!isAdmin ? (
+        <section className="rounded-[28px] border border-primary/30 bg-primary/10 p-7">
+          <h2 className="font-display text-xl font-bold text-foreground">Acesso não autorizado</h2>
+          <p className="mt-3 text-sm text-muted-foreground">
+            Esta conta não possui o papel de administrador. Se ela for de um creator, acesse o
+            portal de conexões.
+          </p>
+          <Link
+            to="/creator"
+            className="mt-6 inline-flex min-h-11 items-center rounded-full bg-primary px-5 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
           >
-            Sair
-          </button>
-        </div>
-      </header>
-
-      <section className="container-gbz py-10">
-        {adminQuery.isLoading ? (
-          <p className="text-muted-foreground">Carregando...</p>
-        ) : !isAdmin ? (
-          <div className="rounded-2xl border border-border bg-surface p-8">
-            <h1 className="font-display text-xl font-bold uppercase text-foreground">
-              Sem permissão
-            </h1>
-            <p className="mt-3 max-w-[60ch] text-sm text-muted-foreground">
-              Sua conta está autenticada, mas ainda não tem o papel de administrador. Peça para um
-              administrador liberar o acesso.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="relative w-full md:max-w-[380px]">
-                <Search
-                  className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-                  aria-hidden="true"
-                />
-                <input
-                  type="search"
-                  value={term}
-                  onChange={(event) => setTerm(event.target.value)}
-                  placeholder="Buscar talento"
-                  aria-label="Buscar talento"
-                  className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => setEditing({ ...EMPTY })}
-                className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.98]"
-              >
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                Novo talento
-              </button>
-              <p className="ml-auto text-xs uppercase tracking-[0.18em] text-subtle">
-                {rows.length} talentos
-              </p>
+            Ir para o portal do creator
+          </Link>
+        </section>
+      ) : (
+        <>
+          <div className="flex flex-col gap-3 rounded-[24px] border border-border bg-surface p-2 md:flex-row md:items-center">
+            <div
+              role="tablist"
+              aria-label="Seções administrativas"
+              className="flex flex-1 gap-1 overflow-x-auto"
+            >
+              {VIEW_ITEMS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    role="tab"
+                    aria-selected={view === item.key}
+                    onClick={() => setView(item.key)}
+                    className={`gbz-interactive inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[18px] px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] transition-colors ${
+                      view === item.key
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground fine-hover:hover:bg-muted fine-hover:hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" aria-hidden="true" />
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
+            <button
+              type="button"
+              onClick={() => void refreshDashboard()}
+              className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-[18px] border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+            >
+              <RefreshCw className={`h-4 w-4 ${dashboardQuery.isFetching ? "animate-spin" : ""}`} />
+              Atualizar
+            </button>
+          </div>
 
-            <div className="mt-8 overflow-hidden rounded-2xl border border-border">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-surface text-[0.65rem] uppercase tracking-[0.16em] text-subtle">
-                  <tr>
-                    <th className="w-10 px-3 py-4" />
-                    <th className="px-5 py-4">Nome</th>
-                    <th className="px-5 py-4">@</th>
-                    <th className="px-5 py-4">Nicho</th>
-                    <th className="px-5 py-4">Situação</th>
-                    <th className="px-5 py-4" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {talentsQuery.isLoading ? (
-                    <tr>
-                      <td colSpan={6} className="px-5 py-6 text-muted-foreground">
-                        Carregando talentos...
-                      </td>
-                    </tr>
-                  ) : (
-                    rows.map((row) => (
-                      <tr
-                        key={row.id}
-                        draggable={canReorder}
-                        onDragStart={() => setDragId(row.id)}
-                        onDragEnd={() => setDragId(null)}
-                        onDragOver={(event) => {
-                          if (canReorder && dragId) event.preventDefault();
-                        }}
-                        onDrop={(event) => {
-                          event.preventDefault();
-                          if (canReorder) handleDrop(row.id);
-                        }}
-                        className={`border-t border-border ${canReorder ? "cursor-grab active:cursor-grabbing" : ""} ${
-                          dragId === row.id ? "opacity-50" : ""
-                        }`}
-                      >
-                        <td className="px-3 py-4 text-subtle">
-                          <GripVertical
-                            className={`h-4 w-4 ${canReorder ? "" : "opacity-30"}`}
-                            aria-hidden="true"
-                          />
-                        </td>
-                        <td className="px-5 py-4 font-display font-bold text-foreground">
-                          {row.stage_name}
-                        </td>
-                        <td className="px-5 py-4 text-muted-foreground">{row.username ?? "—"}</td>
-                        <td className="px-5 py-4 text-muted-foreground">{row.category}</td>
-                        <td className="px-5 py-4">
-                          <span
-                            className={`rounded-full px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] ${
-                              row.status === "published"
-                                ? "bg-primary/15 text-primary"
-                                : "bg-surface text-subtle"
-                            }`}
+          {dashboardQuery.isLoading ? (
+            <p className="mt-8 text-sm text-muted-foreground">Carregando a operação...</p>
+          ) : dashboardQuery.isError ? (
+            <p className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+              {dashboardQuery.error.message}
+            </p>
+          ) : view === "overview" ? (
+            <div className="mt-6 space-y-6">
+              <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+                <KpiCard
+                  icon={UsersRound}
+                  label="Media Kits"
+                  value={publishedTalents.length}
+                  detail="publicados no diretório"
+                />
+                <KpiCard
+                  icon={MessageSquareText}
+                  label="Novas respostas"
+                  value={newLeads.length}
+                  detail="marcas e creators aguardando retorno"
+                  urgent
+                />
+                <KpiCard
+                  icon={AlertTriangle}
+                  label="Dados incompletos"
+                  value={missingData.length}
+                  detail="Media Kits abaixo de 80%"
+                  urgent
+                />
+                <KpiCard
+                  icon={WifiOff}
+                  label="Sem conexão"
+                  value={missingConnections.length}
+                  detail="talentos sem nenhuma rede ativa"
+                  urgent
+                />
+                <KpiCard
+                  icon={Activity}
+                  label="Erros de sync"
+                  value={syncErrors.length}
+                  detail="integrações que exigem revisão"
+                  urgent
+                />
+                <KpiCard
+                  icon={RefreshCw}
+                  label="Atualização pendente"
+                  value={pendingMetricTalentIds.size}
+                  detail="creators aguardando métricas novas"
+                  urgent
+                />
+              </section>
+
+              <section className="grid gap-6 xl:grid-cols-[1.35fr_0.9fr]">
+                <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
+                        Prioridades
+                      </p>
+                      <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
+                        Fila de atenção
+                      </h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setView("talents")}
+                      className="text-xs font-semibold text-primary"
+                    >
+                      Ver todos
+                    </button>
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    {publishedTalents
+                      .filter(
+                        (talent) =>
+                          talentHealth(talent).score < 100 ||
+                          !connectionsByTalent.get(talent.id)?.length ||
+                          pendingMetricTalentIds.has(talent.id),
+                      )
+                      .slice(0, 7)
+                      .map((talent) => {
+                        const health = talentHealth(talent);
+                        const connected = (connectionsByTalent.get(talent.id) ?? []).filter(
+                          (item) => item.sync_enabled,
+                        ).length;
+                        const awaitingMetrics = (connectionsByTalent.get(talent.id) ?? []).filter(
+                          (item) => pendingMetricConnectionIds.has(item.id),
+                        ).length;
+                        return (
+                          <button
+                            key={talent.id}
+                            type="button"
+                            onClick={() => {
+                              setEditing(talent);
+                              setView("talents");
+                            }}
+                            className="gbz-interactive flex w-full items-center gap-4 rounded-2xl border border-border bg-background p-4 text-left transition-colors fine-hover:hover:border-primary/60"
                           >
-                            {STATUS_LABEL[row.status]}
-                          </span>
-                        </td>
-                        <td className="px-5 py-4 text-right">
+                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted font-display text-sm font-bold text-foreground">
+                              {talent.stage_name.slice(0, 2).toUpperCase()}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate font-display text-sm font-bold">
+                                {talent.stage_name}
+                              </span>
+                              <span className="mt-1 block truncate text-xs text-muted-foreground">
+                                {health.missing.length
+                                  ? `Falta: ${health.missing.join(", ")}`
+                                  : awaitingMetrics
+                                    ? `${awaitingMetrics} conexões aguardando dados`
+                                    : "Dados essenciais completos"}
+                              </span>
+                            </span>
+                            <span className="text-right text-xs text-muted-foreground">
+                              {health.score}%<br />
+                              {connected} redes
+                            </span>
+                          </button>
+                        );
+                      })}
+                    {publishedTalents.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">Nenhum Media Kit publicado.</p>
+                    ) : null}
+                  </div>
+                </article>
+
+                <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
+                        Entrada
+                      </p>
+                      <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
+                        Últimas respostas
+                      </h2>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setView("leads")}
+                      className="text-xs font-semibold text-primary"
+                    >
+                      Abrir inbox
+                    </button>
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    {(dashboard?.leads ?? []).slice(0, 6).map((lead) => (
+                      <div
+                        key={lead.id}
+                        className="rounded-2xl border border-border bg-background p-4"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="truncate font-display text-sm font-bold">{lead.name}</p>
+                            <p className="mt-1 truncate text-xs text-muted-foreground">
+                              {lead.kind === "brand" ? lead.company : lead.creator_type}
+                            </p>
+                          </div>
+                          <StatusPill status={lead.status} />
+                        </div>
+                        <p className="mt-3 text-[0.65rem] uppercase tracking-[0.12em] text-subtle">
+                          {lead.kind === "brand" ? "Marca" : "Creator"} ·{" "}
+                          {formatDate(lead.created_at)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              </section>
+            </div>
+          ) : view === "talents" ? (
+            <section className="mt-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative flex-1 sm:max-w-md">
+                  <Search
+                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                    aria-hidden="true"
+                  />
+                  <input
+                    type="search"
+                    value={term}
+                    onChange={(event) => setTerm(event.target.value)}
+                    placeholder="Buscar Media Kit"
+                    aria-label="Buscar Media Kit"
+                    className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditing({ ...EMPTY_TALENT })}
+                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" /> Novo talento
+                </button>
+              </div>
+
+              <div className="mt-6 overflow-hidden rounded-[28px] border border-border bg-surface">
+                <div className="hidden grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
+                  <span>Talento</span>
+                  <span>Qualidade</span>
+                  <span>Conexões</span>
+                  <span>Acesso</span>
+                  <span>Ação</span>
+                </div>
+                <div className="divide-y divide-border">
+                  {talentRows.map((talent) => {
+                    const health = talentHealth(talent);
+                    const connections = connectionsByTalent.get(talent.id) ?? [];
+                    const assignedProfile = profilesById.get(accessByTalent.get(talent.id) ?? "");
+                    return (
+                      <article
+                        key={talent.id}
+                        className="grid gap-4 px-5 py-5 lg:grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] lg:items-center lg:px-6"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h2 className="font-display text-sm font-bold">{talent.stage_name}</h2>
+                            <StatusPill status={talent.status} />
+                          </div>
+                          <p className="mt-1 truncate text-xs text-muted-foreground">
+                            {talent.category} · /{talent.slug}
+                          </p>
+                        </div>
+                        <div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Completude</span>
+                            <span className="font-bold">{health.score}%</span>
+                          </div>
+                          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                            <div
+                              className="h-full rounded-full bg-primary"
+                              style={{ width: `${health.score}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {connections.length ? (
+                            connections
+                              .slice(0, 3)
+                              .map((connection) => (
+                                <StatusPill
+                                  key={connection.id}
+                                  status={connection.connection_status}
+                                />
+                              ))
+                          ) : (
+                            <span className="text-xs text-primary">Nenhuma</span>
+                          )}
+                        </div>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {assignedProfile?.email ?? "Sem creator atribuído"}
+                        </p>
+                        <div className="flex gap-2 lg:justify-end">
+                          <Link
+                            to="/mediakit/$slug"
+                            params={{ slug: talent.slug }}
+                            target="_blank"
+                            aria-label={`Abrir Media Kit de ${talent.stage_name}`}
+                            className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                          >
+                            <ArrowUpRight className="h-4 w-4" />
+                          </Link>
                           <button
                             type="button"
-                            onClick={() => setEditing(row)}
-                            className="rounded-full border border-border px-4 py-2 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground duration-200 hover:border-primary hover:text-primary"
+                            onClick={() => setEditing(talent)}
+                            className="gbz-interactive min-h-10 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
                           >
                             Editar
                           </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-      </section>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          ) : view === "leads" ? (
+            <section className="mt-6">
+              <div className="flex flex-wrap gap-2">
+                {(["all", "brand", "creator"] as LeadFilter[]).map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setLeadFilter(filter)}
+                    className={`min-h-10 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] ${leadFilter === filter ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground"}`}
+                  >
+                    {filter === "all" ? "Todas" : filter === "brand" ? "Marcas" : "Creators"}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-5 grid gap-4 xl:grid-cols-2">
+                {filteredLeads.map((lead) => (
+                  <article
+                    key={lead.id}
+                    className="rounded-[26px] border border-border bg-surface p-5 md:p-6"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <p className="font-display text-[0.6rem] font-bold uppercase tracking-[0.16em] text-primary">
+                          {lead.kind === "brand" ? "Marca" : "Creator"}
+                        </p>
+                        <h2 className="mt-2 truncate font-display text-lg font-bold">
+                          {lead.name}
+                        </h2>
+                        <p className="mt-1 truncate text-sm text-muted-foreground">{lead.email}</p>
+                      </div>
+                      <select
+                        aria-label={`Status de ${lead.name}`}
+                        value={lead.status}
+                        onChange={(event) =>
+                          leadMutation.mutate({
+                            id: lead.id,
+                            status: event.target.value as LeadRow["status"],
+                          })
+                        }
+                        className="min-h-10 rounded-full border border-border bg-background px-3 text-xs text-foreground outline-none focus:border-primary"
+                      >
+                        <option value="new">Nova</option>
+                        <option value="contacted">Contatada</option>
+                        <option value="archived">Arquivada</option>
+                      </select>
+                    </div>
+                    <dl className="mt-5 grid gap-4 border-t border-border pt-5 text-sm sm:grid-cols-2">
+                      <div>
+                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
+                          Contexto
+                        </dt>
+                        <dd className="mt-2 text-muted-foreground">
+                          {lead.kind === "brand" ? lead.company : lead.creator_type}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
+                          WhatsApp
+                        </dt>
+                        <dd className="mt-2 text-muted-foreground">
+                          {lead.whatsapp || "Não informado"}
+                        </dd>
+                      </div>
+                      <div className="sm:col-span-2">
+                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
+                          {lead.kind === "brand" ? "Mensagem" : "Perfis"}
+                        </dt>
+                        <dd className="mt-2 whitespace-pre-wrap leading-relaxed text-muted-foreground">
+                          {lead.kind === "brand" ? lead.message : lead.profiles}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="mt-5 flex items-center gap-2 text-xs text-subtle">
+                      <Clock3 className="h-3.5 w-3.5" />
+                      {formatDate(lead.created_at)}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
+          ) : (
+            <section className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.4fr]">
+              <article className="rounded-[28px] border border-border bg-surface p-6 md:p-7">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary">
+                  <CircleUserRound className="h-5 w-5" />
+                </span>
+                <h2 className="mt-6 font-display text-xl font-bold tracking-[-0.03em]">
+                  Acesso mínimo por design
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Cada creator recebe acesso a um único Media Kit. Ele pode apenas conectar ou
+                  desconectar as próprias redes; textos, métricas manuais e publicação continuam sob
+                  controle da Gamerbiz.
+                </p>
+                <div className="mt-6 rounded-2xl border border-border bg-background p-4 text-xs leading-relaxed text-muted-foreground">
+                  <strong className="text-foreground">Gestão centralizada:</strong> crie, edite,
+                  redefina senhas e exclua contas diretamente por esta tela. Senhas existentes nunca
+                  são exibidas.
+                </div>
+              </article>
+              <article className="overflow-hidden rounded-[28px] border border-border bg-surface">
+                <div className="flex flex-col gap-4 border-b border-border px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="font-display text-lg font-bold">Usuários e Media Kits</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {dashboard?.profiles.length ?? 0} contas disponíveis no Supabase
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setEditingUser({ ...EMPTY_USER })}
+                    className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
+                  >
+                    <Plus className="h-4 w-4" aria-hidden="true" />
+                    Novo usuário
+                  </button>
+                </div>
+                <div className="divide-y divide-border">
+                  {(dashboard?.profiles ?? []).map((profile) => {
+                    const talentId = accessByUser.get(profile.user_id) ?? "";
+                    const isCreator = dashboard?.creatorUserIds.includes(profile.user_id);
+                    const isProfileAdmin = adminUserIds.has(profile.user_id);
+                    return (
+                      <div
+                        key={profile.user_id}
+                        className="grid gap-4 px-6 py-5 md:grid-cols-[1fr_minmax(220px,0.9fr)_auto] md:items-center"
+                      >
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="truncate font-display text-sm font-bold">
+                              {profile.display_name || profile.email.split("@")[0]}
+                            </p>
+                            {isCreator ? (
+                              <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
+                                Creator
+                              </span>
+                            ) : null}
+                            {isCreator && profile.must_change_password ? (
+                              <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-amber-300">
+                                Troca de senha pendente
+                              </span>
+                            ) : null}
+                            {isProfileAdmin ? (
+                              <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-emerald-400">
+                                Administrador
+                              </span>
+                            ) : null}
+                          </div>
+                          <p className="mt-1 truncate text-xs text-muted-foreground">
+                            {profile.email}
+                          </p>
+                        </div>
+                        {isProfileAdmin ? (
+                          <div className="flex min-h-11 items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 text-xs font-semibold text-emerald-300">
+                            Acesso total — sem Media Kit
+                          </div>
+                        ) : (
+                          <select
+                            value={talentId}
+                            onChange={(event) =>
+                              accessMutation.mutate({
+                                userId: profile.user_id,
+                                talentId: event.target.value || null,
+                              })
+                            }
+                            disabled={accessMutation.isPending}
+                            aria-label={`Media Kit atribuído a ${profile.email}`}
+                            className="min-h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+                          >
+                            <option value="">Sem Media Kit</option>
+                            {(dashboard?.talents ?? []).map((talent) => (
+                              <option key={talent.id} value={talent.id}>
+                                {talent.stage_name}
+                              </option>
+                            ))}
+                          </select>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditingUser({
+                              userId: profile.user_id,
+                              email: profile.email,
+                              displayName: profile.display_name || "",
+                              password: "",
+                              role: isProfileAdmin ? "admin" : "creator",
+                              talentId,
+                            })
+                          }
+                          aria-label={`Editar usuário ${profile.email}`}
+                          className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                        >
+                          <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                          Editar
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </article>
+            </section>
+          )}
+        </>
+      )}
 
       {editing ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 p-6">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              saveMutation.mutate(editing);
-            }}
-            className="my-6 w-full max-w-3xl rounded-3xl border border-border bg-surface p-8"
-          >
-            <h2 className="font-display text-xl font-bold uppercase text-foreground">
-              {editing.id ? `Editar ${editing.stage_name}` : "Novo talento"}
-            </h2>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <Field
-                label="Nome artístico"
-                value={editing.stage_name}
-                onChange={(value) =>
-                  setEditing({
-                    ...editing,
-                    stage_name: value,
-                    slug: editing.id ? editing.slug : toSlug(value),
-                  })
-                }
-                required
-              />
-              <Field
-                label="Slug (URL)"
-                value={editing.slug}
-                onChange={(value) => setEditing({ ...editing, slug: value })}
-                required
-              />
-              <Field
-                label="@ usuário"
-                value={editing.username ?? ""}
-                onChange={(value) => setEditing({ ...editing, username: value })}
-              />
-              <Field
-                label="Nicho (use + para combinar)"
-                value={editing.category}
-                onChange={(value) => setEditing({ ...editing, category: value })}
-              />
-              <Field
-                label="Cidade"
-                value={editing.city ?? ""}
-                onChange={(value) => setEditing({ ...editing, city: value })}
-              />
-              <Field
-                label="Ordem"
-                value={String(editing.sort_order)}
-                onChange={(value) => setEditing({ ...editing, sort_order: Number(value) || 0 })}
-              />
-              <Field
-                label="URL da foto"
-                value={editing.image_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, image_url: value })}
-              />
-              <Field
-                label="Link do media kit"
-                value={editing.media_kit_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, media_kit_url: value })}
-              />
-
-              <label className="text-xs font-bold uppercase tracking-[0.16em] text-subtle md:col-span-2">
-                Bio
-                <textarea
-                  value={editing.bio ?? ""}
-                  onChange={(event) => setEditing({ ...editing, bio: event.target.value })}
-                  rows={3}
-                  className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm normal-case tracking-normal text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-                />
-              </label>
-
-              <label className="text-xs font-bold uppercase tracking-[0.16em] text-subtle">
-                Situação
-                <select
-                  value={editing.status}
-                  onChange={(event) =>
-                    setEditing({ ...editing, status: event.target.value as TalentRow["status"] })
+        <TalentEditorDialog
+          talent={editing}
+          onChange={setEditing}
+          onClose={() => setEditing(null)}
+          onSave={() => saveMutation.mutate(editing)}
+          onDelete={
+            editing.id
+              ? () => {
+                  if (
+                    window.confirm(`Excluir permanentemente o Media Kit de ${editing.stage_name}?`)
+                  ) {
+                    deleteMutation.mutate(editing.id);
                   }
-                  className="mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-sm normal-case tracking-normal text-foreground"
-                >
-                  <option value="draft">Rascunho</option>
-                  <option value="published">Publicado</option>
-                  <option value="hidden">Oculto</option>
-                </select>
-              </label>
-
-              <Field
-                label="E-mail comercial"
-                value={editing.contact_email ?? ""}
-                onChange={(value) => setEditing({ ...editing, contact_email: value })}
-              />
-
-              <h3 className="pt-2 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground md:col-span-2">
-                Redes sociais
-              </h3>
-              <Field
-                label="Instagram"
-                value={editing.instagram_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, instagram_url: value })}
-              />
-              <Field
-                label="TikTok"
-                value={editing.tiktok_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, tiktok_url: value })}
-              />
-              <Field
-                label="YouTube"
-                value={editing.youtube_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, youtube_url: value })}
-              />
-              <Field
-                label="Twitch"
-                value={editing.twitch_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, twitch_url: value })}
-              />
-              <Field
-                label="X / Twitter"
-                value={editing.twitter_url ?? ""}
-                onChange={(value) => setEditing({ ...editing, twitter_url: value })}
-              />
-
-              <h3 className="pt-2 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground md:col-span-2">
-                Métricas (texto livre)
-              </h3>
-              <Field
-                label="Seguidores"
-                value={editing.followers ?? ""}
-                onChange={(value) => setEditing({ ...editing, followers: value })}
-              />
-              <Field
-                label="Visualizações médias"
-                value={editing.avg_views ?? ""}
-                onChange={(value) => setEditing({ ...editing, avg_views: value })}
-              />
-              <Field
-                label="Engajamento"
-                value={editing.engagement ?? ""}
-                onChange={(value) => setEditing({ ...editing, engagement: value })}
-              />
-              <Field
-                label="Audiência"
-                value={editing.audience ?? ""}
-                onChange={(value) => setEditing({ ...editing, audience: value })}
-              />
-
-              <label className="text-xs font-bold uppercase tracking-[0.16em] text-subtle md:col-span-2">
-                Conquistas e cases
-                <textarea
-                  value={editing.achievements ?? ""}
-                  onChange={(event) => setEditing({ ...editing, achievements: event.target.value })}
-                  rows={3}
-                  className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm normal-case tracking-normal text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-                />
-              </label>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <button
-                type="submit"
-                disabled={saveMutation.isPending}
-                className="h-12 rounded-full bg-primary px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.98] disabled:opacity-60"
-              >
-                {saveMutation.isPending ? "Salvando..." : "Salvar"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditing(null)}
-                className="h-12 rounded-full border border-border px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground duration-200 hover:border-primary hover:text-primary"
-              >
-                Cancelar
-              </button>
-              {editing.id ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.confirm(`Remover ${editing.stage_name}?`)) {
-                      deleteMutation.mutate(editing.id);
-                    }
-                  }}
-                  className="ml-auto inline-flex h-12 items-center gap-2 rounded-full border border-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary duration-200 hover:bg-primary hover:text-primary-foreground"
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  Excluir
-                </button>
-              ) : null}
-            </div>
-          </form>
-        </div>
+                }
+              : undefined
+          }
+          saving={saveMutation.isPending}
+          deleting={deleteMutation.isPending}
+        />
       ) : null}
-    </main>
-  );
-}
 
-function Field({
-  label,
-  value,
-  onChange,
-  required,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  required?: boolean;
-}) {
-  return (
-    <label className="text-xs font-bold uppercase tracking-[0.16em] text-subtle">
-      {label}
-      <input
-        type="text"
-        value={value}
-        required={required}
-        onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-12 w-full rounded-xl border border-border bg-background px-4 text-sm normal-case tracking-normal text-foreground outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-      />
-    </label>
+      {editingUser ? (
+        <UserEditorDialog
+          value={editingUser}
+          talents={dashboard?.talents ?? []}
+          currentUserId={accessQuery.data?.userId}
+          onChange={setEditingUser}
+          onClose={() => setEditingUser(null)}
+          onSave={() => userMutation.mutate(editingUser)}
+          onDelete={
+            editingUser.userId
+              ? () => {
+                  if (window.confirm(`Excluir permanentemente o usuário ${editingUser.email}?`)) {
+                    deleteUserMutation.mutate(editingUser.userId!);
+                  }
+                }
+              : undefined
+          }
+          saving={userMutation.isPending}
+          deleting={deleteUserMutation.isPending}
+        />
+      ) : null}
+    </PortalShell>
   );
 }

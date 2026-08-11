@@ -20,6 +20,17 @@ export type TalentAnalytics = {
   tiktok?: PlatformAnalytics | null;
 };
 
+export type SocialPlatform = "youtube" | "instagram" | "tiktok" | "twitch" | "twitter";
+
+export type SyncedSocialMetrics = {
+  accountId: string | null;
+  subscribers: number | null;
+  totalViews: number | null;
+  videoCount: number | null;
+  lastSyncedAt: string | null;
+  lastSyncError: string | null;
+};
+
 export type Talent = {
   id: string;
   slug: string;
@@ -50,6 +61,7 @@ export type Talent = {
   achievements: string | null;
   contactEmail: string | null;
   analytics?: TalentAnalytics | null;
+  socialMetrics?: Partial<Record<SocialPlatform, SyncedSocialMetrics>> | null;
 };
 
 const TALENT_NAMES = [

@@ -3,6 +3,35 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { TALENT_COLUMNS, mapTalentRow, type TalentRow } from "@/lib/talent-mapper";
+import type { SocialPlatform, SyncedSocialMetrics } from "@/data/talents";
+
+type SocialConnectionRow = {
+  talent_id: string;
+  platform: SocialPlatform;
+  current_metrics: Database["public"]["Tables"]["social_connections"]["Row"]["current_metrics"];
+  last_synced_at: string | null;
+  last_sync_error: string | null;
+};
+
+function metricNumber(value: unknown) {
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
+}
+
+function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
+  const metrics =
+    row.current_metrics && typeof row.current_metrics === "object" && !Array.isArray(row.current_metrics)
+      ? row.current_metrics
+      : {};
+
+  return {
+    accountId: typeof metrics.account_id === "string" ? metrics.account_id : null,
+    subscribers: metricNumber(metrics.subscribers),
+    totalViews: metricNumber(metrics.total_views),
+    videoCount: metricNumber(metrics.video_count),
+    lastSyncedAt: row.last_synced_at,
+    lastSyncError: row.last_sync_error,
+  };
+}
 
 type TalentInput = {
   id?: string | null;
@@ -55,7 +84,33 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
     .eq("status", "published")
     .order("sort_order", { ascending: true });
   if (error) throw new Error(error.message);
-  return ((data ?? []) as TalentRow[]).map(mapTalentRow);
+
+  const rows = (data ?? []) as TalentRow[];
+  if (rows.length === 0) return [];
+
+  const { data: socialData, error: socialError } = await supabase
+    .from("social_connections")
+    .select("talent_id, platform, current_metrics, last_synced_at, last_sync_error")
+    .in(
+      "talent_id",
+      rows.map((row) => row.id),
+    );
+  if (socialError) throw new Error(socialError.message);
+
+  const metricsByTalent = new Map<
+    string,
+    Partial<Record<SocialPlatform, SyncedSocialMetrics>>
+  >();
+  for (const connection of (socialData ?? []) as SocialConnectionRow[]) {
+    const talentMetrics = metricsByTalent.get(connection.talent_id) ?? {};
+    talentMetrics[connection.platform] = mapSocialMetrics(connection);
+    metricsByTalent.set(connection.talent_id, talentMetrics);
+  }
+
+  return rows.map((row) => ({
+    ...mapTalentRow(row),
+    socialMetrics: metricsByTalent.get(row.id) ?? null,
+  }));
 });
 
 /** Lista completa (admin), incluindo rascunhos e ocultos. */

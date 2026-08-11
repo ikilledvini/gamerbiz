@@ -34,6 +34,12 @@ const tooltipStyle = {
   fontFamily: "Manrope, system-ui, sans-serif",
 } as const;
 
+const tooltipTextStyle = {
+  color: "var(--foreground)",
+  fontFamily: "Manrope, system-ui, sans-serif",
+  fontWeight: 600,
+} as const;
+
 function AgeChart({
   data,
   eyebrow,
@@ -68,6 +74,9 @@ function AgeChart({
             <RTooltip
               cursor={{ fill: "var(--muted)", opacity: 0.3 }}
               contentStyle={tooltipStyle}
+              itemStyle={tooltipTextStyle}
+              labelStyle={tooltipTextStyle}
+              separator=""
               formatter={(value: number) => [`${value}%`, ""]}
             />
             <Bar dataKey="value" radius={[4, 4, 0, 0]} isAnimationActive={false}>
@@ -115,6 +124,9 @@ function GenderChart({
             </Pie>
             <RTooltip
               contentStyle={tooltipStyle}
+              itemStyle={tooltipTextStyle}
+              labelStyle={tooltipTextStyle}
+              separator=""
               formatter={(value: number) => [`${value}%`, ""]}
             />
           </PieChart>

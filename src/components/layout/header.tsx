@@ -3,12 +3,12 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
-import { GbzButton } from "@/components/ui/gbz-button";
+import { GbzButton, gbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { usePrefersReducedMotion } from "@/hooks/use-motion";
 import { useI18n } from "@/i18n";
 
-export function Header() {
+export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   const { t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
   const reducedMotion = usePrefersReducedMotion();
@@ -17,12 +17,12 @@ export function Header() {
   const [visible, setVisible] = useState(true);
 
   const links = [
-    { href: "#sobre", label: t.nav.about },
-    { href: "#marcas", label: t.nav.brands },
-    { href: "#times", label: t.nav.teams },
-    { href: "#clientes", label: t.nav.clients },
-    { href: "#talentos", label: t.nav.talents },
-    { href: "#cases", label: t.nav.cases },
+    { href: `${homeHrefPrefix}#sobre`, label: t.nav.about },
+    { href: `${homeHrefPrefix}#marcas`, label: t.nav.brands },
+    { href: `${homeHrefPrefix}#times`, label: t.nav.teams },
+    { href: `${homeHrefPrefix}#clientes`, label: t.nav.clients },
+    { href: `${homeHrefPrefix}#talentos`, label: t.nav.talents },
+    { href: `${homeHrefPrefix}#cases`, label: t.nav.cases },
   ];
 
   useEffect(() => {
@@ -62,13 +62,21 @@ export function Header() {
   return (
     <Dialog.Root open={menuOpen} onOpenChange={setMenuOpen}>
       <header
-        className={`fixed inset-x-0 top-0 z-50 bg-black/10 backdrop-blur-[2px] transition-transform duration-[200ms] ease-[var(--ease-out-gbz)] ${
+        className={`fixed inset-x-0 top-0 z-50 transition-transform duration-[200ms] ease-[var(--ease-out-gbz)] ${
           visible || menuOpen ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <div className="container-gbz flex justify-center py-4">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-[140px] bg-gradient-to-b from-black/55 via-black/25 to-transparent backdrop-blur-[5px] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_58%,transparent_100%)] [mask-image:linear-gradient(to_bottom,black_0%,black_58%,transparent_100%)]"
+        />
+        <div className="container-gbz relative z-10 flex justify-center py-4">
           <div className="flex h-[68px] w-full max-w-[1240px] items-center gap-6">
-            <a href="#inicio" className="flex shrink-0 items-center" aria-label="Gamerbiz">
+            <a
+              href={`${homeHrefPrefix}#inicio`}
+              className="flex shrink-0 items-center"
+              aria-label="Gamerbiz"
+            >
               <Logo className="h-10" />
             </a>
 
@@ -95,6 +103,12 @@ export function Header() {
               <GbzButton size="sm" onClick={openCreatorModal}>
                 {t.actions.creator}
               </GbzButton>
+              <a
+                href="/auth"
+                className={gbzButton({ variant: "ghost", size: "sm", className: "text-white/55" })}
+              >
+                Login
+              </a>
             </div>
 
             <Dialog.Trigger asChild>
@@ -173,6 +187,20 @@ export function Header() {
               >
                 {t.actions.creator}
               </GbzButton>
+              <a
+                href="/auth"
+                onClick={() => {
+                  setMenuMotion(false);
+                  setMenuOpen(false);
+                }}
+                className={gbzButton({
+                  variant: "ghost",
+                  size: "full",
+                  className: "text-muted-foreground",
+                })}
+              >
+                Login
+              </a>
             </div>
           </div>
         </Dialog.Content>

@@ -1,1 +1,7 @@
 project_id = "ufbioobifaozjvcrqvye"
+
+[functions.sync-social-metrics]
+verify_jwt = false
+
+[functions.admin-users]
+verify_jwt = false

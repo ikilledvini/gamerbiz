@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LinksRouteImport } from './routes/links'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
+import { Route as AuthenticatedCreatorRouteImport } from './routes/_authenticated/creator'
 import { Route as MediakitIndexRouteImport } from './routes/mediakit.index'
 import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
 
@@ -41,6 +43,17 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedChangePasswordRoute =
+  AuthenticatedChangePasswordRouteImport.update({
+    id: '/change-password',
+    path: '/change-password',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCreatorRoute = AuthenticatedCreatorRouteImport.update({
+  id: '/creator',
+  path: '/creator',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const MediakitIndexRoute = MediakitIndexRouteImport.update({
   id: '/mediakit/',
   path: '/mediakit/',
@@ -57,6 +70,8 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
@@ -65,6 +80,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit': typeof MediakitIndexRoute
 }
@@ -75,15 +92,32 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
+  '/_authenticated/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/links' | '/admin' | '/mediakit/$slug' | '/mediakit/'
+    | '/'
+    | '/auth'
+    | '/links'
+    | '/admin'
+    | '/change-password'
+    | '/creator'
+    | '/mediakit/$slug'
+    | '/mediakit/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/links' | '/admin' | '/mediakit/$slug' | '/mediakit'
+  to:
+    | '/'
+    | '/auth'
+    | '/links'
+    | '/admin'
+    | '/change-password'
+    | '/creator'
+    | '/mediakit/$slug'
+    | '/mediakit'
   id:
     | '__root__'
     | '/'
@@ -91,6 +125,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/links'
     | '/_authenticated/admin'
+    | '/_authenticated/change-password'
+    | '/_authenticated/creator'
     | '/mediakit/$slug'
     | '/mediakit/'
   fileRoutesById: FileRoutesById
@@ -141,6 +177,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/change-password': {
+      id: '/_authenticated/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthenticatedChangePasswordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/creator': {
+      id: '/_authenticated/creator'
+      path: '/creator'
+      fullPath: '/creator'
+      preLoaderRoute: typeof AuthenticatedCreatorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/mediakit/': {
       id: '/mediakit/'
       path: '/mediakit'
@@ -160,10 +210,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedChangePasswordRoute: typeof AuthenticatedChangePasswordRoute
+  AuthenticatedCreatorRoute: typeof AuthenticatedCreatorRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedChangePasswordRoute: AuthenticatedChangePasswordRoute,
+  AuthenticatedCreatorRoute: AuthenticatedCreatorRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
