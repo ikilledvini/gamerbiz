@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -14,60 +14,63 @@ import { FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { FileText } from "lucide-react";
 import { useI18n } from "@/i18n";
 import type { PlatformAnalytics, TalentAnalytics } from "@/data/talents";
+import { MediaKitSectionHeading } from "./media-kit-section-heading";
 
 const AGE_COLORS = ["#FF1F30", "#F0303F", "#E8434F", "#EE6B74", "#F19198", "#F3B3B7", "#F5D0D3"];
 const GENDER_COLORS = ["#E11D33", "#8FC3DC", "#F3B3B7"];
 
-function PanelHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <p className="flex items-center gap-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-subtle">
-        <span className="inline-block h-3 w-[3px] rounded-full bg-primary" aria-hidden="true" />
-        {eyebrow}
-      </p>
-      <h3 className="mt-1.5 font-display text-lg font-extrabold uppercase tracking-[0.04em] text-foreground">
-        {title}
-      </h3>
-    </div>
+    <div className="rounded-[32px] border border-border bg-surface p-6 md:p-8">{children}</div>
   );
 }
 
-function Card({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-[24px] border border-border bg-surface p-6">{children}</div>;
-}
-
 const tooltipStyle = {
-  backgroundColor: "hsl(var(--background))",
-  border: "1px solid hsl(var(--border))",
+  backgroundColor: "var(--background)",
+  border: "1px solid var(--border)",
   borderRadius: 12,
   fontSize: 12,
-  color: "hsl(var(--foreground))",
+  color: "var(--foreground)",
+  fontFamily: "Manrope, system-ui, sans-serif",
 } as const;
 
-function AgeChart({ data, eyebrow, title }: { data: { label: string; value: number }[]; eyebrow: string; title: string }) {
+function AgeChart({
+  data,
+  eyebrow,
+  title,
+}: {
+  data: { label: string; value: number }[];
+  eyebrow: string;
+  title: string;
+}) {
   return (
     <Card>
-      <PanelHeading eyebrow={eyebrow} title={title} />
+      <MediaKitSectionHeading eyebrow={eyebrow} title={title} level="h3" />
       <div className="mt-6 h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barCategoryGap="18%" maxBarSize={90} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+          <BarChart
+            data={data}
+            barCategoryGap="18%"
+            maxBarSize={90}
+            margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+          >
             <XAxis
               dataKey="label"
               tickLine={false}
-              axisLine={{ stroke: "hsl(var(--border))" }}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              axisLine={{ stroke: "var(--border)" }}
+              tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 12 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 11 }}
+              tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 12 }}
             />
             <RTooltip
-              cursor={{ fill: "hsl(var(--muted))", opacity: 0.3 }}
+              cursor={{ fill: "var(--muted)", opacity: 0.3 }}
               contentStyle={tooltipStyle}
               formatter={(value: number) => [`${value}%`, ""]}
             />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+            <Bar dataKey="value" radius={[4, 4, 0, 0]} isAnimationActive={false}>
               {data.map((entry, index) => (
                 <Cell key={entry.label} fill={AGE_COLORS[index % AGE_COLORS.length]} />
               ))}
@@ -79,19 +82,41 @@ function AgeChart({ data, eyebrow, title }: { data: { label: string; value: numb
   );
 }
 
-function GenderChart({ data, eyebrow, title }: { data: { label: string; value: number }[]; eyebrow: string; title: string }) {
+function GenderChart({
+  data,
+  eyebrow,
+  title,
+}: {
+  data: { label: string; value: number }[];
+  eyebrow: string;
+  title: string;
+}) {
   return (
     <Card>
-      <PanelHeading eyebrow={eyebrow} title={title} />
+      <MediaKitSectionHeading eyebrow={eyebrow} title={title} level="h3" />
       <div className="mt-6 h-[280px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" nameKey="label" cx="50%" cy="50%" innerRadius={70} outerRadius={115} paddingAngle={1} stroke="none" isAnimationActive={false}>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="label"
+              cx="50%"
+              cy="50%"
+              innerRadius={70}
+              outerRadius={115}
+              paddingAngle={1}
+              stroke="none"
+              isAnimationActive={false}
+            >
               {data.map((entry, index) => (
                 <Cell key={entry.label} fill={GENDER_COLORS[index % GENDER_COLORS.length]} />
               ))}
             </Pie>
-            <RTooltip contentStyle={tooltipStyle} formatter={(value: number) => [`${value}%`, ""]} />
+            <RTooltip
+              contentStyle={tooltipStyle}
+              formatter={(value: number) => [`${value}%`, ""]}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -123,12 +148,12 @@ function BarList({
   const max = Math.max(...data.map((item) => item.value), 1);
   return (
     <Card>
-      <PanelHeading eyebrow={eyebrow} title={title} />
+      <MediaKitSectionHeading eyebrow={eyebrow} title={title} level="h3" />
       <ul className="mt-6 flex flex-col gap-4">
         {data.map((item) => (
           <li key={item.label}>
-            <div className="flex items-center justify-between text-sm">
-              <span className="truncate font-semibold text-foreground">{item.label}</span>
+            <div className="flex items-center justify-between gap-4 text-sm">
+              <span className="font-semibold text-foreground">{item.label}</span>
               <span className="text-muted-foreground">{item.value}%</span>
             </div>
             <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -148,9 +173,13 @@ function MetricGrid({ items }: { items: { label: string; value: string }[] }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {items.map((item) => (
-        <div key={item.label} className="rounded-[24px] border border-border bg-surface p-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-subtle">{item.label}</p>
-          <p className="mt-2 font-display text-2xl font-extrabold text-foreground">{item.value}</p>
+        <div key={item.label} className="rounded-[32px] border border-border bg-surface p-6 md:p-8">
+          <p className="font-display text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-subtle">
+            {item.label}
+          </p>
+          <p className="mt-3 font-display text-3xl font-extrabold tracking-[-0.03em] text-foreground">
+            {item.value}
+          </p>
         </div>
       ))}
     </div>
@@ -159,9 +188,9 @@ function MetricGrid({ items }: { items: { label: string; value: string }[] }) {
 
 const TAB_ICONS: Record<string, React.ReactNode> = {
   summary: <FileText className="h-4 w-4" aria-hidden="true" />,
-  youtube: <FaYoutube className="h-4 w-4 text-white" aria-hidden="true" />,
-  instagram: <FaInstagram className="h-4 w-4 text-white" aria-hidden="true" />,
-  tiktok: <FaTiktok className="h-4 w-4 text-white" aria-hidden="true" />,
+  youtube: <FaYoutube className="h-4 w-4" aria-hidden="true" />,
+  instagram: <FaInstagram className="h-4 w-4" aria-hidden="true" />,
+  tiktok: <FaTiktok className="h-4 w-4" aria-hidden="true" />,
 };
 
 export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | null }) {
@@ -178,12 +207,30 @@ export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | 
   ).filter((tab) => tab.data);
 
   const [active, setActive] = useState(tabs[0]?.key ?? "summary");
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+  function handleTabKeyDown(event: React.KeyboardEvent<HTMLButtonElement>, index: number) {
+    let nextIndex: number | null = null;
+
+    if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+    if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = tabs.length - 1;
+
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    setActive(tabs[nextIndex].key);
+    tabRefs.current[nextIndex]?.focus();
+  }
 
   if (tabs.length === 0) {
     return (
-      <div className="rounded-[24px] border border-border bg-surface p-8">
-        <PanelHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.analytics} />
-        <p className="mt-5 text-muted-foreground">{t.mediakit.analyticsEmpty}</p>
+      <div className="rounded-[40px] border border-border bg-surface p-7 md:p-10">
+        <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.analytics} />
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          {t.mediakit.analyticsEmpty}
+        </p>
       </div>
     );
   }
@@ -192,22 +239,38 @@ export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | 
   const data = current.data!;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="rounded-[24px] border border-border bg-surface p-3">
-        <div role="tablist" aria-label={t.mediakit.analytics} className="flex flex-wrap items-center gap-1.5">
-          {tabs.map((tab) => {
+    <section className="flex flex-col gap-5" aria-labelledby="mediakit-analytics-title">
+      <div className="rounded-[40px] border border-border bg-surface p-5 md:p-8">
+        <MediaKitSectionHeading
+          eyebrow={t.mediakit.eyebrow}
+          title={t.mediakit.analytics}
+          id="mediakit-analytics-title"
+        />
+        <div
+          role="tablist"
+          aria-label={t.mediakit.analytics}
+          className="mt-7 flex flex-wrap items-center gap-1.5 rounded-[24px] bg-muted/70 p-1.5"
+        >
+          {tabs.map((tab, index) => {
             const isActive = tab.key === current.key;
             return (
               <button
                 key={tab.key}
+                ref={(node) => {
+                  tabRefs.current[index] = node;
+                }}
                 type="button"
                 role="tab"
+                id={`mediakit-tab-${tab.key}`}
+                aria-controls={`mediakit-panel-${tab.key}`}
                 aria-selected={isActive}
+                tabIndex={isActive ? 0 : -1}
                 onClick={() => setActive(tab.key)}
-                className={`inline-flex min-h-[44px] items-center gap-2 rounded-full px-5 font-display text-sm font-bold duration-200 active:scale-[0.97] ${
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
+                className={`gbz-interactive inline-flex min-h-11 items-center gap-2 rounded-full px-5 font-display text-sm font-bold transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] ${
                   isActive
                     ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    : "text-muted-foreground fine-hover:hover:text-foreground"
                 }`}
               >
                 {TAB_ICONS[tab.key]}
@@ -218,22 +281,30 @@ export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | 
         </div>
       </div>
 
-      {data.metrics && data.metrics.length > 0 ? <MetricGrid items={data.metrics} /> : null}
+      <div
+        role="tabpanel"
+        id={`mediakit-panel-${current.key}`}
+        aria-labelledby={`mediakit-tab-${current.key}`}
+        tabIndex={0}
+        className="flex flex-col gap-5 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+      >
+        {data.metrics && data.metrics.length > 0 ? <MetricGrid items={data.metrics} /> : null}
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        {data.age && data.age.length > 0 ? (
-          <AgeChart data={data.age} eyebrow={a.reach} title={a.age} />
-        ) : null}
-        {data.gender && data.gender.length > 0 ? (
-          <GenderChart data={data.gender} eyebrow={a.media} title={a.gender} />
-        ) : null}
-        {data.countries && data.countries.length > 0 ? (
-          <BarList data={data.countries} eyebrow={a.reach} title={a.countries} />
-        ) : null}
-        {data.languages && data.languages.length > 0 ? (
-          <BarList data={data.languages} eyebrow={a.reach} title={a.languages} />
-        ) : null}
+        <div className="grid gap-5 lg:grid-cols-2">
+          {data.age && data.age.length > 0 ? (
+            <AgeChart data={data.age} eyebrow={a.reach} title={a.age} />
+          ) : null}
+          {data.gender && data.gender.length > 0 ? (
+            <GenderChart data={data.gender} eyebrow={a.media} title={a.gender} />
+          ) : null}
+          {data.countries && data.countries.length > 0 ? (
+            <BarList data={data.countries} eyebrow={a.reach} title={a.countries} />
+          ) : null}
+          {data.languages && data.languages.length > 0 ? (
+            <BarList data={data.languages} eyebrow={a.reach} title={a.languages} />
+          ) : null}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

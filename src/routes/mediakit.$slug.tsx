@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
+import { MediaKitSectionHeading } from "@/components/media-kit/media-kit-section-heading";
 import { MediaKitAnalytics } from "@/components/media-kit/analytics-panel";
 import { type Talent } from "@/data/talents";
 import { listPublicTalents } from "@/lib/talents.functions";
@@ -96,26 +97,12 @@ function FallbackContent() {
         <Link
           to="/mediakit"
           search={{ q: "", cat: "", page: 1 }}
-          className="mt-8 inline-flex rounded-full border border-primary px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary duration-200 hover:bg-primary hover:text-primary-foreground active:scale-[0.97]"
+          className="gbz-interactive mt-8 inline-flex min-h-12 items-center rounded-full border border-primary px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary fine-hover:hover:text-primary-foreground"
         >
           {t.mediakit.backToDirectory}
         </Link>
       </div>
     </section>
-  );
-}
-
-function PanelTitle({ eyebrow, title }: { eyebrow: string; title: string }) {
-  return (
-    <div>
-      <p className="flex items-center gap-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-subtle">
-        <span className="inline-block h-3 w-[3px] rounded-full bg-primary" aria-hidden="true" />
-        {eyebrow}
-      </p>
-      <h2 className="mt-1.5 font-display text-lg font-extrabold uppercase tracking-[0.04em] text-foreground">
-        {title}
-      </h2>
-    </div>
   );
 }
 
@@ -131,24 +118,22 @@ function InfoRow({
   href?: string;
 }) {
   return (
-    <li className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+    <li className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 border-b border-border/70 pb-4 last:border-0 last:pb-0">
       <span className="flex min-w-0 items-center gap-2.5 text-sm font-semibold text-foreground">
         <span className="shrink-0 text-muted-foreground">{icon}</span>
-        <span className="truncate">{label}</span>
+        <span>{label}</span>
       </span>
       {href ? (
         <a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="max-w-[14ch] truncate text-sm text-muted-foreground transition-colors duration-200 hover:text-primary sm:max-w-[22ch]"
+          className="break-all text-right text-sm text-muted-foreground transition-colors duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:hover:text-primary"
         >
           {value}
         </a>
       ) : (
-        <span className="max-w-[14ch] truncate text-sm text-muted-foreground sm:max-w-[22ch]">
-          {value}
-        </span>
+        <span className="break-words text-right text-sm text-muted-foreground">{value}</span>
       )}
     </li>
   );
@@ -164,12 +149,12 @@ function MetricCard({
   items: { label: string; value: string | null }[];
 }) {
   return (
-    <div className="rounded-[24px] border border-border bg-surface p-6">
+    <article className="rounded-[32px] border border-border bg-surface p-6 md:p-7">
       <div className="flex items-center gap-3">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-muted text-foreground">
           {icon}
         </span>
-        <p className="truncate font-display text-sm font-extrabold uppercase tracking-[0.08em] text-foreground">
+        <p className="truncate font-display text-sm font-bold uppercase tracking-[0.08em] text-foreground">
           {title}
         </p>
       </div>
@@ -179,13 +164,13 @@ function MetricCard({
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-subtle">
               {item.label}
             </p>
-            <p className="mt-1 font-display text-2xl font-extrabold text-foreground">
+            <p className="mt-2 font-display text-2xl font-bold tracking-[-0.03em] text-foreground md:text-3xl">
               {item.value ?? "—"}
             </p>
           </div>
         ))}
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -295,18 +280,24 @@ function MediaKitContent({ talent }: { talent: Talent }) {
   }
 
   return (
-    <Tooltip.Provider delayDuration={400}>
+    <Tooltip.Provider delayDuration={300} skipDelayDuration={500}>
       <section className="section-gbz">
         <div className="container-gbz">
-          <nav aria-label="breadcrumb" className="text-xs text-subtle">
-            <Link to="/" className="transition-colors duration-200 hover:text-primary">
+          <nav
+            aria-label="breadcrumb"
+            className="font-display text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-subtle"
+          >
+            <Link
+              to="/"
+              className="transition-colors duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:hover:text-primary"
+            >
               {t.mediakit.breadcrumbHome}
             </Link>
             <span aria-hidden="true"> / </span>
             <Link
               to="/mediakit"
               search={{ q: "", cat: "", page: 1 }}
-              className="transition-colors duration-200 hover:text-primary"
+              className="transition-colors duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:hover:text-primary"
             >
               {t.mediakit.breadcrumbCurrent}
             </Link>
@@ -314,179 +305,191 @@ function MediaKitContent({ talent }: { talent: Talent }) {
             <span aria-current="page">{talent.stageName}</span>
           </nav>
 
-          <div className="mt-8 grid gap-5 lg:grid-cols-[0.9fr_2.1fr] lg:items-start">
-            {/* Coluna esquerda */}
-            <div className="flex flex-col gap-5">
-              <div className="rounded-[24px] border border-border bg-surface p-6">
-                <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-5">
-                  <div className="h-[110px] w-[110px] shrink-0 overflow-hidden rounded-full border-2 border-primary bg-muted">
-                    {talent.image ? (
-                      <img
-                        src={talent.image}
-                        alt={talent.stageName}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="grid h-full w-full place-items-center text-subtle" aria-hidden="true">
-                        <User className="h-8 w-8" />
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <h1 className="truncate font-display text-2xl font-extrabold text-foreground">
-                      {talent.stageName}
-                    </h1>
-                    {talent.username ? (
-                      <p className="mt-1 truncate text-sm text-muted-foreground">
-                        @{talent.username}
-                      </p>
-                    ) : null}
-                    <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
-                      <Gamepad2 className="h-4 w-4 shrink-0" aria-hidden="true" />
-                      <span className="truncate">{talent.category}</span>
+          <div className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:items-stretch">
+            <article className="overflow-hidden rounded-[40px] border border-border bg-surface p-6 md:p-10">
+              <div className="grid items-center gap-8 md:grid-cols-[minmax(180px,260px)_minmax(0,1fr)]">
+                <div className="mx-auto aspect-[4/5] w-full max-w-[260px] overflow-hidden rounded-[32px] border border-border bg-muted">
+                  {talent.image ? (
+                    <img
+                      src={talent.image}
+                      alt={talent.stageName}
+                      className="h-full w-full object-contain object-bottom"
+                    />
+                  ) : (
+                    <div
+                      className="grid h-full w-full place-items-center text-subtle"
+                      aria-hidden="true"
+                    >
+                      <User className="h-12 w-12" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <p className="eyebrow-gbz">{t.mediakit.eyebrow}</p>
+                  <h1 className="title-gbz mt-4 break-words text-foreground">{talent.stageName}</h1>
+                  {talent.username ? (
+                    <p className="mt-3 text-base text-muted-foreground md:text-lg">
+                      @{talent.username}
+                    </p>
+                  ) : null}
+                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground md:text-base">
+                    <p className="flex items-center gap-2">
+                      <Gamepad2 className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                      <span>{talent.category}</span>
                     </p>
                     {talent.city ? (
-                      <p className="mt-1.5 flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-                        <span className="truncate">{talent.city}</span>
+                      <p className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
+                        <span>{talent.city}</span>
                       </p>
                     ) : null}
                   </div>
+
+                  {badge ? (
+                    <Tooltip.Root>
+                      <Tooltip.Trigger asChild>
+                        <button
+                          type="button"
+                          aria-label={`${badge.label} — ${t.a11y.info}`}
+                          className="gbz-interactive mt-7 inline-flex min-h-10 items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground transition-transform duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97]"
+                        >
+                          {badge.label}
+                          <Info className="h-3 w-3" aria-hidden="true" />
+                        </button>
+                      </Tooltip.Trigger>
+                      <Tooltip.Portal>
+                        <Tooltip.Content
+                          side="bottom"
+                          className="z-[120] max-w-[260px] origin-[var(--radix-tooltip-content-transform-origin)] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in-0 data-[state=delayed-open]:zoom-in-95 data-[state=delayed-open]:duration-[140ms]"
+                        >
+                          {badge.tip}
+                        </Tooltip.Content>
+                      </Tooltip.Portal>
+                    </Tooltip.Root>
+                  ) : null}
                 </div>
-
-                {badge ? (
-                  <Tooltip.Root>
-                    <Tooltip.Trigger asChild>
-                      <button
-                        type="button"
-                        aria-label={`${badge.label} — ${t.a11y.info}`}
-                        className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
-                      >
-                        {badge.label}
-                        <Info className="h-3 w-3" aria-hidden="true" />
-                      </button>
-                    </Tooltip.Trigger>
-                    <Tooltip.Portal>
-                      <Tooltip.Content
-                        side="bottom"
-                        className="z-[120] max-w-[260px] rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground shadow-card"
-                      >
-                        {badge.tip}
-                      </Tooltip.Content>
-                    </Tooltip.Portal>
-                  </Tooltip.Root>
-                ) : null}
               </div>
+            </article>
 
-              <div className="rounded-[24px] border border-border bg-surface p-6">
-                <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.socials} />
-                <ul className="mt-5 flex flex-col gap-4">
+            <aside className="rounded-[40px] border border-border bg-surface p-6 md:p-8">
+              <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.socials} />
+              <ul className="mt-8 flex flex-col gap-4">
+                <InfoRow
+                  icon={<Mail className="h-4 w-4" />}
+                  label={t.mediakit.contact}
+                  value={contactEmail}
+                  href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
+                />
+                {socialRows.map((item) => (
                   <InfoRow
-                    icon={<Mail className="h-4 w-4" />}
-                    label={t.mediakit.contact}
-                    value={contactEmail}
-                    href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
+                    key={item.key}
+                    icon={item.icon}
+                    label={item.label}
+                    value={handleLabel(item.url!)}
+                    href={item.url!}
                   />
-                  {socialRows.map((item) => (
-                    <InfoRow
-                      key={item.key}
-                      icon={item.icon}
-                      label={item.label}
-                      value={handleLabel(item.url!)}
-                      href={item.url!}
-                    />
-                  ))}
-                </ul>
+                ))}
+              </ul>
 
-                <div className="mt-6 flex flex-col gap-3">
-                  <a
-                    href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.97]"
-                  >
-                    {t.mediakit.sendProposal}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={share}
-                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground duration-200 hover:border-primary hover:text-primary active:scale-[0.97]"
-                  >
-                    <Share2 className="h-4 w-4" aria-hidden="true" />
-                    {t.mediakit.share}
-                  </button>
-                </div>
+              <div className="mt-8 flex flex-col gap-3">
+                <a
+                  href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
+                  className="gbz-interactive inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary-dark"
+                >
+                  {t.mediakit.sendProposal}
+                </a>
+                <button
+                  type="button"
+                  onClick={share}
+                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                >
+                  <Share2 className="h-4 w-4" aria-hidden="true" />
+                  {t.mediakit.share}
+                </button>
               </div>
-            </div>
-
-            {/* Coluna direita */}
-            <div className="flex flex-col gap-5">
-              <div className="rounded-[24px] border border-border bg-surface p-8">
-                <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.about} />
-                <p className="mt-5 leading-relaxed text-muted-foreground">
-                  {talent.shortDescription || t.mediakit.aboutEmpty}
-                </p>
-              </div>
-
-              {metricCards.length > 0 ? (
-                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                  {metricCards.map((card) => (
-                    <MetricCard
-                      key={card.key}
-                      icon={card.icon}
-                      title={card.title}
-                      items={card.items}
-                    />
-                  ))}
-                </div>
-              ) : null}
-
-
-
-
-
-              {talent.achievements ? (
-                <div className="rounded-[24px] border border-border bg-surface p-8">
-                  <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.achievements} />
-                  <div className="mt-5 whitespace-pre-line leading-relaxed text-muted-foreground">
-                    {talent.achievements}
-                  </div>
-                </div>
-              ) : null}
-
-            </div>
+            </aside>
           </div>
 
-          <div className="mt-5">
+          <div className={`mt-6 grid gap-6 ${talent.achievements ? "lg:grid-cols-2" : ""}`}>
+            <section className="rounded-[40px] border border-border bg-surface p-6 md:p-10">
+              <MediaKitSectionHeading eyebrow={t.mediakit.eyebrow} title={t.mediakit.about} />
+              <p className="mt-6 max-w-[68ch] text-base leading-relaxed text-muted-foreground md:text-lg">
+                {talent.shortDescription || t.mediakit.aboutEmpty}
+              </p>
+            </section>
+
+            {talent.achievements ? (
+              <section className="rounded-[40px] border border-border bg-surface p-6 md:p-10">
+                <MediaKitSectionHeading
+                  eyebrow={t.mediakit.eyebrow}
+                  title={t.mediakit.achievements}
+                />
+                <div className="mt-6 whitespace-pre-line text-base leading-relaxed text-muted-foreground md:text-lg">
+                  {talent.achievements}
+                </div>
+              </section>
+            ) : null}
+          </div>
+
+          {metricCards.length > 0 ? (
+            <section className="mt-6" aria-label={t.mediakit.analytics}>
+              <MediaKitSectionHeading
+                eyebrow={t.mediakit.eyebrow}
+                title={t.mediakit.analyticsUi.summary}
+              />
+              <div className="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {metricCards.map((card) => (
+                  <MetricCard
+                    key={card.key}
+                    icon={card.icon}
+                    title={card.title}
+                    items={card.items}
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          <div className="mt-6">
             <MediaKitAnalytics analytics={talent.analytics ?? null} />
           </div>
 
-          <div className="mt-5 rounded-[24px] border border-border bg-surface p-8">
-            <PanelTitle eyebrow={t.mediakit.eyebrow} title={t.mediakit.workWith} />
-            <p className="mt-4 text-muted-foreground">
+          <section className="mt-16 overflow-hidden rounded-[40px] bg-primary p-8 text-primary-foreground md:p-12 lg:p-16">
+            <p className="flex items-center gap-3 font-display text-[0.6875rem] font-bold uppercase tracking-[0.24em] text-primary-foreground/75">
+              <span
+                className="inline-block h-4 w-1 rounded-full bg-primary-foreground"
+                aria-hidden="true"
+              />
+              {t.mediakit.eyebrow}
+            </p>
+            <h2 className="mt-4 max-w-[18ch] font-display text-3xl font-bold leading-[1.02] tracking-[-0.04em] md:text-5xl lg:text-6xl">
+              {t.mediakit.workWith}
+            </h2>
+            <p className="mt-5 max-w-[58ch] text-base leading-relaxed text-primary-foreground/85 md:text-lg">
               {t.mediakit.workWithText} {talent.stageName}.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href={`mailto:${contactEmail}?subject=${encodeURIComponent(mailtoSubject)}`}
-                className="inline-flex min-h-[44px] items-center rounded-full bg-primary px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground duration-200 hover:opacity-90 active:scale-[0.97]"
+                className="gbz-interactive inline-flex min-h-12 items-center rounded-full bg-black px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-white transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-white fine-hover:hover:text-black"
               >
                 {t.mediakit.sendProposal}
               </a>
               <Link
                 to="/mediakit"
                 search={{ q: "", cat: "", page: 1 }}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-border px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground duration-200 hover:border-primary hover:text-primary active:scale-[0.97]"
+                className="gbz-interactive inline-flex min-h-12 items-center rounded-full border border-primary-foreground/50 px-7 font-display text-xs font-bold uppercase tracking-[0.16em] text-primary-foreground transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:bg-primary-foreground fine-hover:hover:text-primary"
               >
                 {t.mediakit.backToDirectory}
               </Link>
             </div>
-          </div>
-
+          </section>
         </div>
       </section>
     </Tooltip.Provider>
   );
 }
-
 
 function TalentMediaKitRoute() {
   const { talent } = Route.useLoaderData();
