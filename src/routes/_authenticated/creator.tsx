@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,7 @@ import {
   creatorDisconnectConnection,
   creatorPortalData,
   creatorSaveConnection,
+  creatorStartYouTubeOAuth,
   getCurrentPortalAccess,
   type SocialConnectionRow,
   type SocialPlatform,
@@ -95,6 +96,7 @@ function CreatorRoute() {
   const getPortalData = useServerFn(creatorPortalData);
   const saveConnection = useServerFn(creatorSaveConnection);
   const disconnectConnection = useServerFn(creatorDisconnectConnection);
+  const startYouTubeOAuth = useServerFn(creatorStartYouTubeOAuth);
 
   const [editingPlatform, setEditingPlatform] = useState<SocialPlatform | null>(null);
   const [profileUrl, setProfileUrl] = useState("");
@@ -132,6 +134,28 @@ function CreatorRoute() {
     },
     onError: (error: Error) => toast.error(error.message),
   });
+
+  const youtubeOAuthMutation = useMutation({
+    mutationFn: () => startYouTubeOAuth({}),
+    onSuccess: ({ authorizationUrl }) => {
+      window.location.assign(authorizationUrl);
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("youtube");
+    if (!status) return;
+
+    if (status === "connected") {
+      toast.success("YouTube conectado ao Media Kit.");
+      void queryClient.invalidateQueries({ queryKey: ["creator-portal"] });
+    } else {
+      toast.error(params.get("message") || "Não foi possível conectar o YouTube.");
+    }
+    window.history.replaceState({}, "", window.location.pathname);
+  }, [queryClient]);
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -309,13 +333,28 @@ function CreatorRoute() {
                     </form>
                   ) : (
                     <div className="mt-5 flex flex-wrap items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openConnection(platform.key)}
-                        className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
-                      >
-                        {connection?.profile_url ? "Atualizar conta" : "Conectar conta"}
-                      </button>
+                      {platform.key === "youtube" ? (
+                        <button
+                          type="button"
+                          onClick={() => youtubeOAuthMutation.mutate()}
+                          disabled={youtubeOAuthMutation.isPending}
+                          className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
+                        >
+                          {youtubeOAuthMutation.isPending
+                            ? "Abrindo Google..."
+                            : connection?.connection_method === "oauth"
+                              ? "Reconectar YouTube"
+                              : "Conectar com Google"}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => openConnection(platform.key)}
+                          className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
+                        >
+                          {connection?.profile_url ? "Atualizar conta" : "Conectar conta"}
+                        </button>
+                      )}
                       {connection?.profile_url ? (
                         <button
                           type="button"

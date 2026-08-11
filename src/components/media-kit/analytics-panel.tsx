@@ -185,11 +185,14 @@ function MetricGrid({ items }: { items: { label: string; value: string }[] }) {
   return (
     <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
       {items.map((item) => (
-        <div key={item.label} className="rounded-[32px] border border-border bg-surface p-6 md:p-8">
-          <p className="font-display text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-subtle">
+        <div
+          key={item.label}
+          className="flex flex-col items-center rounded-[32px] border border-border bg-surface p-6 text-center md:p-8"
+        >
+          <p className="whitespace-nowrap font-display text-[0.6875rem] font-bold uppercase tracking-[0.12em] text-subtle">
             {item.label}
           </p>
-          <p className="mt-3 font-display text-3xl font-extrabold tracking-[-0.03em] text-foreground">
+          <p className="mt-3 whitespace-nowrap font-display text-3xl font-extrabold tracking-[-0.03em] text-foreground">
             {item.value}
           </p>
         </div>

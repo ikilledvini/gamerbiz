@@ -832,6 +832,12 @@ function AdminRoute() {
             </section>
           ) : (
             <section className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.4fr]">
+              {dashboard?.authUsersError ? (
+                <div className="xl:col-span-2 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+                  A gestão de contas está temporariamente indisponível. A visão geral continua
+                  funcionando, mas a Edge Function de usuários precisa ser republicada.
+                </div>
+              ) : null}
               <article className="rounded-[28px] border border-border bg-surface p-6 md:p-7">
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary">
                   <CircleUserRound className="h-5 w-5" />

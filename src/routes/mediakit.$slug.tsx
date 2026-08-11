@@ -150,21 +150,21 @@ function MetricCard({
 }) {
   return (
     <article className="rounded-[32px] border border-border bg-surface p-6 md:p-7">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center justify-center gap-3 text-center">
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-muted text-foreground">
           {icon}
         </span>
-        <p className="truncate font-display text-sm font-bold uppercase tracking-[0.08em] text-foreground">
+        <p className="whitespace-nowrap font-display text-sm font-bold uppercase tracking-[0.08em] text-foreground">
           {title}
         </p>
       </div>
       <div className="mt-6 grid grid-cols-2 gap-4">
         {items.map((item) => (
-          <div key={item.label}>
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-subtle">
+          <div key={item.label} className="flex min-w-0 flex-col items-center text-center">
+            <p className="whitespace-nowrap text-[0.6rem] font-bold uppercase tracking-[0.08em] text-subtle">
               {item.label}
             </p>
-            <p className="mt-2 font-display text-2xl font-bold tracking-[-0.03em] text-foreground md:text-3xl">
+            <p className="mt-2 whitespace-nowrap font-display text-2xl font-bold tracking-[-0.03em] text-foreground md:text-3xl">
               {item.value ?? "—"}
             </p>
           </div>
