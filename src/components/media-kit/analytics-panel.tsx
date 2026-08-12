@@ -13,7 +13,7 @@ import {
 import { FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { FileText } from "lucide-react";
 import { useI18n } from "@/i18n";
-import type { PlatformAnalytics, TalentAnalytics } from "@/data/talents";
+import type { PlatformAnalytics, SyncedYouTubeAnalytics, TalentAnalytics } from "@/data/talents";
 import { MediaKitSectionHeading } from "./media-kit-section-heading";
 
 const AGE_COLORS = ["#FF1F30", "#F0303F", "#E8434F", "#EE6B74", "#F19198", "#F3B3B7", "#F5D0D3"];
@@ -208,16 +208,74 @@ const TAB_ICONS: Record<string, React.ReactNode> = {
   tiktok: <FaTiktok className="h-4 w-4" aria-hidden="true" />,
 };
 
-export function MediaKitAnalytics({ analytics }: { analytics: TalentAnalytics | null }) {
+function formatMetric(value: number | null) {
+  if (value === null) return "—";
+  return new Intl.NumberFormat(undefined, {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
+}
+
+function formatDuration(seconds: number | null) {
+  if (seconds === null) return "—";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.round(seconds % 60);
+  return `${minutes}m ${remainingSeconds}s`;
+}
+
+export function MediaKitAnalytics({
+  analytics,
+  youtubeAnalytics,
+}: {
+  analytics: TalentAnalytics | null;
+  youtubeAnalytics?: SyncedYouTubeAnalytics | null;
+}) {
   const { t } = useI18n();
   const a = t.mediakit.analyticsUi;
 
+  const syncedYoutube = youtubeAnalytics
+    ? {
+        metrics: [
+          { label: a.viewsLast28Days, value: formatMetric(youtubeAnalytics.views) },
+          {
+            label: a.watchTime,
+            value: formatMetric(youtubeAnalytics.estimatedMinutesWatched),
+          },
+          {
+            label: a.avgViewDuration,
+            value: formatDuration(youtubeAnalytics.averageViewDurationSeconds),
+          },
+          {
+            label: a.subscribersGained,
+            value: formatMetric(youtubeAnalytics.subscribersGained),
+          },
+          { label: a.likes, value: formatMetric(youtubeAnalytics.likes) },
+          { label: a.comments, value: formatMetric(youtubeAnalytics.comments) },
+        ],
+      }
+    : null;
+  const effectiveYoutube =
+    syncedYoutube || analytics?.youtube
+      ? {
+          ...(analytics?.youtube ?? {}),
+          metrics: [...(analytics?.youtube?.metrics ?? []), ...(syncedYoutube?.metrics ?? [])],
+        }
+      : null;
+  const effectiveAnalytics: TalentAnalytics | null = effectiveYoutube
+    ? { ...(analytics ?? {}), youtube: effectiveYoutube }
+    : analytics;
+
   const tabs = (
     [
-      { key: "summary", label: a.summary, data: analytics?.summary },
-      { key: "youtube", label: t.mediakit.platforms.youtube, data: analytics?.youtube },
-      { key: "instagram", label: t.mediakit.platforms.instagram, data: analytics?.instagram },
-      { key: "tiktok", label: t.mediakit.platforms.tiktok, data: analytics?.tiktok },
+      { key: "summary", label: a.summary, data: effectiveAnalytics?.summary },
+      { key: "youtube", label: t.mediakit.platforms.youtube, data: effectiveYoutube },
+      {
+        key: "instagram",
+        label: t.mediakit.platforms.instagram,
+        data: effectiveAnalytics?.instagram,
+      },
+      { key: "tiktok", label: t.mediakit.platforms.tiktok, data: effectiveAnalytics?.tiktok },
     ] as { key: string; label: string; data?: PlatformAnalytics | null }[]
   ).filter((tab) => tab.data);
 

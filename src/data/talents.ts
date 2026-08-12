@@ -22,11 +22,25 @@ export type TalentAnalytics = {
 
 export type SocialPlatform = "youtube" | "instagram" | "tiktok" | "twitch" | "twitter";
 
+export type SyncedYouTubeAnalytics = {
+  periodDays: number;
+  startDate: string;
+  endDate: string;
+  views: number | null;
+  estimatedMinutesWatched: number | null;
+  averageViewDurationSeconds: number | null;
+  subscribersGained: number | null;
+  likes: number | null;
+  comments: number | null;
+};
+
 export type SyncedSocialMetrics = {
   accountId: string | null;
   subscribers: number | null;
   totalViews: number | null;
   videoCount: number | null;
+  analytics?: SyncedYouTubeAnalytics | null;
+  analyticsError?: string | null;
   lastSyncedAt: string | null;
   lastSyncError: string | null;
 };

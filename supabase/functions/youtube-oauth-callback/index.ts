@@ -1,7 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
-const YOUTUBE_SCOPE = "https://www.googleapis.com/auth/youtube.readonly";
+const YOUTUBE_SCOPES = [
+  "https://www.googleapis.com/auth/youtube.readonly",
+  "https://www.googleapis.com/auth/yt-analytics.readonly",
+];
 
 type TokenResponse = {
   access_token?: string;
@@ -21,6 +24,25 @@ type ChannelResponse = {
       videoCount?: string;
     };
   }>;
+};
+
+type YouTubeAnalytics = {
+  period_days: number;
+  start_date: string;
+  end_date: string;
+  views: number | null;
+  estimated_minutes_watched: number | null;
+  average_view_duration_seconds: number | null;
+  subscribers_gained: number | null;
+  likes: number | null;
+  comments: number | null;
+  source: "youtube_analytics_v2";
+};
+
+type AnalyticsResponse = {
+  columnHeaders?: Array<{ name?: string }>;
+  rows?: Array<Array<number | string>>;
+  error?: { message?: string };
 };
 
 function requiredSecret(name: string) {
@@ -100,6 +122,67 @@ async function fetchChannel(accessToken: string) {
   return channel;
 }
 
+function utcDate(daysAgo = 0) {
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() - daysAgo);
+  return date.toISOString().slice(0, 10);
+}
+
+function numberFromAnalyticsRow(
+  headers: Array<{ name?: string }>,
+  row: Array<number | string>,
+  name: string,
+) {
+  const index = headers.findIndex((header) => header.name === name);
+  if (index < 0) return null;
+  const value = Number(row[index]);
+  return Number.isFinite(value) ? value : null;
+}
+
+async function fetchYouTubeAnalytics(accessToken: string): Promise<YouTubeAnalytics> {
+  // Analytics data is generally delayed, so use the last 28 complete days.
+  const endDate = utcDate(1);
+  const startDate = utcDate(28);
+  const query = new URLSearchParams({
+    ids: "channel==MINE",
+    startDate,
+    endDate,
+    metrics:
+      "views,estimatedMinutesWatched,averageViewDuration,subscribersGained,likes,comments",
+  });
+  const response = await fetch(`https://youtubeanalytics.googleapis.com/v2/reports?${query}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  const payload = (await response.json()) as AnalyticsResponse;
+  if (!response.ok) {
+    throw new Error(payload.error?.message || `YouTube Analytics API returned ${response.status}`);
+  }
+
+  const headers = payload.columnHeaders ?? [];
+  const row = payload.rows?.[0] ?? [];
+  return {
+    period_days: 28,
+    start_date: startDate,
+    end_date: endDate,
+    views: numberFromAnalyticsRow(headers, row, "views"),
+    estimated_minutes_watched: numberFromAnalyticsRow(
+      headers,
+      row,
+      "estimatedMinutesWatched",
+    ),
+    average_view_duration_seconds: numberFromAnalyticsRow(
+      headers,
+      row,
+      "averageViewDuration",
+    ),
+    subscribers_gained: numberFromAnalyticsRow(headers, row, "subscribersGained"),
+    likes: numberFromAnalyticsRow(headers, row, "likes"),
+    comments: numberFromAnalyticsRow(headers, row, "comments"),
+    source: "youtube_analytics_v2",
+  };
+}
+
 Deno.serve(async (request) => {
   if (request.method !== "GET") return new Response("Method not allowed", { status: 405 });
 
@@ -137,6 +220,16 @@ Deno.serve(async (request) => {
       `${supabaseUrl.replace(/\/$/, "")}/functions/v1/youtube-oauth-callback`;
     const token = await exchangeCode(code, clientId, clientSecret, redirectUri);
     const channel = await fetchChannel(token.access_token!);
+    let analytics: YouTubeAnalytics | null = null;
+    let analyticsError: string | null = null;
+    try {
+      analytics = await fetchYouTubeAnalytics(token.access_token!);
+    } catch (error) {
+      // Keep the connection usable if an existing token has not been re-authorized
+      // with the Analytics scope yet or the API has not been enabled in Google Cloud.
+      analyticsError = error instanceof Error ? error.message : "YouTube Analytics unavailable";
+      console.warn("youtube-oauth-callback analytics", error);
+    }
     const now = new Date().toISOString();
     const profileUrl = channelProfile(channel.id, channel.snippet?.customUrl);
 
@@ -159,6 +252,8 @@ Deno.serve(async (request) => {
             subscribers: toNumber(channel.statistics?.subscriberCount),
             total_views: toNumber(channel.statistics?.viewCount),
             video_count: toNumber(channel.statistics?.videoCount),
+            analytics,
+            analytics_error: analyticsError,
             source: "youtube_oauth",
           },
           last_synced_at: now,
@@ -191,7 +286,7 @@ Deno.serve(async (request) => {
         refresh_token: refreshToken,
         access_token: token.access_token,
         access_token_expires_at: new Date(Date.now() + (token.expires_in ?? 3600) * 1000).toISOString(),
-        scope: token.scope || YOUTUBE_SCOPE,
+        scope: token.scope || YOUTUBE_SCOPES.join(" "),
         updated_at: now,
       },
       { onConflict: "connection_id" },

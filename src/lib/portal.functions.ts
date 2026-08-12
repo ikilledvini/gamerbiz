@@ -321,7 +321,10 @@ export const creatorStartYouTubeOAuth = createServerFn({ method: "POST" })
       access_type: "offline",
       prompt: "consent",
       include_granted_scopes: "true",
-      scope: "https://www.googleapis.com/auth/youtube.readonly",
+      scope: [
+        "https://www.googleapis.com/auth/youtube.readonly",
+        "https://www.googleapis.com/auth/yt-analytics.readonly",
+      ].join(" "),
       state,
     });
 

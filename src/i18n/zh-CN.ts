@@ -313,6 +313,12 @@ export const zhCN: Dict = {
       gender: "性别",
       countries: "国家",
       languages: "语言",
+      viewsLast28Days: "观看次数（28天）",
+      watchTime: "观看时长（分钟）",
+      avgViewDuration: "平均观看时长",
+      subscribersGained: "新增订阅者",
+      likes: "点赞",
+      comments: "评论",
     },
     platforms: {
       instagram: "Instagram",
