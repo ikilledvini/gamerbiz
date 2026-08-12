@@ -476,7 +476,10 @@ function MediaKitContent({ talent }: { talent: Talent }) {
           </div>
 
           <div className="mt-6">
-            <MediaKitAnalytics analytics={talent.analytics ?? null} />
+            <MediaKitAnalytics
+              analytics={talent.analytics ?? null}
+              youtubeAnalytics={youtubeMetrics?.analytics ?? null}
+            />
           </div>
 
           <section className="mt-16 overflow-hidden rounded-[40px] bg-primary p-8 text-primary-foreground md:p-12 lg:p-16">

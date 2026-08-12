@@ -24,6 +24,25 @@ type YouTubeChannel = {
   };
 };
 
+type YouTubeAnalytics = {
+  period_days: number;
+  start_date: string;
+  end_date: string;
+  views: number | null;
+  estimated_minutes_watched: number | null;
+  average_view_duration_seconds: number | null;
+  subscribers_gained: number | null;
+  likes: number | null;
+  comments: number | null;
+  source: "youtube_analytics_v2";
+};
+
+type AnalyticsResponse = {
+  columnHeaders?: Array<{ name?: string }>;
+  rows?: Array<Array<number | string>>;
+  error?: { message?: string };
+};
+
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
 
 function json(body: unknown, status = 200) {
@@ -40,6 +59,13 @@ function toNumber(value?: string) {
   if (!value) return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function utcDate(daysAgo = 0) {
+  const date = new Date();
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() - daysAgo);
+  return date.toISOString().slice(0, 10);
 }
 
 async function refreshYouTubeAccessToken(
@@ -105,6 +131,60 @@ async function fetchYouTubeMetrics(
     total_views: toNumber(channel.statistics?.viewCount),
     video_count: toNumber(channel.statistics?.videoCount),
     source: "youtube_data_api_v3",
+  };
+}
+
+function numberFromAnalyticsRow(
+  headers: Array<{ name?: string }>,
+  row: Array<number | string>,
+  name: string,
+) {
+  const index = headers.findIndex((header) => header.name === name);
+  if (index < 0) return null;
+  const value = Number(row[index]);
+  return Number.isFinite(value) ? value : null;
+}
+
+async function fetchYouTubeAnalytics(accessToken: string): Promise<YouTubeAnalytics> {
+  // Analytics data is generally delayed, so use the last 28 complete days.
+  const endDate = utcDate(1);
+  const startDate = utcDate(28);
+  const query = new URLSearchParams({
+    ids: "channel==MINE",
+    startDate,
+    endDate,
+    metrics:
+      "views,estimatedMinutesWatched,averageViewDuration,subscribersGained,likes,comments",
+  });
+  const response = await fetch(`https://youtubeanalytics.googleapis.com/v2/reports?${query}`, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  const payload = (await response.json()) as AnalyticsResponse;
+  if (!response.ok) {
+    throw new Error(payload.error?.message || `YouTube Analytics API returned ${response.status}`);
+  }
+
+  const headers = payload.columnHeaders ?? [];
+  const row = payload.rows?.[0] ?? [];
+  return {
+    period_days: 28,
+    start_date: startDate,
+    end_date: endDate,
+    views: numberFromAnalyticsRow(headers, row, "views"),
+    estimated_minutes_watched: numberFromAnalyticsRow(
+      headers,
+      row,
+      "estimatedMinutesWatched",
+    ),
+    average_view_duration_seconds: numberFromAnalyticsRow(
+      headers,
+      row,
+      "averageViewDuration",
+    ),
+    subscribers_gained: numberFromAnalyticsRow(headers, row, "subscribersGained"),
+    likes: numberFromAnalyticsRow(headers, row, "likes"),
+    comments: numberFromAnalyticsRow(headers, row, "comments"),
+    source: "youtube_analytics_v2",
   };
 }
 
@@ -182,13 +262,31 @@ Deno.serve(async (request) => {
           apiKey: youtubeApiKey,
           accessToken,
         });
+        let analytics: YouTubeAnalytics | null = null;
+        let analyticsError: string | null = null;
+        if (connection.connection_method === "oauth" && accessToken) {
+          try {
+            analytics = await fetchYouTubeAnalytics(accessToken);
+          } catch (error) {
+            // Keep basic channel metrics working while a creator re-authorizes
+            // with the Analytics scope or while the API is being enabled.
+            analyticsError =
+              error instanceof Error ? error.message : "YouTube Analytics unavailable";
+            console.warn("sync-social-metrics analytics", connection.id, error);
+          }
+        }
+        const syncedMetrics = {
+          ...metrics,
+          ...(analytics ? { analytics } : {}),
+          ...(analyticsError ? { analytics_error: analyticsError } : {}),
+        };
         const syncedAt = new Date().toISOString();
 
         const { error: updateError } = await supabase
           .from("social_connections")
           .update({
             external_account_id: metrics.account_id,
-            current_metrics: metrics,
+            current_metrics: syncedMetrics,
             last_synced_at: syncedAt,
             last_sync_error: null,
             connection_status: "connected",
@@ -198,7 +296,7 @@ Deno.serve(async (request) => {
 
         const { error: snapshotError } = await supabase.from("social_metric_snapshots").insert({
           connection_id: connection.id,
-          metrics,
+          metrics: syncedMetrics,
           captured_at: syncedAt,
         });
         if (snapshotError) throw snapshotError;

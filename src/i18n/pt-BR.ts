@@ -321,6 +321,12 @@ export const ptBR: Dict = {
       gender: "Gênero",
       countries: "Países",
       languages: "Idiomas",
+      viewsLast28Days: "Visualizações (28d)",
+      watchTime: "Tempo assistido (min)",
+      avgViewDuration: "Duração média",
+      subscribersGained: "Novos inscritos",
+      likes: "Curtidas",
+      comments: "Comentários",
     },
     platforms: {
       instagram: "Instagram",

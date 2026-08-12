@@ -319,6 +319,12 @@ export const en: Dict = {
       gender: "Gender",
       countries: "Countries",
       languages: "Languages",
+      viewsLast28Days: "Views (28d)",
+      watchTime: "Watch time (min)",
+      avgViewDuration: "Avg. duration",
+      subscribersGained: "Subscribers gained",
+      likes: "Likes",
+      comments: "Comments",
     },
     platforms: {
       instagram: "Instagram",

@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { TALENT_COLUMNS, mapTalentRow, type TalentRow } from "@/lib/talent-mapper";
-import type { SocialPlatform, SyncedSocialMetrics } from "@/data/talents";
+import type { SocialPlatform, SyncedSocialMetrics, SyncedYouTubeAnalytics } from "@/data/talents";
 
 type SocialConnectionRow = {
   talent_id: string;
@@ -17,6 +17,23 @@ function metricNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function mapYouTubeAnalytics(value: unknown): SyncedYouTubeAnalytics | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const analytics = value as Record<string, unknown>;
+  if (typeof analytics.source !== "string") return null;
+  return {
+    periodDays: metricNumber(analytics.period_days) ?? 28,
+    startDate: typeof analytics.start_date === "string" ? analytics.start_date : "",
+    endDate: typeof analytics.end_date === "string" ? analytics.end_date : "",
+    views: metricNumber(analytics.views),
+    estimatedMinutesWatched: metricNumber(analytics.estimated_minutes_watched),
+    averageViewDurationSeconds: metricNumber(analytics.average_view_duration_seconds),
+    subscribersGained: metricNumber(analytics.subscribers_gained),
+    likes: metricNumber(analytics.likes),
+    comments: metricNumber(analytics.comments),
+  };
+}
+
 function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
   const metrics =
     row.current_metrics && typeof row.current_metrics === "object" && !Array.isArray(row.current_metrics)
@@ -28,6 +45,8 @@ function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
     subscribers: metricNumber(metrics.subscribers),
     totalViews: metricNumber(metrics.total_views),
     videoCount: metricNumber(metrics.video_count),
+    analytics: mapYouTubeAnalytics(metrics.analytics),
+    analyticsError: typeof metrics.analytics_error === "string" ? metrics.analytics_error : null,
     lastSyncedAt: row.last_synced_at,
     lastSyncError: row.last_sync_error,
   };
