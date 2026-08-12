@@ -328,6 +328,9 @@ export const es: Dict = {
       subscribersGained: "Nuevos suscriptores",
       likes: "Me gusta",
       comments: "Comentarios",
+      female: "Femenino",
+      male: "Masculino",
+      userSpecified: "Otro",
     },
     platforms: {
       instagram: "Instagram",

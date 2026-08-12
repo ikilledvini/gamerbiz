@@ -189,12 +189,12 @@ function MediaKitContent({ talent }: { talent: Talent }) {
   const instagramMetrics = talent.socialMetrics?.instagram;
   const tiktokMetrics = talent.socialMetrics?.tiktok;
   const syncedYoutubeAverageViews =
-    typeof youtubeMetrics?.totalViews === "number" &&
-    typeof youtubeMetrics.videoCount === "number"
+    youtubeMetrics?.analytics?.averageViews ??
+    (typeof youtubeMetrics?.totalViews === "number" && typeof youtubeMetrics.videoCount === "number"
       ? youtubeMetrics.videoCount > 0
         ? youtubeMetrics.totalViews / youtubeMetrics.videoCount
         : 0
-      : null;
+      : null);
 
   const badge =
     talent.relationship === "gamerbiz-talent"

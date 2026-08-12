@@ -319,6 +319,9 @@ export const zhCN: Dict = {
       subscribersGained: "新增订阅者",
       likes: "点赞",
       comments: "评论",
+      female: "女性",
+      male: "男性",
+      userSpecified: "其他",
     },
     platforms: {
       instagram: "Instagram",

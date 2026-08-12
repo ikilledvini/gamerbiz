@@ -224,6 +224,15 @@ export type Dict = {
       gender: string;
       countries: string;
       languages: string;
+      viewsLast28Days: string;
+      watchTime: string;
+      avgViewDuration: string;
+      subscribersGained: string;
+      likes: string;
+      comments: string;
+      female: string;
+      male: string;
+      userSpecified: string;
     };
     platforms: {
       instagram: string;

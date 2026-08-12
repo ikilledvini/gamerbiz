@@ -7,6 +7,7 @@ export type AnalyticsPoint = { label: string; value: number };
 
 export type PlatformAnalytics = {
   metrics?: { label: string; value: string }[];
+  dailyViews?: AnalyticsPoint[];
   age?: AnalyticsPoint[];
   gender?: AnalyticsPoint[];
   countries?: AnalyticsPoint[];
@@ -32,6 +33,12 @@ export type SyncedYouTubeAnalytics = {
   subscribersGained: number | null;
   likes: number | null;
   comments: number | null;
+  averageViews: number | null;
+  analyzedVideoCount: number;
+  dailyViews: AnalyticsPoint[];
+  countries: AnalyticsPoint[];
+  age: AnalyticsPoint[];
+  gender: AnalyticsPoint[];
 };
 
 export type SyncedSocialMetrics = {
@@ -128,7 +135,6 @@ const TALENT_NAMES = [
   "Tetéia",
 ] as const;
 
-
 const TALENT_CATEGORIES: Record<string, string> = {
   Nofaxu: "Minecraft",
   Thalera: "Mangá/Anime + Pokémon",
@@ -215,8 +221,6 @@ export function getTalentBySlug(slug: string) {
   return talents.find((t) => t.slug === slug) ?? null;
 }
 
-
-
 export const talentCategories = Array.from(
   new Set(talents.filter((t) => t.status === "published").flatMap((t) => t.categories)),
 ).sort((a, b) => a.localeCompare(b, "pt-BR"));
@@ -255,15 +259,11 @@ const CATEGORY_GROUPS: Record<string, string> = {
 };
 
 export function getTalentCategoryGroups(talent: Talent): string[] {
-  return Array.from(
-    new Set(talent.categories.map((c) => CATEGORY_GROUPS[c] ?? c)),
-  );
+  return Array.from(new Set(talent.categories.map((c) => CATEGORY_GROUPS[c] ?? c)));
 }
 
 export const talentCategoryGroups = Array.from(
   new Set(
-    talents
-      .filter((t) => t.status === "published")
-      .flatMap((t) => getTalentCategoryGroups(t)),
+    talents.filter((t) => t.status === "published").flatMap((t) => getTalentCategoryGroups(t)),
   ),
 ).sort((a, b) => a.localeCompare(b, "pt-BR"));

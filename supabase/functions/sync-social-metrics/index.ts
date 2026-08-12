@@ -1,4 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { fetchYouTubeAnalytics, type YouTubeAnalytics } from "../_shared/youtube-analytics.ts";
 
 type SocialConnection = {
   id: string;
@@ -22,25 +23,6 @@ type YouTubeChannel = {
     viewCount?: string;
     videoCount?: string;
   };
-};
-
-type YouTubeAnalytics = {
-  period_days: number;
-  start_date: string;
-  end_date: string;
-  views: number | null;
-  estimated_minutes_watched: number | null;
-  average_view_duration_seconds: number | null;
-  subscribers_gained: number | null;
-  likes: number | null;
-  comments: number | null;
-  source: "youtube_analytics_v2";
-};
-
-type AnalyticsResponse = {
-  columnHeaders?: Array<{ name?: string }>;
-  rows?: Array<Array<number | string>>;
-  error?: { message?: string };
 };
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8" };
@@ -84,13 +66,6 @@ function toNumber(value?: string) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function utcDate(daysAgo = 0) {
-  const date = new Date();
-  date.setUTCHours(0, 0, 0, 0);
-  date.setUTCDate(date.getUTCDate() - daysAgo);
-  return date.toISOString().slice(0, 10);
-}
-
 async function refreshYouTubeAccessToken(
   refreshToken: string,
   clientId: string,
@@ -106,7 +81,11 @@ async function refreshYouTubeAccessToken(
       grant_type: "refresh_token",
     }),
   });
-  const payload = (await response.json()) as { access_token?: string; expires_in?: number; error?: string };
+  const payload = (await response.json()) as {
+    access_token?: string;
+    expires_in?: number;
+    error?: string;
+  };
   if (!response.ok || !payload.access_token) {
     throw new Error(payload.error || "YouTube OAuth token refresh failed");
   }
@@ -138,7 +117,9 @@ async function fetchYouTubeMetrics(
     throw new Error("YouTube connection has neither an account ID nor a handle");
   }
 
-  const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?${query}`, { headers });
+  const response = await fetch(`https://www.googleapis.com/youtube/v3/channels?${query}`, {
+    headers,
+  });
   if (!response.ok) {
     const details = await response.text();
     throw new Error(`YouTube API ${response.status}: ${details.slice(0, 300)}`);
@@ -154,60 +135,6 @@ async function fetchYouTubeMetrics(
     total_views: toNumber(channel.statistics?.viewCount),
     video_count: toNumber(channel.statistics?.videoCount),
     source: "youtube_data_api_v3",
-  };
-}
-
-function numberFromAnalyticsRow(
-  headers: Array<{ name?: string }>,
-  row: Array<number | string>,
-  name: string,
-) {
-  const index = headers.findIndex((header) => header.name === name);
-  if (index < 0) return null;
-  const value = Number(row[index]);
-  return Number.isFinite(value) ? value : null;
-}
-
-async function fetchYouTubeAnalytics(accessToken: string): Promise<YouTubeAnalytics> {
-  // Analytics data is generally delayed, so use the last 28 complete days.
-  const endDate = utcDate(1);
-  const startDate = utcDate(28);
-  const query = new URLSearchParams({
-    ids: "channel==MINE",
-    startDate,
-    endDate,
-    metrics:
-      "views,estimatedMinutesWatched,averageViewDuration,subscribersGained,likes,comments",
-  });
-  const response = await fetch(`https://youtubeanalytics.googleapis.com/v2/reports?${query}`, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  });
-  const payload = (await response.json()) as AnalyticsResponse;
-  if (!response.ok) {
-    throw new Error(payload.error?.message || `YouTube Analytics API returned ${response.status}`);
-  }
-
-  const headers = payload.columnHeaders ?? [];
-  const row = payload.rows?.[0] ?? [];
-  return {
-    period_days: 28,
-    start_date: startDate,
-    end_date: endDate,
-    views: numberFromAnalyticsRow(headers, row, "views"),
-    estimated_minutes_watched: numberFromAnalyticsRow(
-      headers,
-      row,
-      "estimatedMinutesWatched",
-    ),
-    average_view_duration_seconds: numberFromAnalyticsRow(
-      headers,
-      row,
-      "averageViewDuration",
-    ),
-    subscribers_gained: numberFromAnalyticsRow(headers, row, "subscribersGained"),
-    likes: numberFromAnalyticsRow(headers, row, "likes"),
-    comments: numberFromAnalyticsRow(headers, row, "comments"),
-    source: "youtube_analytics_v2",
   };
 }
 

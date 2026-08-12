@@ -325,6 +325,9 @@ export const en: Dict = {
       subscribersGained: "Subscribers gained",
       likes: "Likes",
       comments: "Comments",
+      female: "Female",
+      male: "Male",
+      userSpecified: "Other",
     },
     platforms: {
       instagram: "Instagram",
