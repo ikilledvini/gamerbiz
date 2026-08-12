@@ -28,7 +28,6 @@ function ChangePasswordRoute() {
   const queryClient = useQueryClient();
   const getAccess = useServerFn(getCurrentPortalAccess);
   const completeChange = useServerFn(completeFirstPasswordChange);
-  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
   const [saving, setSaving] = useState(false);
@@ -51,10 +50,6 @@ function ChangePasswordRoute() {
       setError("A nova senha precisa ter pelo menos 10 caracteres.");
       return;
     }
-    if (newPassword === currentPassword) {
-      setError("A nova senha precisa ser diferente da senha temporária.");
-      return;
-    }
     if (newPassword !== confirmation) {
       setError("A confirmação não corresponde à nova senha.");
       return;
@@ -62,15 +57,6 @@ function ChangePasswordRoute() {
 
     setSaving(true);
     try {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user.email) throw new Error("Não foi possível validar sua conta.");
-
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: userData.user.email,
-        password: currentPassword,
-      });
-      if (signInError) throw new Error("A senha temporária está incorreta.");
-
       const { error: passwordError } = await supabase.auth.updateUser({ password: newPassword });
       if (passwordError) throw new Error(passwordError.message);
 
@@ -119,12 +105,6 @@ function ChangePasswordRoute() {
 
           <form onSubmit={handleSubmit} className="mt-7 space-y-5">
             <PasswordField
-              label="Senha temporária"
-              autoComplete="current-password"
-              value={currentPassword}
-              onChange={setCurrentPassword}
-            />
-            <PasswordField
               label="Nova senha"
               autoComplete="new-password"
               value={newPassword}
@@ -172,7 +152,7 @@ function PasswordField({
   label: string;
   value: string;
   onChange: (value: string) => void;
-  autoComplete: "current-password" | "new-password";
+  autoComplete: "new-password";
   hint?: string;
 }) {
   return (
@@ -187,7 +167,7 @@ function PasswordField({
           type="password"
           autoComplete={autoComplete}
           required
-          minLength={autoComplete === "new-password" ? 10 : undefined}
+          minLength={10}
           value={value}
           onChange={(event) => onChange(event.target.value)}
           className="min-h-12 w-full rounded-xl border border-border bg-background pl-11 pr-4 text-sm normal-case tracking-normal text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"

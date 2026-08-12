@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -8,6 +8,7 @@ import {
   ArrowUpRight,
   CircleUserRound,
   Clock3,
+  GripVertical,
   MessageSquareText,
   Pencil,
   Plus,
@@ -33,7 +34,7 @@ import {
   type LeadRow,
   type SocialConnectionRow,
 } from "@/lib/portal.functions";
-import { adminDeleteTalent, adminSaveTalent } from "@/lib/talents.functions";
+import { adminDeleteTalent, adminReorderTalents, adminSaveTalent } from "@/lib/talents.functions";
 import type { TalentRow } from "@/lib/talent-mapper";
 import { normalizeForSearch, toSlug } from "@/lib/slug";
 
@@ -195,6 +196,7 @@ function AdminRoute() {
   const getAccess = useServerFn(getCurrentPortalAccess);
   const loadDashboard = useServerFn(adminDashboardOverview);
   const saveTalent = useServerFn(adminSaveTalent);
+  const reorderTalents = useServerFn(adminReorderTalents);
   const deleteTalent = useServerFn(adminDeleteTalent);
   const updateLeadStatus = useServerFn(adminUpdateLeadStatus);
   const assignCreator = useServerFn(adminAssignCreator);
@@ -203,9 +205,13 @@ function AdminRoute() {
 
   const [view, setView] = useState<AdminView>("overview");
   const [term, setTerm] = useState("");
+  const [accessTerm, setAccessTerm] = useState("");
   const [leadFilter, setLeadFilter] = useState<LeadFilter>("all");
   const [editing, setEditing] = useState<TalentRow | null>(null);
   const [editingUser, setEditingUser] = useState<ManagedUserDraft | null>(null);
+  const [orderedTalentIds, setOrderedTalentIds] = useState<string[]>([]);
+  const [draggedTalentId, setDraggedTalentId] = useState<string | null>(null);
+  const [dropTargetTalentId, setDropTargetTalentId] = useState<string | null>(null);
 
   const accessQuery = useQuery({ queryKey: ["portal-access"], queryFn: () => getAccess({}) });
   const isAdmin = accessQuery.data?.role === "admin";
@@ -261,6 +267,19 @@ function AdminRoute() {
       void refreshDashboard();
     },
     onError: (error: Error) => toast.error(error.message),
+  });
+
+  const reorderMutation = useMutation({
+    mutationFn: ({ ids }: { ids: string[]; previousIds: string[] }) =>
+      reorderTalents({ data: { ids } }),
+    onSuccess: () => {
+      toast.success("Ordem dos Media Kits atualizada.");
+      void refreshDashboard();
+    },
+    onError: (error: Error, variables) => {
+      setOrderedTalentIds(variables.previousIds);
+      toast.error(error.message);
+    },
   });
 
   const leadMutation = useMutation({
@@ -328,6 +347,13 @@ function AdminRoute() {
   });
 
   const dashboard = dashboardQuery.data;
+
+  useEffect(() => {
+    if (dashboard?.talents) {
+      setOrderedTalentIds(dashboard.talents.map((talent) => talent.id));
+    }
+  }, [dashboard?.talents]);
+
   const connectionsByTalent = useMemo(() => {
     const map = new Map<string, SocialConnectionRow[]>();
     for (const connection of dashboard?.connections ?? []) {
@@ -355,16 +381,42 @@ function AdminRoute() {
     [dashboard?.adminUserIds],
   );
 
+  const orderedTalents = useMemo(() => {
+    const rows = dashboard?.talents ?? [];
+    const rowsById = new Map(rows.map((talent) => [talent.id, talent]));
+    const ordered = orderedTalentIds.flatMap((id) => {
+      const talent = rowsById.get(id);
+      return talent ? [talent] : [];
+    });
+    const orderedIds = new Set(ordered.map((talent) => talent.id));
+    return [...ordered, ...rows.filter((talent) => !orderedIds.has(talent.id))];
+  }, [dashboard?.talents, orderedTalentIds]);
+
+  const accessRows = useMemo(() => {
+    const needle = normalizeForSearch(accessTerm);
+    const talentNames = new Map(
+      (dashboard?.talents ?? []).map((talent) => [talent.id, talent.stage_name]),
+    );
+    return (dashboard?.profiles ?? []).filter((profile) => {
+      if (!needle) return true;
+      const talentName = talentNames.get(accessByUser.get(profile.user_id) ?? "") ?? "";
+      const role = adminUserIds.has(profile.user_id) ? "admin administrador" : "creator";
+      return normalizeForSearch(
+        `${profile.display_name ?? ""} ${profile.email} ${talentName} ${role}`,
+      ).includes(needle);
+    });
+  }, [accessByUser, accessTerm, adminUserIds, dashboard?.profiles, dashboard?.talents]);
+
   const talentRows = useMemo(() => {
     const needle = normalizeForSearch(term);
-    const rows = dashboard?.talents ?? [];
+    const rows = orderedTalents;
     if (!needle) return rows;
     return rows.filter((talent) =>
       normalizeForSearch(
         `${talent.stage_name} ${talent.username ?? ""} ${talent.category} ${talent.status}`,
       ).includes(needle),
     );
-  }, [dashboard?.talents, term]);
+  }, [orderedTalents, term]);
 
   const filteredLeads = useMemo(
     () =>
@@ -402,6 +454,22 @@ function AdminRoute() {
   const pendingMetricConnectionIds = new Set(
     pendingMetricConnections.map((connection) => connection.id),
   );
+
+  function handleDrop(targetTalentId: string) {
+    if (!draggedTalentId || draggedTalentId === targetTalentId) return;
+
+    const currentIds = orderedTalents.map((talent) => talent.id);
+    const previousIds = [...currentIds];
+    const nextIds = currentIds.filter((id) => id !== draggedTalentId);
+    const targetIndex = nextIds.indexOf(targetTalentId);
+    if (targetIndex < 0) return;
+
+    nextIds.splice(targetIndex, 0, draggedTalentId);
+    setOrderedTalentIds(nextIds);
+    setDraggedTalentId(null);
+    setDropTargetTalentId(null);
+    reorderMutation.mutate({ ids: nextIds, previousIds });
+  }
 
   async function handleSignOut() {
     await queryClient.cancelQueries();
@@ -661,6 +729,9 @@ function AdminRoute() {
                     className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   />
                 </div>
+                <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[18rem]">
+                  Arraste pelo ícone de alça para definir a ordem exibida na frontpage.
+                </p>
                 <button
                   type="button"
                   onClick={() => setEditing({ ...EMPTY_TALENT })}
@@ -683,19 +754,58 @@ function AdminRoute() {
                     const health = talentHealth(talent);
                     const connections = connectionsByTalent.get(talent.id) ?? [];
                     const assignedProfile = profilesById.get(accessByTalent.get(talent.id) ?? "");
+                    const isDragging = draggedTalentId === talent.id;
+                    const isDropTarget =
+                      dropTargetTalentId === talent.id && draggedTalentId !== talent.id;
                     return (
                       <article
                         key={talent.id}
-                        className="grid gap-4 px-5 py-5 lg:grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] lg:items-center lg:px-6"
+                        onDragOver={(event) => {
+                          if (!draggedTalentId || draggedTalentId === talent.id) return;
+                          event.preventDefault();
+                          event.dataTransfer.dropEffect = "move";
+                          setDropTargetTalentId(talent.id);
+                        }}
+                        onDrop={(event) => {
+                          event.preventDefault();
+                          handleDrop(talent.id);
+                        }}
+                        className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] lg:items-center lg:px-6 ${
+                          isDragging ? "opacity-45" : ""
+                        } ${isDropTarget ? "bg-primary/10" : ""}`}
                       >
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h2 className="font-display text-sm font-bold">{talent.stage_name}</h2>
-                            <StatusPill status={talent.status} />
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span
+                            draggable={!reorderMutation.isPending}
+                            role="button"
+                            tabIndex={0}
+                            aria-label={`Arrastar ${talent.stage_name} para reordenar`}
+                            title="Arraste para reordenar"
+                            onDragStart={(event) => {
+                              event.dataTransfer.effectAllowed = "move";
+                              event.dataTransfer.setData("text/plain", talent.id);
+                              setDraggedTalentId(talent.id);
+                              setDropTargetTalentId(null);
+                            }}
+                            onDragEnd={() => {
+                              setDraggedTalentId(null);
+                              setDropTargetTalentId(null);
+                            }}
+                            className="grid h-9 w-7 shrink-0 cursor-grab place-items-center rounded-lg text-subtle transition-colors active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary"
+                          >
+                            <GripVertical className="h-4 w-4" aria-hidden="true" />
+                          </span>
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h2 className="font-display text-sm font-bold">
+                                {talent.stage_name}
+                              </h2>
+                              <StatusPill status={talent.status} />
+                            </div>
+                            <p className="mt-1 truncate text-xs text-muted-foreground">
+                              {talent.category} · /{talent.slug}
+                            </p>
                           </div>
-                          <p className="mt-1 truncate text-xs text-muted-foreground">
-                            {talent.category} · /{talent.slug}
-                          </p>
                         </div>
                         <div>
                           <div className="flex items-center justify-between text-xs">
@@ -873,8 +983,27 @@ function AdminRoute() {
                     Novo usuário
                   </button>
                 </div>
+                <div className="relative border-b border-border px-6 py-4">
+                  <Search
+                    className="pointer-events-none absolute left-10 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                    aria-hidden="true"
+                  />
+                  <input
+                    type="search"
+                    value={accessTerm}
+                    onChange={(event) => setAccessTerm(event.target.value)}
+                    placeholder="Buscar por nome, e-mail ou Media Kit"
+                    aria-label="Buscar acessos por nome, e-mail ou Media Kit"
+                    className="h-11 w-full rounded-full border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition-[border-color] focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                  {accessTerm ? (
+                    <p className="mt-2 px-2 text-xs text-muted-foreground" aria-live="polite">
+                      {accessRows.length} resultado{accessRows.length === 1 ? "" : "s"}
+                    </p>
+                  ) : null}
+                </div>
                 <div className="divide-y divide-border">
-                  {(dashboard?.profiles ?? []).map((profile) => {
+                  {accessRows.map((profile) => {
                     const talentId = accessByUser.get(profile.user_id) ?? "";
                     const isCreator = dashboard?.creatorUserIds.includes(profile.user_id);
                     const isProfileAdmin = adminUserIds.has(profile.user_id);
@@ -954,6 +1083,11 @@ function AdminRoute() {
                       </div>
                     );
                   })}
+                  {accessRows.length === 0 ? (
+                    <p className="px-6 py-8 text-sm text-muted-foreground">
+                      Nenhum acesso encontrado.
+                    </p>
+                  ) : null}
                 </div>
               </article>
             </section>

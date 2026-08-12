@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import * as Tooltip from "@radix-ui/react-tooltip";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { TalentCard } from "@/components/ui/talent-card";
-import { publishedTalents as talents, type Talent } from "@/data/talents";
+import { publishedTalents as fallbackTalents, type Talent } from "@/data/talents";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
+import { listPublicTalents } from "@/lib/talents.functions";
 
 const PAGE_SIZE = 5;
 
@@ -17,21 +19,27 @@ const PAGE_SIZE = 5;
 export function TalentCarousel() {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const { data: publicTalents } = useQuery({
+    queryKey: ["public-talents-carousel"],
+    queryFn: () => listPublicTalents(),
+    staleTime: 30_000,
+  });
+  const talents: Talent[] = publicTalents ?? fallbackTalents;
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: "trimSnaps",
     loop: false,
   });
   const [selected, setSelected] = useState(0);
-  const totalPages = Math.ceil(talents.length / PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil(talents.length / PAGE_SIZE));
 
   const scrollToPage = useCallback(
     (pageIndex: number, jump = false) => {
       if (!emblaApi) return;
-      const target = Math.min(pageIndex * PAGE_SIZE, talents.length - PAGE_SIZE);
+      const target = Math.min(pageIndex * PAGE_SIZE, Math.max(0, talents.length - PAGE_SIZE));
       emblaApi.scrollTo(Math.max(0, target), jump);
     },
-    [emblaApi],
+    [emblaApi, talents.length],
   );
 
   const scrollNextPage = useCallback(
