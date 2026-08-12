@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.youtube-oauth-callback]
 verify_jwt = false
+
+[functions.tiktok-oauth-start]
+verify_jwt = false
+
+[functions.tiktok-oauth-callback]
+verify_jwt = false

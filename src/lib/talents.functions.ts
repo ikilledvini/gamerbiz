@@ -3,7 +3,12 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { TALENT_COLUMNS, mapTalentRow, type TalentRow } from "@/lib/talent-mapper";
-import type { SocialPlatform, SyncedSocialMetrics, SyncedYouTubeAnalytics } from "@/data/talents";
+import type {
+  SocialPlatform,
+  SyncedSocialMetrics,
+  SyncedTikTokAnalytics,
+  SyncedYouTubeAnalytics,
+} from "@/data/talents";
 
 type SocialConnectionRow = {
   talent_id: string;
@@ -54,6 +59,20 @@ function mapYouTubeAnalytics(value: unknown): SyncedYouTubeAnalytics | null {
   };
 }
 
+function mapTikTokAnalytics(value: unknown): SyncedTikTokAnalytics | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const analytics = value as Record<string, unknown>;
+  if (analytics["source"] !== "tiktok_display_api") return null;
+  return {
+    analyzedVideoCount: metricNumber(analytics["analyzed_video_count"]) ?? 0,
+    averageViews: metricNumber(analytics["average_views"]),
+    totalViews: metricNumber(analytics["total_views"]),
+    likes: metricNumber(analytics["likes"]),
+    comments: metricNumber(analytics["comments"]),
+    shares: metricNumber(analytics["shares"]),
+  };
+}
+
 function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
   const metrics =
     row.current_metrics &&
@@ -67,7 +86,9 @@ function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
     subscribers: metricNumber(metrics["subscribers"]),
     totalViews: metricNumber(metrics["total_views"]),
     videoCount: metricNumber(metrics["video_count"]),
+    averageViews: metricNumber(metrics["average_views"]),
     analytics: mapYouTubeAnalytics(metrics["analytics"]),
+    tiktokAnalytics: mapTikTokAnalytics(metrics["analytics"]),
     analyticsError:
       typeof metrics["analytics_error"] === "string" ? metrics["analytics_error"] : null,
     lastSyncedAt: row.last_synced_at,

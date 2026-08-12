@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   creatorDisconnectConnection,
   creatorPortalData,
+  creatorStartTikTokOAuth,
   creatorStartYouTubeOAuth,
   getCurrentPortalAccess,
   type SocialConnectionRow,
@@ -92,6 +93,7 @@ function CreatorRoute() {
   const getAccess = useServerFn(getCurrentPortalAccess);
   const getPortalData = useServerFn(creatorPortalData);
   const disconnectConnection = useServerFn(creatorDisconnectConnection);
+  const startTikTokOAuth = useServerFn(creatorStartTikTokOAuth);
   const startYouTubeOAuth = useServerFn(creatorStartYouTubeOAuth);
 
   const accessQuery = useQuery({ queryKey: ["portal-access"], queryFn: () => getAccess({}) });
@@ -124,16 +126,28 @@ function CreatorRoute() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const tiktokOAuthMutation = useMutation({
+    mutationFn: () => startTikTokOAuth({}),
+    onSuccess: ({ authorizationUrl }) => {
+      window.location.assign(authorizationUrl);
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const status = params.get("youtube");
-    if (!status) return;
+    const platform = params.has("youtube") ? "youtube" : params.has("tiktok") ? "tiktok" : null;
+    if (!platform) return;
+    const status = params.get(platform);
 
     if (status === "connected") {
-      toast.success("YouTube conectado ao Media Kit.");
+      toast.success(`${platform === "youtube" ? "YouTube" : "TikTok"} conectado ao Media Kit.`);
       void queryClient.invalidateQueries({ queryKey: ["creator-portal"] });
     } else {
-      toast.error(params.get("message") || "Não foi possível conectar o YouTube.");
+      toast.error(
+        params.get("message") ||
+          `Não foi possível conectar ${platform === "youtube" ? "o YouTube" : "o TikTok"}.`,
+      );
     }
     window.history.replaceState({}, "", window.location.pathname);
   }, [queryClient]);
@@ -284,6 +298,19 @@ function CreatorRoute() {
                             ? "Reconectar YouTube"
                             : "Conectar com Google"}
                       </button>
+                    ) : platform.key === "tiktok" ? (
+                      <button
+                        type="button"
+                        onClick={() => tiktokOAuthMutation.mutate()}
+                        disabled={tiktokOAuthMutation.isPending}
+                        className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
+                      >
+                        {tiktokOAuthMutation.isPending
+                          ? "Abrindo TikTok..."
+                          : connection?.connection_method === "oauth"
+                            ? "Reconectar TikTok"
+                            : "Conectar com TikTok"}
+                      </button>
                     ) : (
                       <span className="inline-flex min-h-10 items-center rounded-full border border-border px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-subtle">
                         Integração automática em breve
@@ -322,8 +349,8 @@ function CreatorRoute() {
           </section>
 
           <section className="mt-6 rounded-[24px] border border-border bg-surface p-5 text-xs leading-relaxed text-muted-foreground md:p-6">
-            <strong className="text-foreground">Sobre as atualizações:</strong> o YouTube já possui
-            sincronização automática. Instagram, TikTok, Twitch e X serão liberados somente quando
+            <strong className="text-foreground">Sobre as atualizações:</strong> YouTube e TikTok já
+            possuem sincronização automática. Instagram, Twitch e X serão liberados somente quando
             as respectivas conexões oficiais estiverem disponíveis; não é possível inserir dados
             manualmente.
           </section>

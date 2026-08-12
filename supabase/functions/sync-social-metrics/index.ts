@@ -1,8 +1,10 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { fetchTikTokMetrics, refreshTikTokAccessToken } from "../_shared/tiktok.ts";
 import { fetchYouTubeAnalytics, type YouTubeAnalytics } from "../_shared/youtube-analytics.ts";
 
 type SocialConnection = {
   id: string;
+  talent_id: string;
   platform: "youtube" | "instagram" | "tiktok" | "twitch" | "twitter";
   handle: string | null;
   external_account_id: string | null;
@@ -14,6 +16,7 @@ type OAuthToken = {
   refresh_token: string;
   access_token: string | null;
   access_token_expires_at: string | null;
+  scope?: string | null;
 };
 
 type YouTubeChannel = {
@@ -138,6 +141,79 @@ async function fetchYouTubeMetrics(
   };
 }
 
+async function accessTokenForConnection(
+  supabase: ReturnType<typeof createClient>,
+  connection: SocialConnection,
+  credentials: {
+    googleClientId?: string;
+    googleClientSecret?: string;
+    tiktokClientKey?: string;
+    tiktokClientSecret?: string;
+  },
+) {
+  const { data, error } = await supabase
+    .from("social_oauth_tokens")
+    .select("connection_id, refresh_token, access_token, access_token_expires_at, scope")
+    .eq("connection_id", connection.id)
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error(`OAuth token not found for ${connection.platform}`);
+
+  const token = data as OAuthToken;
+  const expiresAt = token.access_token_expires_at
+    ? new Date(token.access_token_expires_at).getTime()
+    : 0;
+  if (token.access_token && expiresAt > Date.now() + 60_000) return token.access_token;
+
+  if (connection.platform === "youtube") {
+    if (!credentials.googleClientId || !credentials.googleClientSecret) {
+      throw new Error("Google YouTube OAuth secrets are not configured");
+    }
+    const refreshed = await refreshYouTubeAccessToken(
+      token.refresh_token,
+      credentials.googleClientId,
+      credentials.googleClientSecret,
+    );
+    await supabase
+      .from("social_oauth_tokens")
+      .update({
+        access_token: refreshed.access_token,
+        access_token_expires_at: new Date(
+          Date.now() + (refreshed.expires_in ?? 3600) * 1000,
+        ).toISOString(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("connection_id", token.connection_id);
+    return refreshed.access_token!;
+  }
+
+  if (connection.platform === "tiktok") {
+    if (!credentials.tiktokClientKey || !credentials.tiktokClientSecret) {
+      throw new Error("TikTok OAuth secrets are not configured");
+    }
+    const refreshed = await refreshTikTokAccessToken(
+      token.refresh_token,
+      credentials.tiktokClientKey,
+      credentials.tiktokClientSecret,
+    );
+    await supabase
+      .from("social_oauth_tokens")
+      .update({
+        access_token: refreshed.access_token,
+        refresh_token: refreshed.refresh_token,
+        access_token_expires_at: new Date(
+          Date.now() + (refreshed.expires_in ?? 86400) * 1000,
+        ).toISOString(),
+        scope: refreshed.scope || token.scope,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("connection_id", token.connection_id);
+    return refreshed.access_token;
+  }
+
+  throw new Error(`OAuth sync is not implemented for ${connection.platform}`);
+}
+
 Deno.serve(async (request) => {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
@@ -154,85 +230,75 @@ Deno.serve(async (request) => {
     const youtubeApiKey = Deno.env.get("YOUTUBE_API_KEY");
     const googleClientId = Deno.env.get("GOOGLE_YOUTUBE_CLIENT_ID");
     const googleClientSecret = Deno.env.get("GOOGLE_YOUTUBE_CLIENT_SECRET");
-    if (!youtubeApiKey && (!googleClientId || !googleClientSecret)) {
-      throw new Error("Configure YOUTUBE_API_KEY or the Google YouTube OAuth secrets.");
-    }
+    const tiktokClientKey = Deno.env.get("TIKTOK_CLIENT_KEY");
+    const tiktokClientSecret = Deno.env.get("TIKTOK_CLIENT_SECRET");
     const { data, error } = await supabase
       .from("social_connections")
-      .select("id, platform, handle, external_account_id, connection_method")
-      .eq("platform", "youtube")
+      .select("id, talent_id, platform, handle, external_account_id, connection_method")
+      .in("platform", ["youtube", "tiktok"])
       .eq("sync_enabled", true);
 
     if (error) throw error;
 
-    const results: Array<{ id: string; ok: boolean; error?: string }> = [];
+    const results: Array<{ id: string; ok: boolean; error?: string; warning?: string }> = [];
 
     for (const connection of (data ?? []) as SocialConnection[]) {
       try {
         let accessToken: string | undefined;
-        if (connection.connection_method === "oauth" && googleClientId && googleClientSecret) {
-          const { data: oauthToken, error: oauthTokenError } = await supabase
-            .from("social_oauth_tokens")
-            .select("connection_id, refresh_token, access_token, access_token_expires_at")
-            .eq("connection_id", connection.id)
-            .maybeSingle();
-          if (oauthTokenError) throw oauthTokenError;
-          if (oauthToken) {
-            const token = oauthToken as OAuthToken;
-            const expiresAt = token.access_token_expires_at
-              ? new Date(token.access_token_expires_at).getTime()
-              : 0;
-            if (token.access_token && expiresAt > Date.now() + 60_000) {
-              accessToken = token.access_token;
-            } else {
-              const refreshed = await refreshYouTubeAccessToken(
-                token.refresh_token,
-                googleClientId,
-                googleClientSecret,
-              );
-              accessToken = refreshed.access_token;
-              await supabase
-                .from("social_oauth_tokens")
-                .update({
-                  access_token: refreshed.access_token,
-                  access_token_expires_at: new Date(
-                    Date.now() + (refreshed.expires_in ?? 3600) * 1000,
-                  ).toISOString(),
-                  updated_at: new Date().toISOString(),
-                })
-                .eq("connection_id", token.connection_id);
-            }
-          }
+        if (connection.connection_method === "oauth") {
+          accessToken = await accessTokenForConnection(supabase, connection, {
+            googleClientId,
+            googleClientSecret,
+            tiktokClientKey,
+            tiktokClientSecret,
+          });
         }
 
-        const metrics = await fetchYouTubeMetrics(connection, {
-          apiKey: youtubeApiKey,
-          accessToken,
-        });
-        let analytics: YouTubeAnalytics | null = null;
+        let syncedMetrics: Record<string, unknown>;
         let analyticsError: string | null = null;
-        if (connection.connection_method === "oauth" && accessToken) {
-          try {
-            analytics = await fetchYouTubeAnalytics(accessToken);
-          } catch (error) {
-            // Keep basic channel metrics working while a creator re-authorizes
-            // with the Analytics scope or while the API is being enabled.
-            analyticsError =
-              error instanceof Error ? error.message : "YouTube Analytics unavailable";
-            console.warn("sync-social-metrics analytics", connection.id, error);
+        let profileUrl: string | undefined;
+        let handle: string | null | undefined;
+
+        if (connection.platform === "youtube") {
+          if (!youtubeApiKey && !accessToken) {
+            throw new Error("Configure YOUTUBE_API_KEY or the Google YouTube OAuth secrets.");
           }
+          const metrics = await fetchYouTubeMetrics(connection, {
+            apiKey: youtubeApiKey,
+            accessToken,
+          });
+          let analytics: YouTubeAnalytics | null = null;
+          if (connection.connection_method === "oauth" && accessToken) {
+            try {
+              analytics = await fetchYouTubeAnalytics(accessToken);
+            } catch (error) {
+              analyticsError =
+                error instanceof Error ? error.message : "YouTube Analytics unavailable";
+              console.warn("sync-social-metrics analytics", connection.id, error);
+            }
+          }
+          syncedMetrics = {
+            ...metrics,
+            ...(analytics ? { analytics } : {}),
+            ...(analyticsError ? { analytics_error: analyticsError } : {}),
+          };
+        } else if (connection.platform === "tiktok") {
+          if (!accessToken) throw new Error("TikTok OAuth token is unavailable");
+          const metrics = await fetchTikTokMetrics(accessToken);
+          syncedMetrics = metrics;
+          profileUrl = metrics.profile_url;
+          handle = metrics.handle;
+        } else {
+          throw new Error(`Automatic sync is not implemented for ${connection.platform}`);
         }
-        const syncedMetrics = {
-          ...metrics,
-          ...(analytics ? { analytics } : {}),
-          ...(analyticsError ? { analytics_error: analyticsError } : {}),
-        };
         const syncedAt = new Date().toISOString();
 
         const { error: updateError } = await supabase
           .from("social_connections")
           .update({
-            external_account_id: metrics.account_id,
+            external_account_id: syncedMetrics["account_id"],
+            ...(profileUrl ? { profile_url: profileUrl } : {}),
+            ...(handle !== undefined ? { handle } : {}),
             current_metrics: syncedMetrics,
             last_synced_at: syncedAt,
             last_sync_error: null,
@@ -247,6 +313,14 @@ Deno.serve(async (request) => {
           captured_at: syncedAt,
         });
         if (snapshotError) throw snapshotError;
+
+        if (connection.platform === "tiktok" && profileUrl) {
+          const { error: talentError } = await supabase
+            .from("talents")
+            .update({ tiktok_url: profileUrl, updated_at: syncedAt })
+            .eq("id", connection.talent_id);
+          if (talentError) throw talentError;
+        }
 
         results.push({
           id: connection.id,

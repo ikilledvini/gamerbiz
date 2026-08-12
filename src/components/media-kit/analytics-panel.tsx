@@ -16,7 +16,12 @@ import {
 import { FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { FileText } from "lucide-react";
 import { useI18n } from "@/i18n";
-import type { PlatformAnalytics, SyncedYouTubeAnalytics, TalentAnalytics } from "@/data/talents";
+import type {
+  PlatformAnalytics,
+  SyncedTikTokAnalytics,
+  SyncedYouTubeAnalytics,
+  TalentAnalytics,
+} from "@/data/talents";
 import { MediaKitSectionHeading } from "./media-kit-section-heading";
 
 const AGE_COLORS = ["#FF1F30", "#F0303F", "#E8434F", "#EE6B74", "#F19198", "#F3B3B7", "#F5D0D3"];
@@ -294,9 +299,11 @@ function formatDuration(seconds: number | null) {
 
 export function MediaKitAnalytics({
   analytics,
+  tiktokAnalytics,
   youtubeAnalytics,
 }: {
   analytics: TalentAnalytics | null;
+  tiktokAnalytics?: SyncedTikTokAnalytics | null;
   youtubeAnalytics?: SyncedYouTubeAnalytics | null;
 }) {
   const { lang, t } = useI18n();
@@ -359,9 +366,31 @@ export function MediaKitAnalytics({
           metrics: [...(analytics?.youtube?.metrics ?? []), ...(syncedYoutube?.metrics ?? [])],
         }
       : null;
-  const effectiveAnalytics: TalentAnalytics | null = effectiveYoutube
-    ? { ...(analytics ?? {}), youtube: effectiveYoutube }
-    : analytics;
+  const syncedTikTok = tiktokAnalytics
+    ? {
+        metrics: [
+          { label: t.mediakit.avgViews, value: formatMetric(tiktokAnalytics.averageViews) },
+          { label: a.likes, value: formatMetric(tiktokAnalytics.likes) },
+          { label: a.comments, value: formatMetric(tiktokAnalytics.comments) },
+        ],
+      }
+    : null;
+  const effectiveTikTok =
+    syncedTikTok || analytics?.tiktok
+      ? {
+          ...(analytics?.tiktok ?? {}),
+          ...(syncedTikTok ?? {}),
+          metrics: [...(analytics?.tiktok?.metrics ?? []), ...(syncedTikTok?.metrics ?? [])],
+        }
+      : null;
+  const effectiveAnalytics: TalentAnalytics | null =
+    effectiveYoutube || effectiveTikTok
+      ? {
+          ...(analytics ?? {}),
+          ...(effectiveYoutube ? { youtube: effectiveYoutube } : {}),
+          ...(effectiveTikTok ? { tiktok: effectiveTikTok } : {}),
+        }
+      : analytics;
 
   const tabs = (
     [
@@ -372,7 +401,7 @@ export function MediaKitAnalytics({
         label: t.mediakit.platforms.instagram,
         data: effectiveAnalytics?.instagram,
       },
-      { key: "tiktok", label: t.mediakit.platforms.tiktok, data: effectiveAnalytics?.tiktok },
+      { key: "tiktok", label: t.mediakit.platforms.tiktok, data: effectiveTikTok },
     ] as { key: string; label: string; data?: PlatformAnalytics | null }[]
   ).filter((tab) => tab.data);
 
