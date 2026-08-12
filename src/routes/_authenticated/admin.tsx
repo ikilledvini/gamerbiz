@@ -29,6 +29,7 @@ import {
   adminDashboardOverview,
   adminManageUser,
   adminRemoveCreatorAccess,
+  adminSyncSocialMetrics,
   adminUpdateLeadStatus,
   getCurrentPortalAccess,
   type LeadRow,
@@ -202,6 +203,7 @@ function AdminRoute() {
   const assignCreator = useServerFn(adminAssignCreator);
   const removeCreatorAccess = useServerFn(adminRemoveCreatorAccess);
   const manageUser = useServerFn(adminManageUser);
+  const syncSocialMetrics = useServerFn(adminSyncSocialMetrics);
 
   const [view, setView] = useState<AdminView>("overview");
   const [term, setTerm] = useState("");
@@ -222,6 +224,28 @@ function AdminRoute() {
   });
 
   const refreshDashboard = () => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+
+  const syncMutation = useMutation({
+    mutationFn: () => syncSocialMetrics({}),
+    onSuccess: async (result) => {
+      await refreshDashboard();
+      const warning = result.results.find((item) => item.warning)?.warning;
+      if (result.failed > 0) {
+        toast.error(
+          `Sincronização concluída com ${result.failed} ${result.failed === 1 ? "falha" : "falhas"}.`,
+        );
+      } else if (warning) {
+        toast.warning(
+          "Dados básicos atualizados, mas o YouTube Analytics ainda está indisponível.",
+        );
+      } else {
+        toast.success(
+          `${result.succeeded} ${result.succeeded === 1 ? "conta atualizada" : "contas atualizadas"}.`,
+        );
+      }
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   const saveMutation = useMutation({
     mutationFn: (values: TalentRow) =>
@@ -530,11 +554,12 @@ function AdminRoute() {
             </div>
             <button
               type="button"
-              onClick={() => void refreshDashboard()}
+              onClick={() => syncMutation.mutate()}
+              disabled={syncMutation.isPending}
               className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-[18px] border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
             >
-              <RefreshCw className={`h-4 w-4 ${dashboardQuery.isFetching ? "animate-spin" : ""}`} />
-              Atualizar
+              <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
+              {syncMutation.isPending ? "Sincronizando" : "Atualizar"}
             </button>
           </div>
 

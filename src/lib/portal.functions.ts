@@ -17,6 +17,12 @@ export type AdminUserRow = {
   lastSignInAt: string | null;
 };
 export type ManagedUserRole = "admin" | "creator";
+export type SocialSyncResult = {
+  processed: number;
+  succeeded: number;
+  failed: number;
+  results: Array<{ id: string; ok: boolean; error?: string; warning?: string }>;
+};
 
 const SOCIAL_PLATFORMS = new Set<SocialPlatform>([
   "youtube",
@@ -195,6 +201,33 @@ export const adminManageUser = createServerFn({ method: "POST" })
       throw new Error(message);
     }
     return result.data as { ok?: boolean; user?: AdminUserRow };
+  });
+
+export const adminSyncSocialMetrics = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireAdmin(context.supabase, context.userId);
+
+    const result = await context.supabase.functions.invoke<SocialSyncResult>(
+      "sync-social-metrics",
+      { body: { trigger: "admin" } },
+    );
+    if (result.error) {
+      let message = result.error.message;
+      const response = "context" in result.error ? result.error.context : undefined;
+      if (response instanceof Response) {
+        try {
+          const payload = (await response.clone().json()) as { error?: string; message?: string };
+          const details = payload.error || payload.message;
+          if (details) message = details;
+        } catch {
+          // Keep the SDK error when the function response is not JSON.
+        }
+      }
+      throw new Error(message);
+    }
+    if (!result.data) throw new Error("A sincronização não retornou um resultado.");
+    return result.data;
   });
 
 export const adminUpdateLeadStatus = createServerFn({ method: "POST" })

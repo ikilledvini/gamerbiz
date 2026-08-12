@@ -55,6 +55,29 @@ function requiredSecret(name: string) {
   return value;
 }
 
+async function isAuthorized(request: Request, supabase: ReturnType<typeof createClient>) {
+  const syncSecret = Deno.env.get("SOCIAL_SYNC_SECRET");
+  const providedSecret = request.headers.get("x-sync-secret");
+  if (syncSecret && providedSecret === syncSecret) return true;
+
+  const authorization = request.headers.get("authorization");
+  if (!authorization?.startsWith("Bearer ")) return false;
+  const accessToken = authorization.slice("Bearer ".length).trim();
+  if (!accessToken) return false;
+
+  const { data: authData, error: authError } = await supabase.auth.getUser(accessToken);
+  if (authError || !authData.user) return false;
+
+  const { data: role, error: roleError } = await supabase
+    .from("user_roles")
+    .select("user_id")
+    .eq("user_id", authData.user.id)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (roleError) throw roleError;
+  return Boolean(role);
+}
+
 function toNumber(value?: string) {
   if (!value) return null;
   const parsed = Number(value);
@@ -192,17 +215,14 @@ Deno.serve(async (request) => {
   if (request.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   try {
-    const syncSecret = requiredSecret("SOCIAL_SYNC_SECRET");
-    const providedSecret = request.headers.get("x-sync-secret");
-    if (!providedSecret || providedSecret !== syncSecret) {
-      return json({ error: "Unauthorized" }, 401);
-    }
-
     const supabase = createClient(
       requiredSecret("SUPABASE_URL"),
       requiredSecret("SUPABASE_SERVICE_ROLE_KEY"),
       { auth: { persistSession: false, autoRefreshToken: false } },
     );
+    if (!(await isAuthorized(request, supabase))) {
+      return json({ error: "Unauthorized" }, 401);
+    }
 
     const youtubeApiKey = Deno.env.get("YOUTUBE_API_KEY");
     const googleClientId = Deno.env.get("GOOGLE_YOUTUBE_CLIENT_ID");
@@ -301,7 +321,11 @@ Deno.serve(async (request) => {
         });
         if (snapshotError) throw snapshotError;
 
-        results.push({ id: connection.id, ok: true });
+        results.push({
+          id: connection.id,
+          ok: true,
+          ...(analyticsError ? { warning: analyticsError } : {}),
+        });
       } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown sync error";
         await supabase
