@@ -20,36 +20,56 @@ function metricNumber(value: unknown) {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function analyticsPoints(value: unknown, labelKey: string, valueKey: string) {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+    const row = entry as Record<string, unknown>;
+    const label = row[labelKey];
+    const pointValue = metricNumber(row[valueKey]);
+    return typeof label === "string" && pointValue !== null ? [{ label, value: pointValue }] : [];
+  });
+}
+
 function mapYouTubeAnalytics(value: unknown): SyncedYouTubeAnalytics | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const analytics = value as Record<string, unknown>;
-  if (typeof analytics.source !== "string") return null;
+  if (typeof analytics["source"] !== "string") return null;
   return {
-    periodDays: metricNumber(analytics.period_days) ?? 28,
-    startDate: typeof analytics.start_date === "string" ? analytics.start_date : "",
-    endDate: typeof analytics.end_date === "string" ? analytics.end_date : "",
-    views: metricNumber(analytics.views),
-    estimatedMinutesWatched: metricNumber(analytics.estimated_minutes_watched),
-    averageViewDurationSeconds: metricNumber(analytics.average_view_duration_seconds),
-    subscribersGained: metricNumber(analytics.subscribers_gained),
-    likes: metricNumber(analytics.likes),
-    comments: metricNumber(analytics.comments),
+    periodDays: metricNumber(analytics["period_days"]) ?? 28,
+    startDate: typeof analytics["start_date"] === "string" ? analytics["start_date"] : "",
+    endDate: typeof analytics["end_date"] === "string" ? analytics["end_date"] : "",
+    views: metricNumber(analytics["views"]),
+    estimatedMinutesWatched: metricNumber(analytics["estimated_minutes_watched"]),
+    averageViewDurationSeconds: metricNumber(analytics["average_view_duration_seconds"]),
+    subscribersGained: metricNumber(analytics["subscribers_gained"]),
+    likes: metricNumber(analytics["likes"]),
+    comments: metricNumber(analytics["comments"]),
+    averageViews: metricNumber(analytics["average_views"]),
+    analyzedVideoCount: metricNumber(analytics["analyzed_video_count"]) ?? 0,
+    dailyViews: analyticsPoints(analytics["daily_views"], "date", "views"),
+    countries: analyticsPoints(analytics["countries"], "country", "percentage"),
+    age: analyticsPoints(analytics["age"], "age_group", "percentage"),
+    gender: analyticsPoints(analytics["gender"], "gender", "percentage"),
   };
 }
 
 function mapSocialMetrics(row: SocialConnectionRow): SyncedSocialMetrics {
   const metrics =
-    row.current_metrics && typeof row.current_metrics === "object" && !Array.isArray(row.current_metrics)
+    row.current_metrics &&
+    typeof row.current_metrics === "object" &&
+    !Array.isArray(row.current_metrics)
       ? row.current_metrics
       : {};
 
   return {
-    accountId: typeof metrics.account_id === "string" ? metrics.account_id : null,
-    subscribers: metricNumber(metrics.subscribers),
-    totalViews: metricNumber(metrics.total_views),
-    videoCount: metricNumber(metrics.video_count),
-    analytics: mapYouTubeAnalytics(metrics.analytics),
-    analyticsError: typeof metrics.analytics_error === "string" ? metrics.analytics_error : null,
+    accountId: typeof metrics["account_id"] === "string" ? metrics["account_id"] : null,
+    subscribers: metricNumber(metrics["subscribers"]),
+    totalViews: metricNumber(metrics["total_views"]),
+    videoCount: metricNumber(metrics["video_count"]),
+    analytics: mapYouTubeAnalytics(metrics["analytics"]),
+    analyticsError:
+      typeof metrics["analytics_error"] === "string" ? metrics["analytics_error"] : null,
     lastSyncedAt: row.last_synced_at,
     lastSyncError: row.last_sync_error,
   };
@@ -134,10 +154,7 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
     throw new Error(socialError.message);
   }
 
-  const metricsByTalent = new Map<
-    string,
-    Partial<Record<SocialPlatform, SyncedSocialMetrics>>
-  >();
+  const metricsByTalent = new Map<string, Partial<Record<SocialPlatform, SyncedSocialMetrics>>>();
   const profilesByTalent = new Map<string, Partial<Record<SocialPlatform, string>>>();
   for (const connection of (socialData ?? []) as SocialConnectionRow[]) {
     if (connection.connection_method !== "oauth" || connection.connection_status !== "connected") {

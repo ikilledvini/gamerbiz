@@ -327,6 +327,9 @@ export const ptBR: Dict = {
       subscribersGained: "Novos inscritos",
       likes: "Curtidas",
       comments: "Comentários",
+      female: "Feminino",
+      male: "Masculino",
+      userSpecified: "Outro",
     },
     platforms: {
       instagram: "Instagram",

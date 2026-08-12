@@ -1,8 +1,11 @@
 import { useRef, useState } from "react";
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   Cell,
+  CartesianGrid,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -88,6 +91,71 @@ function AgeChart({
         </ResponsiveContainer>
       </div>
     </Card>
+  );
+}
+
+function DailyViewsChart({
+  data,
+  eyebrow,
+  title,
+}: {
+  data: { label: string; value: number }[];
+  eyebrow: string;
+  title: string;
+}) {
+  return (
+    <div className="lg:col-span-2">
+      <Card>
+        <MediaKitSectionHeading eyebrow={eyebrow} title={title} level="h3" />
+        <div
+          className="mt-6 h-[300px] w-full"
+          role="img"
+          aria-label={`${title}: ${data.map((point) => `${point.label}, ${point.value}`).join("; ")}`}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+              <defs>
+                <linearGradient id="youtube-views-gradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--primary)" stopOpacity={0.45} />
+                  <stop offset="100%" stopColor="var(--primary)" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 6" vertical={false} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={{ stroke: "var(--border)" }}
+                interval="preserveStartEnd"
+                minTickGap={28}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                allowDecimals={false}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+              />
+              <RTooltip
+                cursor={{ stroke: "var(--primary)", strokeOpacity: 0.45 }}
+                contentStyle={tooltipStyle}
+                itemStyle={tooltipTextStyle}
+                labelStyle={tooltipTextStyle}
+                separator=""
+                formatter={(value: number) => [new Intl.NumberFormat().format(value), ""]}
+              />
+              <Area
+                type="monotone"
+                dataKey="value"
+                stroke="var(--primary)"
+                strokeWidth={3}
+                fill="url(#youtube-views-gradient)"
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -231,8 +299,20 @@ export function MediaKitAnalytics({
   analytics: TalentAnalytics | null;
   youtubeAnalytics?: SyncedYouTubeAnalytics | null;
 }) {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
   const a = t.mediakit.analyticsUi;
+  const dateFormatter = new Intl.DateTimeFormat(lang, { day: "2-digit", month: "short" });
+  const regionNames = new Intl.DisplayNames([lang], { type: "region" });
+  const genderLabels: Record<string, string> = {
+    female: a.female,
+    male: a.male,
+    user_specified: a.userSpecified,
+  };
+
+  const formatAgeGroup = (label: string) => {
+    if (label === "age65-") return "65+";
+    return label.replace(/^age/, "").replace("-", "–");
+  };
 
   const syncedYoutube = youtubeAnalytics
     ? {
@@ -253,6 +333,22 @@ export function MediaKitAnalytics({
           { label: a.likes, value: formatMetric(youtubeAnalytics.likes) },
           { label: a.comments, value: formatMetric(youtubeAnalytics.comments) },
         ],
+        dailyViews: youtubeAnalytics.dailyViews.map((point) => ({
+          label: dateFormatter.format(new Date(`${point.label}T12:00:00Z`)),
+          value: point.value,
+        })),
+        age: youtubeAnalytics.age.map((point) => ({
+          label: formatAgeGroup(point.label),
+          value: point.value,
+        })),
+        gender: youtubeAnalytics.gender.map((point) => ({
+          label: genderLabels[point.label] ?? point.label,
+          value: point.value,
+        })),
+        countries: youtubeAnalytics.countries.map((point) => ({
+          label: regionNames.of(point.label) ?? point.label,
+          value: point.value,
+        })),
       }
     : null;
   const effectiveYoutube =
@@ -293,7 +389,7 @@ export function MediaKitAnalytics({
     if (nextIndex === null) return;
 
     event.preventDefault();
-    setActive(tabs[nextIndex].key);
+    setActive(tabs[nextIndex]!.key);
     tabRefs.current[nextIndex]?.focus();
   }
 
@@ -364,6 +460,9 @@ export function MediaKitAnalytics({
         {data.metrics && data.metrics.length > 0 ? <MetricGrid items={data.metrics} /> : null}
 
         <div className="grid gap-5 lg:grid-cols-2">
+          {data.dailyViews && data.dailyViews.length > 0 ? (
+            <DailyViewsChart data={data.dailyViews} eyebrow={a.reach} title={a.viewsLast28Days} />
+          ) : null}
           {data.age && data.age.length > 0 ? (
             <AgeChart data={data.age} eyebrow={a.reach} title={a.age} />
           ) : null}
