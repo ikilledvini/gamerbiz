@@ -14,11 +14,14 @@ variable or in browser code.
 
 ## Request
 
-Send a `POST` request with the scheduler secret:
+Send a `POST` request with either the scheduler secret:
 
 ```text
 x-sync-secret: <SOCIAL_SYNC_SECRET>
 ```
+
+or an authenticated Supabase bearer token belonging to an administrator. The admin dashboard uses
+the bearer-token option so the scheduler secret never reaches the browser.
 
 The response reports how many connections succeeded or failed. A failed account stores a short
 error message in `last_sync_error` without interrupting the remaining accounts.
