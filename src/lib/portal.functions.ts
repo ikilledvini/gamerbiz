@@ -333,23 +333,6 @@ export const creatorStartYouTubeOAuth = createServerFn({ method: "POST" })
     };
   });
 
-export const creatorSaveConnection = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .validator(
-    (input: { platform: SocialPlatform; profileUrl: string; handle?: string | null }) => input,
-  )
-  .handler(async ({ data, context }) => {
-    await requireCreator(context.supabase, context.userId);
-    assertPlatform(data.platform);
-    const { error } = await context.supabase.rpc("creator_upsert_social_connection", {
-      p_platform: data.platform,
-      p_profile_url: data.profileUrl,
-      p_handle: data.handle ?? null,
-    });
-    if (error) throw new Error(error.message);
-    return { ok: true };
-  });
-
 export const creatorDisconnectConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: { platform: SocialPlatform }) => input)

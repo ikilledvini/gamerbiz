@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -11,7 +11,6 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   creatorDisconnectConnection,
   creatorPortalData,
-  creatorSaveConnection,
   creatorStartYouTubeOAuth,
   getCurrentPortalAccess,
   type SocialConnectionRow,
@@ -35,26 +34,24 @@ export const Route = createFileRoute("/_authenticated/creator")({
 const PLATFORM_CONFIG: Array<{
   key: SocialPlatform;
   label: string;
-  example: string;
   icon: typeof FaYoutube;
 }> = [
-  { key: "youtube", label: "YouTube", example: "https://youtube.com/@seucanal", icon: FaYoutube },
-  {
-    key: "instagram",
-    label: "Instagram",
-    example: "https://instagram.com/seuperfil",
-    icon: FaInstagram,
-  },
-  { key: "tiktok", label: "TikTok", example: "https://tiktok.com/@seuperfil", icon: FaTiktok },
-  { key: "twitch", label: "Twitch", example: "https://twitch.tv/seucanal", icon: FaTwitch },
-  { key: "twitter", label: "X / Twitter", example: "https://x.com/seuperfil", icon: FaXTwitter },
+  { key: "youtube", label: "YouTube", icon: FaYoutube },
+  { key: "instagram", label: "Instagram", icon: FaInstagram },
+  { key: "tiktok", label: "TikTok", icon: FaTiktok },
+  { key: "twitch", label: "Twitch", icon: FaTwitch },
+  { key: "twitter", label: "X / Twitter", icon: FaXTwitter },
 ];
 
 function connectionCopy(connection?: SocialConnectionRow) {
-  if (!connection || connection.connection_status === "disconnected") {
+  if (
+    !connection ||
+    connection.connection_method !== "oauth" ||
+    connection.connection_status === "disconnected"
+  ) {
     return {
       label: "Não conectada",
-      description: "Adicione o perfil oficial para iniciar a conexão.",
+      description: "Use a autorização oficial da plataforma para conectar a conta.",
       tone: "muted",
     };
   }
@@ -94,12 +91,8 @@ function CreatorRoute() {
   const queryClient = useQueryClient();
   const getAccess = useServerFn(getCurrentPortalAccess);
   const getPortalData = useServerFn(creatorPortalData);
-  const saveConnection = useServerFn(creatorSaveConnection);
   const disconnectConnection = useServerFn(creatorDisconnectConnection);
   const startYouTubeOAuth = useServerFn(creatorStartYouTubeOAuth);
-
-  const [editingPlatform, setEditingPlatform] = useState<SocialPlatform | null>(null);
-  const [profileUrl, setProfileUrl] = useState("");
 
   const accessQuery = useQuery({ queryKey: ["portal-access"], queryFn: () => getAccess({}) });
   const isCreator = accessQuery.data?.role === "creator";
@@ -113,18 +106,6 @@ function CreatorRoute() {
     () => new Map((portalQuery.data?.connections ?? []).map((item) => [item.platform, item])),
     [portalQuery.data?.connections],
   );
-
-  const saveMutation = useMutation({
-    mutationFn: (input: { platform: SocialPlatform; profileUrl: string }) =>
-      saveConnection({ data: input }),
-    onSuccess: () => {
-      toast.success("Conta conectada ao Media Kit.");
-      setEditingPlatform(null);
-      setProfileUrl("");
-      void queryClient.invalidateQueries({ queryKey: ["creator-portal"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
 
   const disconnectMutation = useMutation({
     mutationFn: (platform: SocialPlatform) => disconnectConnection({ data: { platform } }),
@@ -162,11 +143,6 @@ function CreatorRoute() {
     queryClient.clear();
     await supabase.auth.signOut();
     void navigate({ to: "/auth", replace: true });
-  }
-
-  function openConnection(platform: SocialPlatform) {
-    setEditingPlatform(platform);
-    setProfileUrl(connectionsByPlatform.get(platform)?.profile_url ?? "");
   }
 
   if (accessQuery.isLoading) return <div className="min-h-screen bg-background" />;
@@ -258,7 +234,6 @@ function CreatorRoute() {
               const Icon = platform.icon;
               const connection = connectionsByPlatform.get(platform.key);
               const status = connectionCopy(connection);
-              const isEditing = editingPlatform === platform.key;
               return (
                 <article
                   key={platform.key}
@@ -283,7 +258,7 @@ function CreatorRoute() {
                     </div>
                   </div>
 
-                  {connection?.profile_url ? (
+                  {connection?.connection_method === "oauth" && connection.profile_url ? (
                     <a
                       href={connection.profile_url}
                       target="_blank"
@@ -295,90 +270,51 @@ function CreatorRoute() {
                     </a>
                   ) : null}
 
-                  {isEditing ? (
-                    <form
-                      onSubmit={(event) => {
-                        event.preventDefault();
-                        saveMutation.mutate({ platform: platform.key, profileUrl });
-                      }}
-                      className="mt-5 rounded-2xl border border-primary/30 bg-primary/5 p-4"
-                    >
-                      <label className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
-                        URL do perfil oficial
-                        <input
-                          type="url"
-                          required
-                          value={profileUrl}
-                          onChange={(event) => setProfileUrl(event.target.value)}
-                          placeholder={platform.example}
-                          className="mt-2 min-h-12 w-full rounded-xl border border-border bg-background px-4 text-sm normal-case tracking-normal text-foreground outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                        />
-                      </label>
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <button
-                          type="submit"
-                          disabled={saveMutation.isPending}
-                          className="min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
-                        >
-                          {saveMutation.isPending ? "Salvando..." : "Confirmar conexão"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setEditingPlatform(null)}
-                          className="min-h-10 rounded-full border border-border px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground"
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </form>
-                  ) : (
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
-                      {platform.key === "youtube" ? (
-                        <button
-                          type="button"
-                          onClick={() => youtubeOAuthMutation.mutate()}
-                          disabled={youtubeOAuthMutation.isPending}
-                          className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
-                        >
-                          {youtubeOAuthMutation.isPending
-                            ? "Abrindo Google..."
-                            : connection?.connection_method === "oauth"
-                              ? "Reconectar YouTube"
-                              : "Conectar com Google"}
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={() => openConnection(platform.key)}
-                          className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
-                        >
-                          {connection?.profile_url ? "Atualizar conta" : "Conectar conta"}
-                        </button>
-                      )}
-                      {connection?.profile_url ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (window.confirm(`Desconectar ${platform.label} deste Media Kit?`))
-                              disconnectMutation.mutate(platform.key);
-                          }}
-                          disabled={disconnectMutation.isPending}
-                          className="gbz-interactive inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                        >
-                          <Unlink className="h-3.5 w-3.5" aria-hidden="true" />
-                          Desconectar
-                        </button>
-                      ) : null}
-                    </div>
-                  )}
+                  <div className="mt-5 flex flex-wrap items-center gap-2">
+                    {platform.key === "youtube" ? (
+                      <button
+                        type="button"
+                        onClick={() => youtubeOAuthMutation.mutate()}
+                        disabled={youtubeOAuthMutation.isPending}
+                        className="gbz-interactive min-h-10 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground disabled:opacity-60"
+                      >
+                        {youtubeOAuthMutation.isPending
+                          ? "Abrindo Google..."
+                          : connection?.connection_method === "oauth"
+                            ? "Reconectar YouTube"
+                            : "Conectar com Google"}
+                      </button>
+                    ) : (
+                      <span className="inline-flex min-h-10 items-center rounded-full border border-border px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-subtle">
+                        Integração automática em breve
+                      </span>
+                    )}
+                    {connection?.connection_method === "oauth" && connection.profile_url ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm(`Desconectar ${platform.label} deste Media Kit?`))
+                            disconnectMutation.mutate(platform.key);
+                        }}
+                        disabled={disconnectMutation.isPending}
+                        className="gbz-interactive inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                      >
+                        <Unlink className="h-3.5 w-3.5" aria-hidden="true" />
+                        Desconectar
+                      </button>
+                    ) : null}
+                  </div>
 
                   <p className="mt-5 flex items-center gap-2 border-t border-border pt-4 text-[0.65rem] text-subtle">
-                    {connection?.connection_status === "connected" ? (
+                    {connection?.connection_method === "oauth" &&
+                    connection.connection_status === "connected" ? (
                       <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
                     ) : (
                       <Clock3 className="h-3.5 w-3.5" />
                     )}
-                    {formatLastSync(connection?.last_synced_at ?? null)}
+                    {formatLastSync(
+                      connection?.connection_method === "oauth" ? connection.last_synced_at : null,
+                    )}
                   </p>
                 </article>
               );
@@ -387,9 +323,9 @@ function CreatorRoute() {
 
           <section className="mt-6 rounded-[24px] border border-border bg-surface p-5 text-xs leading-relaxed text-muted-foreground md:p-6">
             <strong className="text-foreground">Sobre as atualizações:</strong> o YouTube já possui
-            sincronização automática. Instagram, TikTok, Twitch e X ficam registrados no Media Kit e
-            serão ativados para métricas automáticas conforme as autorizações oficiais de cada
-            plataforma.
+            sincronização automática. Instagram, TikTok, Twitch e X serão liberados somente quando
+            as respectivas conexões oficiais estiverem disponíveis; não é possível inserir dados
+            manualmente.
           </section>
         </>
       )}
