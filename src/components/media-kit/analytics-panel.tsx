@@ -355,6 +355,7 @@ export function MediaKitAnalytics({
     syncedYoutube || analytics?.youtube
       ? {
           ...(analytics?.youtube ?? {}),
+          ...(syncedYoutube ?? {}),
           metrics: [...(analytics?.youtube?.metrics ?? []), ...(syncedYoutube?.metrics ?? [])],
         }
       : null;
