@@ -186,9 +186,14 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       : null;
 
   const youtubeMetrics = talent.socialMetrics?.youtube;
+  const instagramMetrics = talent.socialMetrics?.instagram;
+  const tiktokMetrics = talent.socialMetrics?.tiktok;
   const syncedYoutubeAverageViews =
-    youtubeMetrics?.totalViews && youtubeMetrics.videoCount
-      ? youtubeMetrics.totalViews / youtubeMetrics.videoCount
+    typeof youtubeMetrics?.totalViews === "number" &&
+    typeof youtubeMetrics.videoCount === "number"
+      ? youtubeMetrics.videoCount > 0
+        ? youtubeMetrics.totalViews / youtubeMetrics.videoCount
+        : 0
       : null;
 
   const badge =
@@ -253,8 +258,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       icon: <FaInstagram className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.instagram),
       items: [
-        { label: t.mediakit.followers, value: talent.stats.followers },
-        { label: t.mediakit.engagement, value: talent.stats.engagement },
+        { label: t.mediakit.followers, value: formatSyncedMetric(instagramMetrics?.subscribers) },
+        { label: t.mediakit.engagement, value: null },
       ],
     },
     {
@@ -265,11 +270,11 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       items: [
         {
           label: t.mediakit.followers,
-          value: formatSyncedMetric(youtubeMetrics?.subscribers) ?? talent.stats.followers,
+          value: formatSyncedMetric(youtubeMetrics?.subscribers),
         },
         {
           label: t.mediakit.avgViews,
-          value: formatSyncedMetric(syncedYoutubeAverageViews) ?? talent.stats.avgViews,
+          value: formatSyncedMetric(syncedYoutubeAverageViews),
         },
       ],
     },
@@ -279,8 +284,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       icon: <FaTiktok className="h-5 w-5 text-white" />,
       active: Boolean(talent.socials.tiktok),
       items: [
-        { label: t.mediakit.followers, value: talent.stats.followers },
-        { label: t.mediakit.avgViews, value: talent.stats.avgViews },
+        { label: t.mediakit.followers, value: formatSyncedMetric(tiktokMetrics?.subscribers) },
+        { label: t.mediakit.avgViews, value: null },
       ],
     },
   ].filter((card) => card.active);
@@ -477,7 +482,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
 
           <div className="mt-6">
             <MediaKitAnalytics
-              analytics={talent.analytics ?? null}
+              analytics={null}
               youtubeAnalytics={youtubeMetrics?.analytics ?? null}
             />
           </div>

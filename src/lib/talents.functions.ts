@@ -8,6 +8,9 @@ import type { SocialPlatform, SyncedSocialMetrics, SyncedYouTubeAnalytics } from
 type SocialConnectionRow = {
   talent_id: string;
   platform: SocialPlatform;
+  profile_url: string | null;
+  connection_method: string;
+  connection_status: string;
   current_metrics: Database["public"]["Tables"]["social_connections"]["Row"]["current_metrics"];
   last_synced_at: string | null;
   last_sync_error: string | null;
@@ -64,15 +67,6 @@ type TalentInput = {
   media_kit_url: string | null;
   status: "draft" | "published" | "hidden";
   sort_order: number;
-  instagram_url: string | null;
-  tiktok_url: string | null;
-  youtube_url: string | null;
-  twitch_url: string | null;
-  twitter_url: string | null;
-  followers: string | null;
-  avg_views: string | null;
-  engagement: string | null;
-  audience: string | null;
   achievements: string | null;
   contact_email: string | null;
 };
@@ -126,7 +120,9 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
 
   const { data: socialData, error: socialError } = await supabase
     .from("social_connections")
-    .select("talent_id, platform, current_metrics, last_synced_at, last_sync_error")
+    .select(
+      "talent_id, platform, profile_url, connection_method, connection_status, current_metrics, last_synced_at, last_sync_error",
+    )
     .in(
       "talent_id",
       rows.map((row) => row.id),
@@ -142,16 +138,36 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
     string,
     Partial<Record<SocialPlatform, SyncedSocialMetrics>>
   >();
+  const profilesByTalent = new Map<string, Partial<Record<SocialPlatform, string>>>();
   for (const connection of (socialData ?? []) as SocialConnectionRow[]) {
+    if (connection.connection_method !== "oauth" || connection.connection_status !== "connected") {
+      continue;
+    }
     const talentMetrics = metricsByTalent.get(connection.talent_id) ?? {};
     talentMetrics[connection.platform] = mapSocialMetrics(connection);
     metricsByTalent.set(connection.talent_id, talentMetrics);
+    if (connection.profile_url) {
+      const talentProfiles = profilesByTalent.get(connection.talent_id) ?? {};
+      talentProfiles[connection.platform] = connection.profile_url;
+      profilesByTalent.set(connection.talent_id, talentProfiles);
+    }
   }
 
-  return rows.map((row) => ({
-    ...mapTalentRow(row),
-    socialMetrics: metricsByTalent.get(row.id) ?? null,
-  }));
+  return rows.map((row) => {
+    const talent = mapTalentRow(row);
+    const profiles = profilesByTalent.get(row.id) ?? {};
+    return {
+      ...talent,
+      socials: {
+        instagram: profiles.instagram ?? null,
+        tiktok: profiles.tiktok ?? null,
+        youtube: profiles.youtube ?? null,
+        twitch: profiles.twitch ?? null,
+        twitter: profiles.twitter ?? null,
+      },
+      socialMetrics: metricsByTalent.get(row.id) ?? null,
+    };
+  });
 });
 
 /** Lista completa (admin), incluindo rascunhos e ocultos. */

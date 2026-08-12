@@ -238,15 +238,6 @@ function AdminRoute() {
           media_kit_url: values.media_kit_url || null,
           status: values.status,
           sort_order: Number(values.sort_order) || 0,
-          instagram_url: values.instagram_url || null,
-          tiktok_url: values.tiktok_url || null,
-          youtube_url: values.youtube_url || null,
-          twitch_url: values.twitch_url || null,
-          twitter_url: values.twitter_url || null,
-          followers: values.followers || null,
-          avg_views: values.avg_views || null,
-          engagement: values.engagement || null,
-          audience: values.audience || null,
           achievements: values.achievements || null,
           contact_email: values.contact_email || null,
         },
@@ -357,6 +348,7 @@ function AdminRoute() {
   const connectionsByTalent = useMemo(() => {
     const map = new Map<string, SocialConnectionRow[]>();
     for (const connection of dashboard?.connections ?? []) {
+      if (connection.connection_method !== "oauth") continue;
       const rows = map.get(connection.talent_id) ?? [];
       rows.push(connection);
       map.set(connection.talent_id, rows);
@@ -436,11 +428,14 @@ function AdminRoute() {
       ),
   );
   const syncErrors = (dashboard?.connections ?? []).filter(
-    (connection) => connection.connection_status === "error" || connection.last_sync_error,
+    (connection) =>
+      connection.connection_method === "oauth" &&
+      (connection.connection_status === "error" || connection.last_sync_error),
   );
   const staleThreshold = Date.now() - 48 * 60 * 60 * 1000;
   const pendingMetricConnections = (dashboard?.connections ?? []).filter(
     (connection) =>
+      connection.connection_method === "oauth" &&
       Boolean(connection.profile_url) &&
       connection.sync_enabled &&
       connection.connection_status !== "error" &&

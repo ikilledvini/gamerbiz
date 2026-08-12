@@ -167,66 +167,20 @@ export function TalentEditorDialog({
             />
           </fieldset>
 
-          <fieldset className="mt-10 grid gap-5 border-t border-border pt-8 md:grid-cols-2">
-            <legend className="mb-5 font-display text-sm font-bold uppercase tracking-[0.14em] text-foreground md:col-span-2">
-              Redes sociais
-            </legend>
-            <Field
-              label="Instagram"
-              type="url"
-              value={talent.instagram_url ?? ""}
-              onChange={(instagram_url) => onChange({ ...talent, instagram_url })}
-            />
-            <Field
-              label="YouTube"
-              type="url"
-              value={talent.youtube_url ?? ""}
-              onChange={(youtube_url) => onChange({ ...talent, youtube_url })}
-            />
-            <Field
-              label="TikTok"
-              type="url"
-              value={talent.tiktok_url ?? ""}
-              onChange={(tiktok_url) => onChange({ ...talent, tiktok_url })}
-            />
-            <Field
-              label="Twitch"
-              type="url"
-              value={talent.twitch_url ?? ""}
-              onChange={(twitch_url) => onChange({ ...talent, twitch_url })}
-            />
-            <Field
-              label="X / Twitter"
-              type="url"
-              value={talent.twitter_url ?? ""}
-              onChange={(twitter_url) => onChange({ ...talent, twitter_url })}
-            />
-          </fieldset>
+          <section className="mt-10 rounded-2xl border border-border bg-background p-5">
+            <h3 className="font-display text-sm font-bold uppercase tracking-[0.14em] text-foreground">
+              Redes sociais e métricas
+            </h3>
+            <p className="mt-3 max-w-[68ch] text-sm leading-relaxed text-muted-foreground">
+              Perfis, seguidores, visualizações, engajamento e audiência são preenchidos somente
+              pelas conexões oficiais das plataformas. A edição manual está desativada.
+            </p>
+          </section>
 
           <fieldset className="mt-10 grid gap-5 border-t border-border pt-8 md:grid-cols-2">
             <legend className="mb-5 font-display text-sm font-bold uppercase tracking-[0.14em] text-foreground md:col-span-2">
-              Métricas manuais e materiais
+              Materiais
             </legend>
-            <Field
-              label="Seguidores"
-              value={talent.followers ?? ""}
-              onChange={(followers) => onChange({ ...talent, followers })}
-            />
-            <Field
-              label="Visualizações médias"
-              value={talent.avg_views ?? ""}
-              onChange={(avg_views) => onChange({ ...talent, avg_views })}
-            />
-            <Field
-              label="Engajamento"
-              value={talent.engagement ?? ""}
-              onChange={(engagement) => onChange({ ...talent, engagement })}
-            />
-            <Field
-              label="Audiência"
-              value={talent.audience ?? ""}
-              onChange={(audience) => onChange({ ...talent, audience })}
-            />
             <label className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-subtle md:col-span-2">
               Conquistas e cases
               <textarea
