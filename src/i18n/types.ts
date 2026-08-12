@@ -225,11 +225,15 @@ export type Dict = {
       countries: string;
       languages: string;
       viewsLast28Days: string;
+      viewsByVideo: string;
+      engagementByVideo: string;
+      totalViews: string;
       watchTime: string;
       avgViewDuration: string;
       subscribersGained: string;
       likes: string;
       comments: string;
+      shares: string;
       female: string;
       male: string;
       userSpecified: string;

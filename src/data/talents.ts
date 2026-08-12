@@ -5,6 +5,13 @@ export type PublishStatus = "draft" | "published" | "hidden";
 
 export type AnalyticsPoint = { label: string; value: number };
 
+export type VideoInteractionPoint = {
+  label: string;
+  likes: number;
+  comments: number;
+  shares: number;
+};
+
 export type PlatformAnalytics = {
   metrics?: { label: string; value: string }[];
   dailyViews?: AnalyticsPoint[];
@@ -12,6 +19,7 @@ export type PlatformAnalytics = {
   gender?: AnalyticsPoint[];
   countries?: AnalyticsPoint[];
   languages?: AnalyticsPoint[];
+  videoInteractions?: VideoInteractionPoint[];
 };
 
 export type TalentAnalytics = {
@@ -48,6 +56,14 @@ export type SyncedTikTokAnalytics = {
   likes: number | null;
   comments: number | null;
   shares: number | null;
+  videos: Array<{
+    id: string;
+    createdAt: string | null;
+    views: number;
+    likes: number;
+    comments: number;
+    shares: number;
+  }>;
 };
 
 export type SyncedSocialMetrics = {
