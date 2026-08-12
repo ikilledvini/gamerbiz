@@ -285,7 +285,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
       active: Boolean(talent.socials.tiktok),
       items: [
         { label: t.mediakit.followers, value: formatSyncedMetric(tiktokMetrics?.subscribers) },
-        { label: t.mediakit.avgViews, value: null },
+        { label: t.mediakit.avgViews, value: formatSyncedMetric(tiktokMetrics?.averageViews) },
       ],
     },
   ].filter((card) => card.active);
@@ -483,6 +483,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
           <div className="mt-6">
             <MediaKitAnalytics
               analytics={null}
+              tiktokAnalytics={tiktokMetrics?.tiktokAnalytics ?? null}
               youtubeAnalytics={youtubeMetrics?.analytics ?? null}
             />
           </div>

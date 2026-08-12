@@ -366,6 +366,34 @@ export const creatorStartYouTubeOAuth = createServerFn({ method: "POST" })
     };
   });
 
+export const creatorStartTikTokOAuth = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await requireCreator(context.supabase, context.userId);
+
+    const result = await context.supabase.functions.invoke<{
+      authorizationUrl?: string;
+      error?: string;
+    }>("tiktok-oauth-start", { body: {} });
+    if (result.error) {
+      let message = result.error.message;
+      const response = "context" in result.error ? result.error.context : undefined;
+      if (response instanceof Response) {
+        try {
+          const payload = (await response.clone().json()) as { error?: string; message?: string };
+          message = payload.error || payload.message || message;
+        } catch {
+          // Keep the SDK error when the function response is not JSON.
+        }
+      }
+      throw new Error(message);
+    }
+    if (!result.data?.authorizationUrl) {
+      throw new Error(result.data?.error || "A conexão do TikTok ainda não foi configurada.");
+    }
+    return { authorizationUrl: result.data.authorizationUrl };
+  });
+
 export const creatorDisconnectConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((input: { platform: SocialPlatform }) => input)

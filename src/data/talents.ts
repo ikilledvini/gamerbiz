@@ -41,12 +41,23 @@ export type SyncedYouTubeAnalytics = {
   gender: AnalyticsPoint[];
 };
 
+export type SyncedTikTokAnalytics = {
+  analyzedVideoCount: number;
+  averageViews: number | null;
+  totalViews: number | null;
+  likes: number | null;
+  comments: number | null;
+  shares: number | null;
+};
+
 export type SyncedSocialMetrics = {
   accountId: string | null;
   subscribers: number | null;
   totalViews: number | null;
   videoCount: number | null;
+  averageViews?: number | null;
   analytics?: SyncedYouTubeAnalytics | null;
+  tiktokAnalytics?: SyncedTikTokAnalytics | null;
   analyticsError?: string | null;
   lastSyncedAt: string | null;
   lastSyncError: string | null;
