@@ -164,6 +164,99 @@ function DailyViewsChart({
   );
 }
 
+function VideoEngagementChart({
+  data,
+  eyebrow,
+  title,
+  labels,
+}: {
+  data: { label: string; likes: number; comments: number; shares: number }[];
+  eyebrow: string;
+  title: string;
+  labels: { likes: string; comments: string; shares: string };
+}) {
+  const series = [
+    { key: "likes", label: labels.likes, color: "var(--primary)" },
+    { key: "comments", label: labels.comments, color: "#8FC3DC" },
+    { key: "shares", label: labels.shares, color: "#F3B3B7" },
+  ] as const;
+
+  return (
+    <div className="lg:col-span-2">
+      <Card>
+        <MediaKitSectionHeading eyebrow={eyebrow} title={title} level="h3" />
+        <div
+          className="mt-6 h-[300px] w-full"
+          role="img"
+          aria-label={`${title}: ${data
+            .map(
+              (point) =>
+                `${point.label}, ${labels.likes} ${point.likes}, ${labels.comments} ${point.comments}, ${labels.shares} ${point.shares}`,
+            )
+            .join("; ")}`}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={data}
+              barCategoryGap="18%"
+              margin={{ top: 8, right: 8, left: -18, bottom: 0 }}
+            >
+              <CartesianGrid stroke="var(--border)" strokeDasharray="3 6" vertical={false} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={{ stroke: "var(--border)" }}
+                interval="preserveStartEnd"
+                minTickGap={28}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                allowDecimals={false}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+              />
+              <RTooltip
+                cursor={{ fill: "var(--muted)", opacity: 0.3 }}
+                contentStyle={tooltipStyle}
+                itemStyle={tooltipTextStyle}
+                labelStyle={tooltipTextStyle}
+                separator=""
+                formatter={(value: number, name: string) => [
+                  new Intl.NumberFormat().format(value),
+                  name,
+                ]}
+              />
+              {series.map((item) => (
+                <Bar
+                  key={item.key}
+                  dataKey={item.key}
+                  name={item.label}
+                  fill={item.color}
+                  radius={[4, 4, 0, 0]}
+                  isAnimationActive={false}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <ul className="mt-3 flex flex-wrap items-center justify-center gap-5">
+          {series.map((item) => (
+            <li key={item.key} className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: item.color }}
+                aria-hidden="true"
+              />
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </div>
+  );
+}
+
 function GenderChart({
   data,
   eyebrow,
@@ -367,13 +460,39 @@ export function MediaKitAnalytics({
         }
       : null;
   const syncedTikTok = tiktokAnalytics
-    ? {
-        metrics: [
-          { label: t.mediakit.avgViews, value: formatMetric(tiktokAnalytics.averageViews) },
-          { label: a.likes, value: formatMetric(tiktokAnalytics.likes) },
-          { label: a.comments, value: formatMetric(tiktokAnalytics.comments) },
-        ],
-      }
+    ? (() => {
+        const videos = [...tiktokAnalytics.videos].sort((left, right) => {
+          const leftTime = left.createdAt ? Date.parse(left.createdAt) : 0;
+          const rightTime = right.createdAt ? Date.parse(right.createdAt) : 0;
+          return leftTime - rightTime;
+        });
+        const chartVideos = videos.map((video, index) => ({
+          ...video,
+          label:
+            video.createdAt && Number.isFinite(Date.parse(video.createdAt))
+              ? dateFormatter.format(new Date(video.createdAt))
+              : `#${index + 1}`,
+        }));
+
+        return {
+          metrics: [
+            { label: t.mediakit.avgViews, value: formatMetric(tiktokAnalytics.averageViews) },
+            { label: a.totalViews, value: formatMetric(tiktokAnalytics.totalViews) },
+            { label: a.likes, value: formatMetric(tiktokAnalytics.likes) },
+            { label: a.shares, value: formatMetric(tiktokAnalytics.shares) },
+          ],
+          dailyViews: chartVideos.map((video) => ({
+            label: video.label,
+            value: video.views,
+          })),
+          videoInteractions: chartVideos.map((video) => ({
+            label: video.label,
+            likes: video.likes,
+            comments: video.comments,
+            shares: video.shares,
+          })),
+        };
+      })()
     : null;
   const effectiveTikTok =
     syncedTikTok || analytics?.tiktok
@@ -491,7 +610,19 @@ export function MediaKitAnalytics({
 
         <div className="grid gap-5 lg:grid-cols-2">
           {data.dailyViews && data.dailyViews.length > 0 ? (
-            <DailyViewsChart data={data.dailyViews} eyebrow={a.reach} title={a.viewsLast28Days} />
+            <DailyViewsChart
+              data={data.dailyViews}
+              eyebrow={a.reach}
+              title={current.key === "tiktok" ? a.viewsByVideo : a.viewsLast28Days}
+            />
+          ) : null}
+          {data.videoInteractions && data.videoInteractions.length > 0 ? (
+            <VideoEngagementChart
+              data={data.videoInteractions}
+              eyebrow={a.media}
+              title={a.engagementByVideo}
+              labels={{ likes: a.likes, comments: a.comments, shares: a.shares }}
+            />
           ) : null}
           {data.age && data.age.length > 0 ? (
             <AgeChart data={data.age} eyebrow={a.reach} title={a.age} />

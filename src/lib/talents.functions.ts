@@ -70,6 +70,23 @@ function mapTikTokAnalytics(value: unknown): SyncedTikTokAnalytics | null {
     likes: metricNumber(analytics["likes"]),
     comments: metricNumber(analytics["comments"]),
     shares: metricNumber(analytics["shares"]),
+    videos: Array.isArray(analytics["videos"])
+      ? analytics["videos"].flatMap((entry) => {
+          if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+          const video = entry as Record<string, unknown>;
+          if (typeof video["id"] !== "string") return [];
+          return [
+            {
+              id: video["id"],
+              createdAt: typeof video["created_at"] === "string" ? video["created_at"] : null,
+              views: metricNumber(video["views"]) ?? 0,
+              likes: metricNumber(video["likes"]) ?? 0,
+              comments: metricNumber(video["comments"]) ?? 0,
+              shares: metricNumber(video["shares"]) ?? 0,
+            },
+          ];
+        })
+      : [],
   };
 }
 
