@@ -17,7 +17,7 @@ import { CasesSection } from "@/components/sections/cases-section";
 import { FinalCtaSection } from "@/components/sections/final-cta-section";
 import { usePrefersReducedMotion } from "@/hooks/use-motion";
 
-const TITLE = "Gamerbiz — Marketing, Talentos e Esports";
+const TITLE = "Gamerbiz | É hora de subir de nível";
 const DESCRIPTION =
   "Conectamos marcas, talentos e comunidades através de campanhas, ativações e parcerias dentro do ecossistema gamer.";
 
