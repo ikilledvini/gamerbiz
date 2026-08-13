@@ -46,7 +46,6 @@ export const ptBR: Dict = {
     videoPlaceholder: "Vídeo institucional Gamerbiz",
   },
   marquee: [
-    "A GENTE VIVE O QUE VENDE",
     "CONSULTORIA ESTRATÉGICA",
     "MARKETING ESPORTIVO",
     "GESTÃO DE TALENTOS",
@@ -359,7 +358,7 @@ export const ptBR: Dict = {
       "Conheça os creators que transformam conteúdo, comunidade e influência em resultado.",
     rights: "Todos os direitos reservados.",
     meta: {
-      title: "Gamerbiz — Links e Talentos",
+      title: "Gamerbiz | Links e Talentos",
       description: "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.",
     },
     social: {

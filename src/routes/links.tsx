@@ -11,7 +11,7 @@ import { SocialLinks } from "@/components/links/social-links";
 import { ShareButton } from "@/components/links/share-button";
 import { legalPath } from "@/lib/legal-routes";
 
-const TITLE = "Gamerbiz — Links e Talentos";
+const TITLE = "Gamerbiz | Links e Talentos";
 const DESCRIPTION = "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.";
 const URL = "https://idea-to-site-muse.lovable.app/links";
 

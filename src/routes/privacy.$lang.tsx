@@ -5,7 +5,7 @@ import { fromLegalLanguageSlug } from "@/lib/legal-routes";
 export const Route = createFileRoute("/privacy/$lang")({
   head: ({ params }) => ({
     meta: [
-      { title: `Privacy Policy — Gamerbiz (${params.lang.toUpperCase()})` },
+      { title: `Privacy Policy | Gamerbiz (${params.lang.toUpperCase()})` },
       {
         name: "description",
         content: "Gamerbiz privacy policy and personal data processing information.",

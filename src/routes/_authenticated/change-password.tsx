@@ -12,7 +12,7 @@ import { completeFirstPasswordChange, getCurrentPortalAccess } from "@/lib/porta
 export const Route = createFileRoute("/_authenticated/change-password")({
   head: () => ({
     meta: [
-      { title: "Crie sua nova senha — Gamerbiz" },
+      { title: "Crie sua nova senha | Gamerbiz" },
       {
         name: "description",
         content: "Troca obrigatória da senha temporária do portal Gamerbiz.",

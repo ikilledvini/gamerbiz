@@ -2,7 +2,7 @@ import type { Dict } from "./types";
 
 export const en: Dict = {
   meta: {
-    title: "Gamerbiz — Marketing, Talent and Esports",
+    title: "Gamerbiz | Marketing, Talent and Esports",
     description:
       "We connect brands, talents and communities through campaigns, activations and partnerships across the gaming ecosystem.",
   },
@@ -46,7 +46,6 @@ export const en: Dict = {
     videoPlaceholder: "Gamerbiz brand video",
   },
   marquee: [
-    "WE LIVE WHAT WE SELL",
     "STRATEGIC CONSULTING",
     "SPORTS MARKETING",
     "TALENT MANAGEMENT",
@@ -357,7 +356,7 @@ export const en: Dict = {
       "Meet the creators who turn content, community, and influence into results.",
     rights: "All rights reserved.",
     meta: {
-      title: "Gamerbiz — Links and Talents",
+      title: "Gamerbiz | Links and Talents",
       description: "Access Gamerbiz official channels and meet our talents and Media Kits.",
     },
     social: {

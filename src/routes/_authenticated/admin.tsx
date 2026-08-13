@@ -42,7 +42,7 @@ import { normalizeForSearch, toSlug } from "@/lib/slug";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Central de operação — Gamerbiz" },
+      { title: "Central de operação | Gamerbiz" },
       {
         name: "description",
         content: "Painel administrativo para Media Kits, conexões, acessos e oportunidades.",
