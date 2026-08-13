@@ -4,10 +4,11 @@ import { Header } from "@/components/layout/header";
 import { ModalProvider } from "@/components/modals/modal-provider";
 import { Logo } from "@/components/ui/logo";
 import { useI18n } from "@/i18n";
+import { legalPath } from "@/lib/legal-routes";
 
 /** Casca compartilhada das páginas públicas de Media Kit. */
 export function MediaKitShell({ children }: { children: ReactNode }) {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
 
   return (
     <ModalProvider>
@@ -39,6 +40,20 @@ export function MediaKitShell({ children }: { children: ReactNode }) {
             >
               {t.links.websiteLink}
             </Link>
+            <nav className="flex flex-wrap gap-2" aria-label={t.footer.navigation}>
+              <Link
+                to={legalPath("privacy", lang)}
+                className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+              >
+                {t.footer.privacy}
+              </Link>
+              <Link
+                to={legalPath("tos", lang)}
+                className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+              >
+                {t.footer.terms}
+              </Link>
+            </nav>
             <p className="text-xs text-subtle">© Gamerbiz. {t.links.rights}</p>
           </div>
         </div>

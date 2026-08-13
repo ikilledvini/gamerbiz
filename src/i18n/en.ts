@@ -207,7 +207,7 @@ export const en: Dict = {
     social: "SOCIAL",
     rights: "© 2026 Gamerbiz. All rights reserved.",
     privacy: "Privacy Policy",
-    terms: "Terms of Use",
+    terms: "Terms of Service",
     legalUnavailable: "This document is being prepared and will be available soon.",
   },
   brandModal: {

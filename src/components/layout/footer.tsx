@@ -4,18 +4,19 @@ import { Logo } from "@/components/ui/logo";
 import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
+import { legalPath } from "@/lib/legal-routes";
 
-export function Footer() {
-  const { t } = useI18n();
+export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
+  const { lang, t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
 
   const navLinks = [
-    { href: "#sobre", label: t.nav.about },
-    { href: "#marcas", label: t.nav.brands },
-    { href: "#times", label: t.nav.teams },
-    { href: "#clientes", label: t.nav.clients },
-    { href: "#talentos", label: t.nav.talents },
-    { href: "#cases", label: t.nav.cases },
+    { href: `${homeHrefPrefix}#sobre`, label: t.nav.about },
+    { href: `${homeHrefPrefix}#marcas`, label: t.nav.brands },
+    { href: `${homeHrefPrefix}#times`, label: t.nav.teams },
+    { href: `${homeHrefPrefix}#clientes`, label: t.nav.clients },
+    { href: `${homeHrefPrefix}#talentos`, label: t.nav.talents },
+    { href: `${homeHrefPrefix}#cases`, label: t.nav.cases },
   ];
 
   const socials = [
@@ -108,10 +109,23 @@ export function Footer() {
             Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP
             04704-900
           </p>
-          <p className="flex flex-wrap items-center justify-center gap-4 text-xs text-subtle">
-            <span title={t.footer.legalUnavailable}>{t.footer.privacy}</span>
-            <span title={t.footer.legalUnavailable}>{t.footer.terms}</span>
-          </p>
+          <nav
+            aria-label={`${t.footer.privacy} / ${t.footer.terms}`}
+            className="flex flex-wrap items-center justify-center gap-2"
+          >
+            <a
+              href={legalPath("privacy", lang)}
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+            >
+              {t.footer.privacy}
+            </a>
+            <a
+              href={legalPath("tos", lang)}
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+            >
+              {t.footer.terms}
+            </a>
+          </nav>
         </div>
       </div>
     </footer>
