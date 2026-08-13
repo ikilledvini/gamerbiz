@@ -9,10 +9,10 @@ import { LinksProfile } from "@/components/links/links-profile";
 import { PrimaryLinks } from "@/components/links/primary-links";
 import { SocialLinks } from "@/components/links/social-links";
 import { ShareButton } from "@/components/links/share-button";
+import { legalPath } from "@/lib/legal-routes";
 
 const TITLE = "Gamerbiz — Links e Talentos";
-const DESCRIPTION =
-  "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.";
+const DESCRIPTION = "Acesse os canais oficiais da Gamerbiz e conheça nossos talentos e Media Kits.";
 const URL = "https://idea-to-site-muse.lovable.app/links";
 
 export const Route = createFileRoute("/links")({
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/links")({
 });
 
 function LinksContent() {
-  const { t } = useI18n();
+  const { lang, t } = useI18n();
 
   return (
     <>
@@ -74,24 +74,17 @@ function LinksContent() {
           </div>
         </section>
 
-        <section
-          id="talentos"
-          aria-labelledby="talentos-heading"
-          className="section-gbz bg-links"
-        >
+        <section id="talentos" aria-labelledby="talentos-heading" className="section-gbz bg-links">
           <div className="container-gbz">
             <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
                 <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
-                <h2
-                  id="talentos-heading"
-                  className="title-gbz mt-4 max-w-[16ch] scroll-mt-24"
-                >
+                <h2 id="talentos-heading" className="title-gbz mt-4 max-w-[16ch] scroll-mt-24">
                   {t.talents.title}
                 </h2>
                 <Link
                   to="/mediakit"
-              search={{ q: "", cat: "", page: 1 }}
+                  search={{ q: "", cat: "", page: 1 }}
                   className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
                 >
                   {t.mediakit.ctaHome}
@@ -117,6 +110,20 @@ function LinksContent() {
           >
             {t.links.websiteLink}
           </Link>
+          <nav className="flex flex-wrap justify-center gap-2" aria-label={t.footer.navigation}>
+            <Link
+              to={legalPath("privacy", lang)}
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] hover:border-primary hover:text-primary"
+            >
+              {t.footer.privacy}
+            </Link>
+            <Link
+              to={legalPath("tos", lang)}
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] hover:border-primary hover:text-primary"
+            >
+              {t.footer.terms}
+            </Link>
+          </nav>
         </footer>
       </main>
     </>

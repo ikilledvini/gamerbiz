@@ -202,7 +202,7 @@ export const zhCN: Dict = {
     social: "社交媒体",
     rights: "© 2026 Gamerbiz。保留所有权利。",
     privacy: "隐私政策",
-    terms: "使用条款",
+    terms: "服务条款",
     legalUnavailable: "该文件正在准备中，敬请期待。",
   },
   brandModal: {

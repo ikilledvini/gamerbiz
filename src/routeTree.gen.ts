@@ -13,11 +13,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as LinksRouteImport } from './routes/links'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as TermosDeServicoRouteImport } from './routes/termos-de-servico'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
 import { Route as AuthenticatedCreatorRouteImport } from './routes/_authenticated/creator'
 import { Route as MediakitIndexRouteImport } from './routes/mediakit.index'
 import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
+import { Route as PrivacyLangRouteImport } from './routes/privacy.$lang'
+import { Route as TosLangRouteImport } from './routes/tos.$lang'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,6 +40,16 @@ const AuthRoute = AuthRouteImport.update({
 const LinksRoute = LinksRouteImport.update({
   id: '/links',
   path: '/links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermosDeServicoRoute = TermosDeServicoRouteImport.update({
+  id: '/termos-de-servico',
+  path: '/termos-de-servico',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -64,25 +78,43 @@ const MediakitSlugRoute = MediakitSlugRouteImport.update({
   path: '/mediakit/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyLangRoute = PrivacyLangRouteImport.update({
+  id: '/privacy/$lang',
+  path: '/privacy/$lang',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TosLangRoute = TosLangRouteImport.update({
+  id: '/tos/$lang',
+  path: '/tos/$lang',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
+  '/privacy/$lang': typeof PrivacyLangRoute
+  '/tos/$lang': typeof TosLangRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/termos-de-servico': typeof TermosDeServicoRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
+  '/privacy/$lang': typeof PrivacyLangRoute
+  '/tos/$lang': typeof TosLangRoute
   '/mediakit': typeof MediakitIndexRoute
 }
 export interface FileRoutesById {
@@ -91,10 +123,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/links': typeof LinksRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
+  '/termos-de-servico': typeof TermosDeServicoRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
   '/_authenticated/creator': typeof AuthenticatedCreatorRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
+  '/privacy/$lang': typeof PrivacyLangRoute
+  '/tos/$lang': typeof TosLangRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRouteTypes {
@@ -103,20 +139,28 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/links'
+    | '/politica-de-privacidade'
+    | '/termos-de-servico'
     | '/admin'
     | '/change-password'
     | '/creator'
     | '/mediakit/$slug'
+    | '/privacy/$lang'
+    | '/tos/$lang'
     | '/mediakit/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/links'
+    | '/politica-de-privacidade'
+    | '/termos-de-servico'
     | '/admin'
     | '/change-password'
     | '/creator'
     | '/mediakit/$slug'
+    | '/privacy/$lang'
+    | '/tos/$lang'
     | '/mediakit'
   id:
     | '__root__'
@@ -124,10 +168,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/links'
+    | '/politica-de-privacidade'
+    | '/termos-de-servico'
     | '/_authenticated/admin'
     | '/_authenticated/change-password'
     | '/_authenticated/creator'
     | '/mediakit/$slug'
+    | '/privacy/$lang'
+    | '/tos/$lang'
     | '/mediakit/'
   fileRoutesById: FileRoutesById
 }
@@ -136,7 +184,11 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   LinksRoute: typeof LinksRoute
+  PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
+  TermosDeServicoRoute: typeof TermosDeServicoRoute
   MediakitSlugRoute: typeof MediakitSlugRoute
+  PrivacyLangRoute: typeof PrivacyLangRoute
+  TosLangRoute: typeof TosLangRoute
   MediakitIndexRoute: typeof MediakitIndexRoute
 }
 
@@ -168,6 +220,20 @@ declare module '@tanstack/react-router' {
       path: '/links'
       fullPath: '/links'
       preLoaderRoute: typeof LinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/termos-de-servico': {
+      id: '/termos-de-servico'
+      path: '/termos-de-servico'
+      fullPath: '/termos-de-servico'
+      preLoaderRoute: typeof TermosDeServicoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin': {
@@ -205,6 +271,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediakitSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy/$lang': {
+      id: '/privacy/$lang'
+      path: '/privacy/$lang'
+      fullPath: '/privacy/$lang'
+      preLoaderRoute: typeof PrivacyLangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tos/$lang': {
+      id: '/tos/$lang'
+      path: '/tos/$lang'
+      fullPath: '/tos/$lang'
+      preLoaderRoute: typeof TosLangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -228,7 +308,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   LinksRoute: LinksRoute,
+  PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
+  TermosDeServicoRoute: TermosDeServicoRoute,
   MediakitSlugRoute: MediakitSlugRoute,
+  PrivacyLangRoute: PrivacyLangRoute,
+  TosLangRoute: TosLangRoute,
   MediakitIndexRoute: MediakitIndexRoute,
 }
 export const routeTree = rootRouteImport

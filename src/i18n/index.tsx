@@ -31,13 +31,26 @@ function isLang(value: string | null): value is LangCode {
   return value === "pt-BR" || value === "en" || value === "es" || value === "zh-CN";
 }
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<LangCode>(DEFAULT_LANG);
+export function I18nProvider({
+  children,
+  initialLang,
+  onLangChange,
+}: {
+  children: ReactNode;
+  initialLang?: LangCode;
+  onLangChange?: (lang: LangCode) => void;
+}) {
+  const [lang, setLangState] = useState<LangCode>(initialLang ?? DEFAULT_LANG);
 
   useEffect(() => {
+    if (initialLang) return;
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (isLang(stored)) setLangState(stored);
-  }, []);
+  }, [initialLang]);
+
+  useEffect(() => {
+    if (initialLang) setLangState(initialLang);
+  }, [initialLang]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -47,14 +60,18 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (desc) desc.setAttribute("content", dict.meta.description);
   }, [lang]);
 
-  const setLang = useCallback((next: LangCode) => {
-    setLangState(next);
-    try {
-      window.localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* armazenamento indisponível — mantém apenas em memória */
-    }
-  }, []);
+  const setLang = useCallback(
+    (next: LangCode) => {
+      setLangState(next);
+      try {
+        window.localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        /* armazenamento indisponível — mantém apenas em memória */
+      }
+      onLangChange?.(next);
+    },
+    [onLangChange],
+  );
 
   const value = useMemo<I18nContextValue>(
     () => ({ lang, setLang, t: DICTS[lang] }),
