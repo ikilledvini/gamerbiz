@@ -2,7 +2,7 @@ import type { Dict } from "./types";
 
 export const zhCN: Dict = {
   meta: {
-    title: "Gamerbiz — 游戏营销、人才与电竞",
+    title: "Gamerbiz | 游戏营销、人才与电竞",
     description: "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
   },
   a11y: {
@@ -44,7 +44,6 @@ export const zhCN: Dict = {
     videoPlaceholder: "Gamerbiz 品牌视频",
   },
   marquee: [
-    "我们深耕自己所热爱的领域",
     "战略咨询",
     "体育营销",
     "人才管理",
@@ -350,7 +349,7 @@ export const zhCN: Dict = {
     talentsDescription: "认识将内容、社群和影响力转化为成果的创作者。",
     rights: "版权所有。",
     meta: {
-      title: "Gamerbiz — 链接与人才",
+      title: "Gamerbiz | 链接与人才",
       description: "访问 Gamerbiz 官方渠道，了解我们的创作者与媒体资料包。",
     },
     social: {

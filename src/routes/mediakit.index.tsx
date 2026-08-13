@@ -21,7 +21,7 @@ import { listPublicTalents } from "@/lib/talents.functions";
 import { talentCategoryGroups, getTalentCategoryGroups, type Talent } from "@/data/talents";
 import { normalizeForSearch } from "@/lib/slug";
 
-const TITLE = "Media Kits Gamerbiz — Encontre o creator ideal";
+const TITLE = "Media Kits Gamerbiz | Encontre o creator ideal";
 const DESCRIPTION =
   "Explore os talentos da Gamerbiz, compare perfis e acesse informações comerciais, plataformas, conteúdos e audiência.";
 const URL = "https://idea-to-site-muse.lovable.app/mediakit";

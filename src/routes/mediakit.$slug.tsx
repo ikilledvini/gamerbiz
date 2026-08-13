@@ -23,9 +23,9 @@ export const Route = createFileRoute("/mediakit/$slug")({
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
-      return { meta: [{ title: "Media Kit — Gamerbiz" }, { name: "robots", content: "noindex" }] };
+      return { meta: [{ title: "Media Kit | Gamerbiz" }, { name: "robots", content: "noindex" }] };
     }
-    const title = `${loaderData.talent.stageName} — Media Kit | Gamerbiz`;
+    const title = `${loaderData.talent.stageName} | Media Kit | Gamerbiz`;
     const description = `${loaderData.talent.stageName} · ${loaderData.talent.category}. Media Kit oficial na plataforma de talentos da Gamerbiz.`;
     const url = `${SITE}/mediakit/${params.slug}`;
     const image = loaderData.talent.image ?? undefined;
@@ -294,7 +294,7 @@ function MediaKitContent({ talent }: { talent: Talent }) {
     const url = `${window.location.origin}/mediakit/${talent.slug}`;
     try {
       if (navigator.share) {
-        await navigator.share({ title: `${talent.stageName} — Media Kit`, url });
+        await navigator.share({ title: `${talent.stageName} | Media Kit`, url });
         return;
       }
       await navigator.clipboard.writeText(url);

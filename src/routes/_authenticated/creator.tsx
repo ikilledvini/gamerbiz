@@ -21,7 +21,7 @@ import {
 export const Route = createFileRoute("/_authenticated/creator")({
   head: () => ({
     meta: [
-      { title: "Conexões do Media Kit — Gamerbiz" },
+      { title: "Conexões do Media Kit | Gamerbiz" },
       {
         name: "description",
         content: "Portal do creator para conectar as contas oficiais ao Media Kit Gamerbiz.",

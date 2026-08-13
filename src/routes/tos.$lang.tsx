@@ -5,7 +5,7 @@ import { fromLegalLanguageSlug } from "@/lib/legal-routes";
 export const Route = createFileRoute("/tos/$lang")({
   head: ({ params }) => ({
     meta: [
-      { title: `Terms of Service — Gamerbiz (${params.lang.toUpperCase()})` },
+      { title: `Terms of Service | Gamerbiz (${params.lang.toUpperCase()})` },
       {
         name: "description",
         content: "Terms governing access to and use of Gamerbiz digital services.",

@@ -5,7 +5,7 @@ import { Logo } from "@/components/ui/logo";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentPortalAccess } from "@/lib/portal.functions";
 
-const TITLE = "Portal de Media Kits — Gamerbiz";
+const TITLE = "Portal de Media Kits | Gamerbiz";
 const DESCRIPTION = "Área segura para administradores e creators da Gamerbiz.";
 
 export const Route = createFileRoute("/auth")({

@@ -2,7 +2,7 @@ import type { Dict } from "./types";
 
 export const es: Dict = {
   meta: {
-    title: "Gamerbiz — Marketing, Talentos y Esports",
+    title: "Gamerbiz | Marketing, Talentos y Esports",
     description:
       "Conectamos marcas, talentos y comunidades mediante campañas, activaciones y alianzas dentro del ecosistema gamer.",
   },
@@ -46,7 +46,6 @@ export const es: Dict = {
     videoPlaceholder: "Video institucional Gamerbiz",
   },
   marquee: [
-    "VIVIMOS LO QUE VENDEMOS",
     "CONSULTORÍA ESTRATÉGICA",
     "MARKETING DEPORTIVO",
     "GESTIÓN DE TALENTOS",
@@ -360,7 +359,7 @@ export const es: Dict = {
       "Conoce a los creators que transforman contenido, comunidad e influencia en resultados.",
     rights: "Todos los derechos reservados.",
     meta: {
-      title: "Gamerbiz — Enlaces y Talentos",
+      title: "Gamerbiz | Enlaces y Talentos",
       description:
         "Accede a los canales oficiales de Gamerbiz y conoce a nuestros talentos y Media Kits.",
     },
