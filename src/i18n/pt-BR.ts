@@ -2,7 +2,7 @@ import type { Dict } from "./types";
 
 export const ptBR: Dict = {
   meta: {
-    title: "Gamerbiz — Marketing, Talentos e Esports",
+    title: "Gamerbiz | É hora de subir de nível",
     description:
       "Conectamos marcas, talentos e comunidades através de campanhas, ativações e parcerias dentro do ecossistema gamer.",
   },
