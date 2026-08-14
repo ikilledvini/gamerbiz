@@ -122,7 +122,7 @@ export const ptBR: Dict = {
   },
   teams: {
     eyebrow: "Soluções para times",
-    title: "Aceleramos seu time dentro e fora do servidor",
+    title: "Aceleramos seu time dentro e fora\n do servidor",
     description:
       "Oferecemos suporte comercial, branding e estrutura para organizações que querem crescer no cenário competitivo.",
     services: [

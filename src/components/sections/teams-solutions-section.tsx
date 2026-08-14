@@ -16,7 +16,7 @@ export function TeamsSolutionsSection() {
       <div className="container-gbz grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <p className="eyebrow-gbz">{t.teams.eyebrow}</p>
-          <h2 className="title-gbz mt-4 max-w-[16ch]">{t.teams.title}</h2>
+          <h2 className="title-gbz mt-4 max-w-[16ch] whitespace-pre-line">{t.teams.title}</h2>
           <p className="mt-6 max-w-[52ch] text-base text-muted-foreground">{t.teams.description}</p>
           <div className="mt-8">
             <GbzButton onClick={() => openBrandModal(t.teams.subject)}>
