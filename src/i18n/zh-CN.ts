@@ -90,7 +90,7 @@ export const zhCN: Dict = {
   },
   brands: {
     eyebrow: "品牌解决方案",
-    title: "让品牌站上游戏舞台中央",
+    title: "让品牌\n站上游戏舞台中央",
     description:
       "我们激活营销活动、合作伙伴关系和内容，帮助品牌在游戏世界中实现真实触达、转化与话语权。",
     phrase: { top: "GAMERBIZ", mid: "你的战队。", bottom: "我们的赛场。" },
@@ -169,7 +169,7 @@ export const zhCN: Dict = {
   },
   cases: {
     eyebrow: "案例",
-    title: "以表现推动转化",
+    title: "以表现\n推动转化",
     description: "真实数据，真实策略，让影响力转化为高影响力营销成果。",
     action: "查看案例",
     result: "核心成果",
@@ -193,7 +193,7 @@ export const zhCN: Dict = {
   },
   finalCta: {
     eyebrow: "下一步",
-    title: "与真正了解游戏的人一起进入游戏市场",
+    title: "与真正了解游戏的人\n一起进入游戏市场",
     button: "联系我们",
   },
   footer: {

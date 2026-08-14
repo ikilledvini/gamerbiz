@@ -13,7 +13,7 @@ export function BrandsSolutionsSection() {
         <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div>
             <p className="eyebrow-gbz">{t.brands.eyebrow}</p>
-            <h2 className="title-gbz mt-4 max-w-[18ch]">{t.brands.title}</h2>
+            <h2 className="title-gbz mt-4 max-w-[18ch] whitespace-pre-line">{t.brands.title}</h2>
           </div>
           <p className="max-w-[52ch] text-base text-muted-foreground">{t.brands.description}</p>
         </div>

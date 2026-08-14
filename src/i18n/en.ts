@@ -92,7 +92,7 @@ export const en: Dict = {
   },
   brands: {
     eyebrow: "Solutions for brands",
-    title: "We put your brand in the gaming spotlight",
+    title: "We put your brand\nin the gaming spotlight",
     description:
       "We activate campaigns, partnerships and content that drive real reach, conversion and authority within the gaming universe.",
     phrase: { top: "GAMERBIZ", mid: "YOUR TEAM.", bottom: "OUR GAME." },
@@ -173,7 +173,7 @@ export const en: Dict = {
   },
   cases: {
     eyebrow: "Case studies",
-    title: "Performance that converts",
+    title: "Performance\nthat converts",
     description:
       "Real data. Real strategies. Results that turn influence into high-impact campaigns.",
     action: "View case study",
@@ -198,7 +198,7 @@ export const en: Dict = {
   },
   finalCta: {
     eyebrow: "Next step",
-    title: "ENTER GAMING WITH PEOPLE WHO KNOW THE GAME",
+    title: "ENTER GAMING WITH\nPEOPLE WHO KNOW THE GAME",
     button: "Talk to us",
   },
   footer: {

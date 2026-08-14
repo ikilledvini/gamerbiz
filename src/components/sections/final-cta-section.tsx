@@ -13,7 +13,7 @@ export function FinalCtaSection() {
       </div>
       <div className="container-gbz relative flex flex-col items-center text-center">
         <p className="eyebrow-gbz">{t.finalCta.eyebrow}</p>
-        <h2 className="mt-5 max-w-[20ch] font-display text-[clamp(2.2rem,1.2rem+4.4vw,4.6rem)] font-extrabold uppercase leading-[0.96] tracking-[-0.04em]">
+        <h2 className="mt-5 max-w-[20ch] font-display text-[clamp(2.2rem,1.2rem+4.4vw,4.6rem)] font-extrabold uppercase leading-[0.96] tracking-[-0.04em] whitespace-pre-line">
           {t.finalCta.title}
         </h2>
         <div className="mt-10">

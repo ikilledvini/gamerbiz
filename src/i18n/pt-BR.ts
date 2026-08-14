@@ -92,7 +92,7 @@ export const ptBR: Dict = {
   },
   brands: {
     eyebrow: "Soluções para marcas",
-    title: "Colocamos sua marca na vitrine do gaming",
+    title: "Colocamos sua marca\nna vitrine do gaming",
     description:
       "Ativamos campanhas, parcerias e conteúdos que geram alcance real, conversão e autoridade dentro do universo gamer.",
     phrase: { top: "GAMERBIZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
@@ -173,7 +173,7 @@ export const ptBR: Dict = {
   },
   cases: {
     eyebrow: "Cases e resultados",
-    title: "Performance que converte",
+    title: "Performance\nque converte",
     description:
       "Dados reais. Estratégias reais. Resultados que transformam influência em campanhas de alto impacto.",
     action: "Ver case",
@@ -198,7 +198,7 @@ export const ptBR: Dict = {
   },
   finalCta: {
     eyebrow: "Próximo passo",
-    title: "ENTRE NO GAMING COM QUEM CONHECE O JOGO",
+    title: "ENTRE NO GAMING COM\nQUEM CONHECE O JOGO",
     button: "Fale com a gente",
   },
   footer: {

@@ -85,7 +85,7 @@ export function CasesSection() {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <div>
             <p className="eyebrow-gbz">{t.cases.eyebrow}</p>
-            <h2 className="title-gbz mt-4 max-w-[14ch]">{t.cases.title}</h2>
+            <h2 className="title-gbz mt-4 max-w-[14ch] whitespace-pre-line">{t.cases.title}</h2>
           </div>
           <p className="max-w-[52ch] text-base text-muted-foreground">{t.cases.description}</p>
         </div>
