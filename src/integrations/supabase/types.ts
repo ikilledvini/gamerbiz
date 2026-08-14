@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      creator_talent_access: {
+        Row: {
+          created_at: string
+          talent_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          talent_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          talent_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_talent_access_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: true
+            referencedRelation: "talents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_talent_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       lead_submissions: {
         Row: {
           company: string | null
@@ -62,8 +98,35 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       social_connections: {
         Row: {
+          connected_at: string | null
+          connected_by: string | null
+          connection_status: string
           created_at: string
           current_metrics: Json
           external_account_id: string | null
@@ -78,6 +141,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          connected_at?: string | null
+          connected_by?: string | null
+          connection_status?: string
           created_at?: string
           current_metrics?: Json
           external_account_id?: string | null
@@ -92,6 +158,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          connected_at?: string | null
+          connected_by?: string | null
+          connection_status?: string
           created_at?: string
           current_metrics?: Json
           external_account_id?: string | null
