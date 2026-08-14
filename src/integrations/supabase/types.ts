@@ -103,6 +103,7 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string
+          must_change_password: boolean
           updated_at: string
           user_id: string
         }
@@ -110,6 +111,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email: string
+          must_change_password?: boolean
           updated_at?: string
           user_id: string
         }
@@ -117,6 +119,7 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string
+          must_change_password?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -323,12 +326,33 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_assign_creator: {
+        Args: { p_talent_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      admin_remove_creator_access: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
+      complete_first_password_change: { Args: never; Returns: undefined }
+      creator_disconnect_social_connection: {
+        Args: { p_platform: Database["public"]["Enums"]["social_platform"] }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      sync_talent_social_connection: {
+        Args: {
+          p_platform: Database["public"]["Enums"]["social_platform"]
+          p_profile_url: string
+          p_talent_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
