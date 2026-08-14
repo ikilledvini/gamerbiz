@@ -152,7 +152,7 @@ export const ptBR: Dict = {
   },
   clients: {
     eyebrow: "Quem confia na gente",
-    title: "Marcas e times que jogaram com a Gamerbiz",
+    title: "Marcas e times que\n jogaram com a Gamerbiz",
     groupBrands: "MARCAS",
     groupTeams: "TIMES",
   },

@@ -9,7 +9,7 @@ export function ClientsMarqueeSection() {
     <section id="clientes" className="section-gbz">
       <div className="container-gbz">
         <p className="eyebrow-gbz">{t.clients.eyebrow}</p>
-        <h2 className="title-gbz mt-4 max-w-[20ch]">{t.clients.title}</h2>
+        <h2 className="title-gbz mt-4 max-w-[20ch] whitespace-pre-line">{t.clients.title}</h2>
       </div>
 
       <div className="mt-14 space-y-12">

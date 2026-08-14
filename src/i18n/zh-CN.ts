@@ -149,7 +149,7 @@ export const zhCN: Dict = {
   },
   clients: {
     eyebrow: "他们选择信任我们",
-    title: "与 Gamerbiz 并肩作战的品牌与战队",
+    title: "与 Gamerbiz\n并肩作战的品牌与战队",
     groupBrands: "品牌",
     groupTeams: "战队",
   },

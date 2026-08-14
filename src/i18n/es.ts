@@ -152,7 +152,7 @@ export const es: Dict = {
   },
   clients: {
     eyebrow: "Quiénes confían en nosotros",
-    title: "Marcas y equipos que jugaron con Gamerbiz",
+    title: "Marcas y equipos que\n jugaron con Gamerbiz",
     groupBrands: "MARCAS",
     groupTeams: "EQUIPOS",
   },
