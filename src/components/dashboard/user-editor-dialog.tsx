@@ -29,7 +29,7 @@ export function UserEditorDialog({
   onChange: (next: ManagedUserDraft) => void;
   onClose: () => void;
   onSave: () => void;
-  onDelete?: () => void;
+  onDelete?: (() => void) | undefined;
   saving: boolean;
   deleting: boolean;
 }) {

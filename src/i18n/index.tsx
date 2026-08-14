@@ -37,7 +37,7 @@ export function I18nProvider({
   onLangChange,
 }: {
   children: ReactNode;
-  initialLang?: LangCode;
+  initialLang?: LangCode | undefined;
   onLangChange?: (lang: LangCode) => void;
 }) {
   const [lang, setLangState] = useState<LangCode>(initialLang ?? DEFAULT_LANG);

@@ -14,7 +14,7 @@ export function PortalShell({
   eyebrow: string;
   title: string;
   description: string;
-  userLabel?: string | null;
+  userLabel?: string | null | undefined;
   onSignOut: () => void;
   children: ReactNode;
 }) {
