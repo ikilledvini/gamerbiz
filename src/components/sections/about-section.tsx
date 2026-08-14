@@ -70,7 +70,7 @@ export function AboutSection() {
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <p className="eyebrow-gbz">{t.nav.about}</p>
-            <h2 className="title-gbz mt-4 max-w-[16ch] uppercase">{t.about.title}</h2>
+            <h2 className="title-gbz mt-4 max-w-[16ch] uppercase whitespace-pre-line">{t.about.title}</h2>
             <p className="mt-6 max-w-[58ch] text-base text-muted-foreground md:text-lg">
               {t.about.text}
             </p>
