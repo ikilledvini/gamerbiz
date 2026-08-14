@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      lead_submissions: {
+        Row: {
+          company: string | null
+          created_at: string
+          creator_type: string | null
+          email: string
+          id: string
+          kind: Database["public"]["Enums"]["lead_kind"]
+          locale: string
+          message: string | null
+          name: string
+          profiles: string | null
+          status: Database["public"]["Enums"]["lead_status"]
+          subject: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          creator_type?: string | null
+          email: string
+          id?: string
+          kind: Database["public"]["Enums"]["lead_kind"]
+          locale?: string
+          message?: string | null
+          name: string
+          profiles?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          subject?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          creator_type?: string | null
+          email?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["lead_kind"]
+          locale?: string
+          message?: string | null
+          name?: string
+          profiles?: string | null
+          status?: Database["public"]["Enums"]["lead_status"]
+          subject?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
       talents: {
         Row: {
           achievements: string | null
@@ -134,6 +182,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "editor" | "user"
+      lead_kind: "brand" | "creator"
+      lead_status: "new" | "contacted" | "archived"
       publish_status: "draft" | "published" | "hidden"
     }
     CompositeTypes: {
@@ -263,6 +313,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "editor", "user"],
+      lead_kind: ["brand", "creator"],
+      lead_status: ["new", "contacted", "archived"],
       publish_status: ["draft", "published", "hidden"],
     },
   },
