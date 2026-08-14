@@ -90,7 +90,7 @@ export const zhCN: Dict = {
   },
   brands: {
     eyebrow: "品牌解决方案",
-    title: "让品牌站上游戏舞台中央",
+    title: "让品牌\n站上游戏舞台中央",
     description:
       "我们激活营销活动、合作伙伴关系和内容，帮助品牌在游戏世界中实现真实触达、转化与话语权。",
     phrase: { top: "GAMERBIZ", mid: "你的战队。", bottom: "我们的赛场。" },
