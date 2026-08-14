@@ -68,7 +68,7 @@ export const en: Dict = {
     ],
   },
   about: {
-    title: "WE LIVE WHAT WE SELL.",
+    title: "WE LIVE \nWHAT WE SELL",
     text: "Gamerbiz combines experience in sports marketing, people management, talent curation and competitive gaming to build projects with depth, strategy and authenticity.",
     mediaPlaceholder: "Behind the scenes at Gamerbiz — image coming soon",
     pillars: [
