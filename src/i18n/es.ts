@@ -68,7 +68,7 @@ export const es: Dict = {
     ],
   },
   about: {
-    title: "VIVIMOS LO QUE VENDEMOS.",
+    title: "VIVIMOS \nLO QUE VENDEMOS",
     text: "Gamerbiz combina experiencia en marketing deportivo, gestión de personas, curaduría de talentos y competencia para desarrollar proyectos con profundidad, estrategia y autenticidad.",
     mediaPlaceholder: "Detrás de cámaras Gamerbiz — imagen próximamente",
     pillars: [

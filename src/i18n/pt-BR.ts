@@ -59,7 +59,7 @@ export const ptBR: Dict = {
   ],
   stats: {
     eyebrow: "Resultados comprovados",
-    title: "Números \nque falam.",
+    title: "Números \nque falam",
     items: [
       { value: 5, prefix: "+", label: "Anos no mercado gamer" },
       { value: 300, prefix: "+", label: "Projetos finalizados" },
@@ -68,7 +68,7 @@ export const ptBR: Dict = {
     ],
   },
   about: {
-    title: "A GENTE VIVE O QUE VENDE.",
+    title: "A GENTE VIVE \nO QUE VENDE",
     text: "A Gamerbiz combina experiência em marketing esportivo, gestão de pessoas, curadoria de talentos e vivência competitiva para desenvolver projetos com profundidade, estratégia e autenticidade.",
     mediaPlaceholder: "Bastidores Gamerbiz — imagem em breve",
     pillars: [

@@ -66,7 +66,7 @@ export const zhCN: Dict = {
     ],
   },
   about: {
-    title: "我们深耕自己所热爱的领域。",
+    title: "我们深耕 \n自己所热爱的领域",
     text: "Gamerbiz 融合体育营销、人才管理、达人甄选与竞技领域的实战经验，以深度、策略和真实感打造项目。",
     mediaPlaceholder: "Gamerbiz 幕后花絮 — 图片即将上线",
     pillars: [
