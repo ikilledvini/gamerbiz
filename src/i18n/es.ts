@@ -198,7 +198,7 @@ export const es: Dict = {
   },
   finalCta: {
     eyebrow: "Próximo paso",
-    title: "ENTRA AL GAMING CON QUIENES CONOCEN EL JUEGO",
+    title: "ENTRA AL GAMING CON\nQUIENES CONOCEN EL JUEGO",
     button: "Hablemos",
   },
   footer: {

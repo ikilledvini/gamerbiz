@@ -198,7 +198,7 @@ export const ptBR: Dict = {
   },
   finalCta: {
     eyebrow: "Próximo passo",
-    title: "ENTRE NO GAMING COM QUEM CONHECE O JOGO",
+    title: "ENTRE NO GAMING COM\nQUEM CONHECE O JOGO",
     button: "Fale com a gente",
   },
   footer: {

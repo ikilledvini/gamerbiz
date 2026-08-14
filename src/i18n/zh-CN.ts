@@ -193,7 +193,7 @@ export const zhCN: Dict = {
   },
   finalCta: {
     eyebrow: "下一步",
-    title: "与真正了解游戏的人一起进入游戏市场",
+    title: "与真正了解游戏的人\n一起进入游戏市场",
     button: "联系我们",
   },
   footer: {
