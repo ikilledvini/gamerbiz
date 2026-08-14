@@ -59,7 +59,7 @@ export const ptBR: Dict = {
   ],
   stats: {
     eyebrow: "Resultados comprovados",
-    title: "Números que falam",
+    title: "Números \nque falam.",
     items: [
       { value: 5, prefix: "+", label: "Anos no mercado gamer" },
       { value: 300, prefix: "+", label: "Projetos finalizados" },

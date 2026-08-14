@@ -33,7 +33,7 @@ export function StatsSection() {
       <div ref={ref} className="container-gbz grid gap-12 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
           <p className="eyebrow-gbz">{t.stats.eyebrow}</p>
-          <h2 className="title-gbz mt-4 max-w-[14ch]">{t.stats.title}</h2>
+          <h2 className="title-gbz mt-4 max-w-[14ch] whitespace-pre-line">{t.stats.title}</h2>
         </div>
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
           {t.stats.items.map((item) => (
