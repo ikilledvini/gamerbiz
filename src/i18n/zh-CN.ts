@@ -169,7 +169,7 @@ export const zhCN: Dict = {
   },
   cases: {
     eyebrow: "案例",
-    title: "以表现推动转化",
+    title: "以表现\n推动转化",
     description: "真实数据，真实策略，让影响力转化为高影响力营销成果。",
     action: "查看案例",
     result: "核心成果",

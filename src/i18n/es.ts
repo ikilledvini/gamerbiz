@@ -173,7 +173,7 @@ export const es: Dict = {
   },
   cases: {
     eyebrow: "Casos y resultados",
-    title: "Rendimiento que convierte",
+    title: "Rendimiento\nque convierte",
     description:
       "Datos reales. Estrategias reales. Resultados que transforman la influencia en campañas de alto impacto.",
     action: "Ver caso",

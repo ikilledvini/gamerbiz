@@ -173,7 +173,7 @@ export const ptBR: Dict = {
   },
   cases: {
     eyebrow: "Cases e resultados",
-    title: "Performance que converte",
+    title: "Performance\nque converte",
     description:
       "Dados reais. Estratégias reais. Resultados que transformam influência em campanhas de alto impacto.",
     action: "Ver case",
