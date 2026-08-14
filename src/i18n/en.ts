@@ -303,6 +303,31 @@ export const en: Dict = {
     viewGrid: "Grid",
     viewLabel: "View",
     ctaHome: "Explore Media Kits",
+    oauthExplainer: {
+      eyebrow: "Secure social media integrations",
+      title: "Connected data.",
+      titleAccent: "Media Kits that stay current.",
+      description:
+        "The Media Kit framework brings together integrations with YouTube and YouTube Analytics, Instagram, TikTok, and Twitch. Each connection uses only the data authorized and available on its platform to keep metrics updated automatically.",
+      steps: [
+        {
+          title: "You authorize",
+          text: "A connection starts only after your consent in each platform's official, secure environment. Gamerbiz never receives your account password.",
+        },
+        {
+          title: "We synchronize",
+          text: "We retrieve profile or channel identity, followers, views, content performance, and audience data whenever the platform makes them available.",
+        },
+        {
+          title: "You stay in control",
+          text: "We do not publish, edit, or delete content. Access can be revoked at any time in the connected platform's settings.",
+        },
+      ],
+      note: "Authorizations are protected and used exclusively to synchronize the Media Kit. Gamerbiz does not sell data obtained from platform APIs.",
+      legalLabel: "Legal information about the connection",
+      privacy: "Privacy policy",
+      terms: "Terms of service",
+    },
     socials: "Social media",
     followers: "Followers",
     avgViews: "Avg views",

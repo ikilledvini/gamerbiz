@@ -305,6 +305,31 @@ export const ptBR: Dict = {
     viewGrid: "Grade",
     viewLabel: "Visualização",
     ctaHome: "Acessar Media Kits",
+    oauthExplainer: {
+      eyebrow: "Integrações seguras com redes sociais",
+      title: "Dados conectados.",
+      titleAccent: "Media Kits sempre atualizados.",
+      description:
+        "A estrutura dos Media Kits reúne integrações com YouTube e YouTube Analytics, Instagram, TikTok e Twitch. Cada conexão utiliza somente os dados autorizados e disponíveis em sua plataforma para manter as métricas atualizadas automaticamente.",
+      steps: [
+        {
+          title: "Você autoriza",
+          text: "A conexão começa somente após o seu consentimento no ambiente oficial e seguro de cada plataforma. A Gamerbiz nunca recebe a senha da sua conta.",
+        },
+        {
+          title: "Nós sincronizamos",
+          text: "Consultamos identificação do perfil ou canal, seguidores, visualizações, desempenho de conteúdos e dados de audiência quando disponibilizados pela plataforma.",
+        },
+        {
+          title: "Você mantém o controle",
+          text: "Não publicamos, alteramos ou excluímos conteúdos. O acesso pode ser revogado a qualquer momento nas configurações da plataforma conectada.",
+        },
+      ],
+      note: "As autorizações são protegidas e usadas exclusivamente para sincronizar o Media Kit. A Gamerbiz não vende dados obtidos das APIs das plataformas.",
+      legalLabel: "Informações legais sobre a conexão",
+      privacy: "Política de privacidade",
+      terms: "Termos de serviço",
+    },
     socials: "Redes sociais",
     followers: "Seguidores",
     avgViews: "Visualizações médias",
