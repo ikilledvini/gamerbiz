@@ -155,7 +155,7 @@ export const zhCN: Dict = {
   },
   talents: {
     eyebrow: "我们的阵容",
-    title: "不只是阵容，",
+    title: "不仅仅是选拔",
     titleAccent: "更是专业甄选。",
     description: "拥有活跃社区的创作者、主播与职业选手，让每位人才匹配最合适的机会。",
     card: "查看媒体资料包",
