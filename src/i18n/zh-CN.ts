@@ -57,7 +57,7 @@ export const zhCN: Dict = {
   ],
   stats: {
     eyebrow: "经过验证的成果",
-    title: "用数字说话",
+    title: "用数字\n说话",
     items: [
       { value: 5, prefix: "+", label: "深耕游戏市场年数" },
       { value: 300, prefix: "+", label: "已完成项目" },

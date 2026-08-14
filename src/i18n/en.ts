@@ -59,7 +59,7 @@ export const en: Dict = {
   ],
   stats: {
     eyebrow: "Proven results",
-    title: "Numbers that speak for themselves",
+    title: "Numbers that speak\nfor themselves",
     items: [
       { value: 5, prefix: "+", label: "Years in the gaming market" },
       { value: 300, prefix: "+", label: "Projects delivered" },
