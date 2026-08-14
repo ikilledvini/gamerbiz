@@ -35,7 +35,7 @@ export const zhCN: Dict = {
     mediaKitSoon: "媒体资料包即将上线",
   },
   hero: {
-    eyebrow: "从内容到竞技，Gamerbiz 推动游戏生态向前",
+    eyebrow: "从内容到竞技，\nGAMERBIZ 推动游戏生态向前",
     title: "是时候",
     titleAccent: "升级了",
     description: "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",

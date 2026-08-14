@@ -36,7 +36,7 @@ export const es: Dict = {
     mediaKitSoon: "Media Kit próximamente",
   },
   hero: {
-    eyebrow: "Del contenido a la competencia, Gamerbiz mueve el juego",
+    eyebrow: "DEL CONTENIDO A LA COMPETENCIA,\nGAMERBIZ MUEVE EL JUEGO",
     title: "Es hora de",
     titleAccent: "Subir de nivel",
     description:

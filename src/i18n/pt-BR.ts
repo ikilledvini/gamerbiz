@@ -36,7 +36,7 @@ export const ptBR: Dict = {
     mediaKitSoon: "Media Kit em breve",
   },
   hero: {
-    eyebrow: "DO CONTEÚDO AO COMPETITIVO,\n A GAMERBIZ MOVIMENTA O JOGO",
+    eyebrow: "DO CONTEÚDO AO COMPETITIVO,\nA GAMERBIZ MOVIMENTA O JOGO",
     title: "É hora de",
     titleAccent: "Subir de Nível",
     description:
