@@ -120,7 +120,7 @@ export const zhCN: Dict = {
   },
   teams: {
     eyebrow: "战队解决方案",
-    title: "全方位加速您的战队\n在赛场内外脱颖而出",
+    title: "全方位加速您的战队在赛场内外脱颖而出",
     description: "我们为希望在竞技领域成长的组织提供商务、品牌和结构支持。",
     services: [
       {

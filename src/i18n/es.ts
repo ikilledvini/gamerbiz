@@ -122,7 +122,7 @@ export const es: Dict = {
   },
   teams: {
     eyebrow: "Soluciones para equipos",
-    title: "Aceleramos tu equipo dentro y\n fuera del servidor",
+    title: "Aceleramos tu equipo dentro y fuera del servidor",
     description:
       "Ofrecemos soporte comercial, branding y estructura para organizaciones que quieren crecer en el escenario competitivo.",
     services: [
