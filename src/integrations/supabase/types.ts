@@ -62,6 +62,88 @@ export type Database = {
         }
         Relationships: []
       }
+      social_connections: {
+        Row: {
+          created_at: string
+          current_metrics: Json
+          external_account_id: string | null
+          handle: string | null
+          id: string
+          last_sync_error: string | null
+          last_synced_at: string | null
+          platform: Database["public"]["Enums"]["social_platform"]
+          profile_url: string | null
+          sync_enabled: boolean
+          talent_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_metrics?: Json
+          external_account_id?: string | null
+          handle?: string | null
+          id?: string
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          platform: Database["public"]["Enums"]["social_platform"]
+          profile_url?: string | null
+          sync_enabled?: boolean
+          talent_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_metrics?: Json
+          external_account_id?: string | null
+          handle?: string | null
+          id?: string
+          last_sync_error?: string | null
+          last_synced_at?: string | null
+          platform?: Database["public"]["Enums"]["social_platform"]
+          profile_url?: string | null
+          sync_enabled?: boolean
+          talent_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_connections_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "talents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_metric_snapshots: {
+        Row: {
+          captured_at: string
+          connection_id: string
+          id: number
+          metrics: Json
+        }
+        Insert: {
+          captured_at?: string
+          connection_id: string
+          id?: number
+          metrics: Json
+        }
+        Update: {
+          captured_at?: string
+          connection_id?: string
+          id?: number
+          metrics?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_metric_snapshots_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "social_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       talents: {
         Row: {
           achievements: string | null
@@ -185,6 +267,7 @@ export type Database = {
       lead_kind: "brand" | "creator"
       lead_status: "new" | "contacted" | "archived"
       publish_status: "draft" | "published" | "hidden"
+      social_platform: "youtube" | "instagram" | "tiktok" | "twitch" | "twitter"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -316,6 +399,7 @@ export const Constants = {
       lead_kind: ["brand", "creator"],
       lead_status: ["new", "contacted", "archived"],
       publish_status: ["draft", "published", "hidden"],
+      social_platform: ["youtube", "instagram", "tiktok", "twitch", "twitter"],
     },
   },
 } as const
