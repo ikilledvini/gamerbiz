@@ -158,7 +158,7 @@ export const es: Dict = {
   },
   talents: {
     eyebrow: "Nuestro roster",
-    title: "No es solo un roster.",
+    title: "No es solo casting",
     titleAccent: "Es curaduría",
     description:
       "Creators, streamers y jugadores profesionales con comunidades comprometidas. Cada talento en la oportunidad correcta.",
