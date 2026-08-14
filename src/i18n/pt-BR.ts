@@ -92,7 +92,7 @@ export const ptBR: Dict = {
   },
   brands: {
     eyebrow: "Soluções para marcas",
-    title: "Colocamos sua marca\nna vitrine do gaming",
+    title: "Sua marca na vitrine\ndo gaming",
     description:
       "Ativamos campanhas, parcerias e conteúdos que geram alcance real, conversão e autoridade dentro do universo gamer.",
     phrase: { top: "GAMERBIZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
