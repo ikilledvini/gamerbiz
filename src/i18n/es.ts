@@ -92,7 +92,7 @@ export const es: Dict = {
   },
   brands: {
     eyebrow: "Soluciones para marcas",
-    title: "Colocamos tu marca\nen la vitrina del gaming.",
+    title: "Colocamos tu marca\nen la vitrina del gaming",
     description:
       "Activamos campañas, alianzas y contenidos que generan alcance real, conversión y autoridad dentro del universo gamer.",
     phrase: { top: "GAMERBIZ", mid: "TU EQUIPO.", bottom: "NUESTRO JUEGO." },
