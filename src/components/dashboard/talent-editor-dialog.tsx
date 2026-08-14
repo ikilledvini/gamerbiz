@@ -44,7 +44,7 @@ export function TalentEditorDialog({
   onChange: (talent: TalentRow) => void;
   onClose: () => void;
   onSave: () => void;
-  onDelete?: () => void;
+  onDelete?: (() => void) | undefined;
   saving: boolean;
   deleting: boolean;
 }) {
