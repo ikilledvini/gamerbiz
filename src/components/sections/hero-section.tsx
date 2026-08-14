@@ -26,7 +26,7 @@ export function HeroSection() {
 
       <div className="container-gbz relative z-10 flex flex-col gap-12">
         <div className="animate-rise">
-          <p className="eyebrow-gbz max-w-[40ch] leading-relaxed">{t.hero.eyebrow}</p>
+          <p className="eyebrow-gbz max-w-[40ch] leading-relaxed whitespace-pre-line">{t.hero.eyebrow}</p>
           <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(3.2rem,1.4rem+8vw,8.5rem)] uppercase leading-[0.86] tracking-[-0.05em]">
             <span className="block font-medium">{t.hero.title}</span>
             <span className="block font-extrabold text-primary">{t.hero.titleAccent}</span>

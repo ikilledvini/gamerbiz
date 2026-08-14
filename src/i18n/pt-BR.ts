@@ -36,7 +36,7 @@ export const ptBR: Dict = {
     mediaKitSoon: "Media Kit em breve",
   },
   hero: {
-    eyebrow: "Do conteúdo ao competitivo, a Gamerbiz movimenta o jogo",
+    eyebrow: "DO CONTEÚDO AO COMPETITIVO,\n A GAMERBIZ MOVIMENTA O JOGO",
     title: "É hora de",
     titleAccent: "Subir de Nível",
     description:
@@ -158,7 +158,7 @@ export const ptBR: Dict = {
   },
   talents: {
     eyebrow: "Nosso casting",
-    title: "Não é só casting.",
+    title: "Não é só casting",
     titleAccent: "É curadoria",
     description:
       "Creators, streamers e jogadores profissionais com comunidades engajadas. Cada talento posicionado na oportunidade certa.",
