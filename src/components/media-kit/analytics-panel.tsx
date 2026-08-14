@@ -39,12 +39,12 @@ const tooltipStyle = {
   borderRadius: 12,
   fontSize: 12,
   color: "var(--foreground)",
-  fontFamily: "Manrope, system-ui, sans-serif",
+  fontFamily: "Roboto, system-ui, sans-serif",
 } as const;
 
 const tooltipTextStyle = {
   color: "var(--foreground)",
-  fontFamily: "Manrope, system-ui, sans-serif",
+  fontFamily: "Roboto, system-ui, sans-serif",
   fontWeight: 600,
 } as const;
 
@@ -72,12 +72,12 @@ function AgeChart({
               dataKey="label"
               tickLine={false}
               axisLine={{ stroke: "var(--border)" }}
-              tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 12 }}
+              tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 12 }}
             />
             <YAxis
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 12 }}
+              tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 12 }}
             />
             <RTooltip
               cursor={{ fill: "var(--muted)", opacity: 0.3 }}
@@ -132,13 +132,13 @@ function DailyViewsChart({
                 axisLine={{ stroke: "var(--border)" }}
                 interval="preserveStartEnd"
                 minTickGap={28}
-                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 11 }}
               />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 allowDecimals={false}
-                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 11 }}
               />
               <RTooltip
                 cursor={{ stroke: "var(--primary)", strokeOpacity: 0.45 }}
@@ -208,13 +208,13 @@ function VideoEngagementChart({
                 axisLine={{ stroke: "var(--border)" }}
                 interval="preserveStartEnd"
                 minTickGap={28}
-                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 11 }}
               />
               <YAxis
                 tickLine={false}
                 axisLine={false}
                 allowDecimals={false}
-                tick={{ fill: "var(--muted-foreground)", fontFamily: "Manrope", fontSize: 11 }}
+                tick={{ fill: "var(--muted-foreground)", fontFamily: "Roboto", fontSize: 11 }}
               />
               <RTooltip
                 cursor={{ fill: "var(--muted)", opacity: 0.3 }}

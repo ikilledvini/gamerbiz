@@ -73,9 +73,9 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
         <div className="container-gbz relative z-10 flex justify-center py-4">
           <div className="flex h-[68px] w-full max-w-[1240px] items-center gap-6">
             <a
-              href={`${homeHrefPrefix}#inicio`}
+              href="/"
               className="flex shrink-0 items-center"
-              aria-label="Gamerbiz"
+              aria-label="Ir para a página inicial da Gamerbiz"
             >
               <Logo className="h-10" />
             </a>
@@ -133,7 +133,14 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
         >
           <Dialog.Title className="sr-only">{t.a11y.openMenu}</Dialog.Title>
           <div className="container-gbz flex h-[92px] shrink-0 items-center justify-between border-b border-border">
-            <Logo className="h-10" />
+            <a
+              href="/"
+              className="flex shrink-0 items-center"
+              aria-label="Ir para a página inicial da Gamerbiz"
+              onClick={() => setMenuOpen(false)}
+            >
+              <Logo className="h-10" />
+            </a>
             <Dialog.Close asChild>
               <button
                 type="button"
