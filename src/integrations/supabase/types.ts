@@ -129,6 +129,7 @@ export type Database = {
         Row: {
           connected_at: string | null
           connected_by: string | null
+          connection_method: string
           connection_status: string
           created_at: string
           current_metrics: Json
@@ -146,6 +147,7 @@ export type Database = {
         Insert: {
           connected_at?: string | null
           connected_by?: string | null
+          connection_method?: string
           connection_status?: string
           created_at?: string
           current_metrics?: Json
@@ -163,6 +165,7 @@ export type Database = {
         Update: {
           connected_at?: string | null
           connected_by?: string | null
+          connection_method?: string
           connection_status?: string
           created_at?: string
           current_metrics?: Json
@@ -211,6 +214,82 @@ export type Database = {
             foreignKeyName: "social_metric_snapshots_connection_id_fkey"
             columns: ["connection_id"]
             isOneToOne: false
+            referencedRelation: "social_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_oauth_states: {
+        Row: {
+          created_at: string
+          expires_at: string
+          platform: Database["public"]["Enums"]["social_platform"]
+          state: string
+          talent_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          platform: Database["public"]["Enums"]["social_platform"]
+          state: string
+          talent_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          platform?: Database["public"]["Enums"]["social_platform"]
+          state?: string
+          talent_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_oauth_states_talent_id_fkey"
+            columns: ["talent_id"]
+            isOneToOne: false
+            referencedRelation: "talents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_oauth_tokens: {
+        Row: {
+          access_token: string | null
+          access_token_expires_at: string | null
+          connection_id: string
+          created_at: string
+          provider: string
+          refresh_token: string
+          scope: string | null
+          updated_at: string
+        }
+        Insert: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
+          connection_id: string
+          created_at?: string
+          provider: string
+          refresh_token: string
+          scope?: string | null
+          updated_at?: string
+        }
+        Update: {
+          access_token?: string | null
+          access_token_expires_at?: string | null
+          connection_id?: string
+          created_at?: string
+          provider?: string
+          refresh_token?: string
+          scope?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_oauth_tokens_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: true
             referencedRelation: "social_connections"
             referencedColumns: ["id"]
           },
