@@ -23,7 +23,13 @@ export function PortalShell({
       <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-xl">
         <div className="container-gbz flex min-h-20 items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-4">
-            <Logo className="h-8 shrink-0" />
+            <Link
+              to="/"
+              className="gbz-interactive flex shrink-0 items-center"
+              aria-label="Ir para a página inicial da Gamerbiz"
+            >
+              <Logo className="h-8" />
+            </Link>
             <span className="hidden h-6 w-px bg-border sm:block" aria-hidden="true" />
             <p className="truncate font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-subtle">
               {eyebrow}
