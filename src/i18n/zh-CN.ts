@@ -36,7 +36,8 @@ export const zhCN: Dict = {
   },
   hero: {
     eyebrow: "从内容到竞技，Gamerbiz 推动游戏生态向前",
-    title: "是时候升级了",
+    title: "是时候",
+    titleAccent: "升级了",
     description: "我们通过营销活动、品牌激活与合作项目，连接游戏生态中的品牌、人才与社区。",
     ctaPrimary: "我是品牌方",
     ctaSecondary: "认识我们的达人",
@@ -154,7 +155,8 @@ export const zhCN: Dict = {
   },
   talents: {
     eyebrow: "我们的阵容",
-    title: "不只是阵容，更是专业甄选。",
+    title: "不只是阵容，",
+    titleAccent: "更是专业甄选。",
     description: "拥有活跃社区的创作者、主播与职业选手，让每位人才匹配最合适的机会。",
     card: "查看媒体资料包",
     allButton: "访问媒体资料包平台",

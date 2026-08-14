@@ -80,7 +80,8 @@ function LinksContent() {
               <div>
                 <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
                 <h2 id="talentos-heading" className="title-gbz mt-4 max-w-[16ch] scroll-mt-24">
-                  {t.talents.title}
+                  <span className="block font-medium">{t.talents.title}</span>
+                  <span className="block font-extrabold text-primary">{t.talents.titleAccent}</span>
                 </h2>
                 <Link
                   to="/mediakit"
