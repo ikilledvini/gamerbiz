@@ -209,6 +209,17 @@ export type Dict = {
     viewGrid: string;
     viewLabel: string;
     ctaHome: string;
+    oauthExplainer: {
+      eyebrow: string;
+      title: string;
+      titleAccent: string;
+      description: string;
+      steps: Array<{ title: string; text: string }>;
+      note: string;
+      legalLabel: string;
+      privacy: string;
+      terms: string;
+    };
     socials: string;
     followers: string;
     avgViews: string;

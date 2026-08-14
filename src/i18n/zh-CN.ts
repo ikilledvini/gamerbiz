@@ -297,6 +297,31 @@ export const zhCN: Dict = {
     viewGrid: "网格",
     viewLabel: "视图",
     ctaHome: "查看媒体资料",
+    oauthExplainer: {
+      eyebrow: "安全的社交平台集成",
+      title: "连接数据，",
+      titleAccent: "让 Media Kit 始终保持最新。",
+      description:
+        "Media Kit 集成了 YouTube、YouTube Analytics、Instagram、TikTok 和 Twitch。每项连接仅使用创作者授权且平台提供的数据，以自动更新相关指标。",
+      steps: [
+        {
+          title: "由您授权",
+          text: "只有在您通过各平台的官方安全页面明确同意后，连接才会开始。Gamerbiz 不会获取您的账户密码。",
+        },
+        {
+          title: "由我们同步",
+          text: "我们会获取平台提供的个人资料或频道信息、粉丝、观看次数、内容表现和受众数据。",
+        },
+        {
+          title: "控制权始终属于您",
+          text: "我们不会发布、修改或删除内容。您可随时在已连接平台的设置中撤销访问权限。",
+        },
+      ],
+      note: "授权信息受到保护，仅用于同步 Media Kit。Gamerbiz 不会出售通过各平台 API 获取的数据。",
+      legalLabel: "连接相关法律信息",
+      privacy: "隐私政策",
+      terms: "服务条款",
+    },
     socials: "社交媒体",
     followers: "粉丝",
     avgViews: "平均观看",

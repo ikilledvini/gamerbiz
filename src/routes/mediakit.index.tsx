@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
 import { MediaKitShell } from "@/components/media-kit/media-kit-shell";
 import { MediaKitSectionHeading } from "@/components/media-kit/media-kit-section-heading";
+import { MediaKitOAuthExplainer } from "@/components/media-kit/media-kit-oauth-explainer";
 import { TalentCard } from "@/components/ui/talent-card";
 import { listPublicTalents } from "@/lib/talents.functions";
 import { talentCategoryGroups, getTalentCategoryGroups, type Talent } from "@/data/talents";
@@ -23,8 +24,8 @@ import { normalizeForSearch } from "@/lib/slug";
 
 const TITLE = "Media Kits Gamerbiz | Encontre o creator ideal";
 const DESCRIPTION =
-  "Explore os talentos da Gamerbiz, compare perfis e acesse informações comerciais, plataformas, conteúdos e audiência.";
-const URL = "https://idea-to-site-muse.lovable.app/mediakit";
+  "Explore os talentos da Gamerbiz e saiba como os Media Kits integram YouTube, Instagram, TikTok e Twitch para manter métricas e audiência atualizadas.";
+const URL = "https://gamerbiz.com.br/mediakit";
 
 const PAGE_SIZE = 12;
 
@@ -171,6 +172,8 @@ function DirectoryContent() {
               {publishedTalents.length === 1 ? t.mediakit.countOne : t.mediakit.countMany}
             </p>
           </div>
+
+          <MediaKitOAuthExplainer />
 
           {publishedTalents.length === 0 ? (
             <p className="mt-10 max-w-[52ch] text-muted-foreground">{t.mediakit.emptyAll}</p>
