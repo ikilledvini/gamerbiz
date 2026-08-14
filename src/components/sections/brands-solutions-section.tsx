@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
@@ -7,7 +6,6 @@ export function BrandsSolutionsSection() {
   const { t } = useI18n();
   const [active, setActive] = useState(0);
   const services = t.brands.services;
-  const current = services[active] ?? services[0]!;
 
   return (
     <section id="marcas" className="section-gbz">
@@ -20,41 +18,58 @@ export function BrandsSolutionsSection() {
           <p className="max-w-[52ch] text-base text-muted-foreground">{t.brands.description}</p>
         </div>
 
-        <div className="mt-14 grid gap-8 lg:grid-cols-2">
+        <div className="mt-14 grid gap-8 lg:grid-cols-2 lg:items-start">
           {/* Lista interativa / accordion */}
           <div className="order-2 lg:order-1">
             <ul className="divide-y divide-border border-y border-border">
               {services.map((service, index) => {
                 const isActive = index === active;
                 return (
-                  <li key={service.key}>
+                  <li
+                    key={service.key}
+                    className={cn(
+                      "relative transition-colors duration-200",
+                      isActive && "bg-primary/[0.035]",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "absolute inset-y-0 left-0 w-0.5 origin-top scale-y-0 bg-primary transition-transform duration-200",
+                        isActive && "scale-y-100",
+                      )}
+                      aria-hidden="true"
+                    />
                     <button
                       type="button"
                       aria-expanded={isActive}
                       aria-controls={`brand-panel-${service.key}`}
                       onClick={() => setActive(index)}
-                      className="gbz-interactive flex w-full items-center justify-between gap-6 py-6 text-left transition-transform duration-[120ms] ease-[var(--ease-out-gbz)] active:scale-[0.99]"
+                      className="gbz-interactive flex w-full items-start justify-between gap-6 px-5 py-6 text-left transition-transform duration-[120ms] ease-[var(--ease-out-gbz)] active:scale-[0.99] md:px-7 md:py-7"
                     >
                       <span
                         className={cn(
-                          "font-display text-2xl font-bold tracking-tight transition-colors duration-[160ms] md:text-3xl",
-                          isActive ? "text-primary" : "text-foreground",
+                          "font-display text-3xl font-bold leading-none tracking-[-0.035em] transition-colors duration-[160ms] md:text-[2.65rem]",
+                          isActive ? "text-primary" : "text-foreground hover:text-primary",
                         )}
                       >
                         {service.title}
                       </span>
-                      {isActive ? (
-                        <Minus className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
-                      ) : (
-                        <Plus className="h-5 w-5 shrink-0 text-subtle" aria-hidden="true" />
-                      )}
+                      <span
+                        className={cn(
+                          "pt-1 font-display text-xs font-bold tracking-[0.2em]",
+                          isActive ? "text-primary" : "text-subtle",
+                        )}
+                        aria-hidden="true"
+                      >
+                        0{index + 1}
+                      </span>
                     </button>
                     <div
                       id={`brand-panel-${service.key}`}
                       hidden={!isActive}
-                      className="pb-6 lg:hidden"
+                      className="px-5 pb-7 md:px-7 md:pb-8"
                     >
-                      <p className="text-sm leading-relaxed text-muted-foreground">
+                      <p className="max-w-[48ch] text-base leading-relaxed text-foreground/75 md:text-lg">
                         {service.text}
                       </p>
                     </div>
@@ -65,7 +80,7 @@ export function BrandsSolutionsSection() {
           </div>
 
           {/* Painel visual */}
-          <div className="order-1 flex flex-col gap-6 lg:order-2">
+          <div className="order-1 lg:order-2">
             <div className="relative overflow-hidden rounded-3xl border border-border bg-graphite p-8 md:p-10">
               <p className="font-display text-sm font-extrabold uppercase tracking-[0.3em] text-primary">
                 {t.brands.phrase.top}
@@ -79,11 +94,6 @@ export function BrandsSolutionsSection() {
                 {/* TODO: vídeo institucional em /assets/hero-video.mp4 */}
                 <p className="text-sm font-semibold text-muted-foreground">{t.brands.video}</p>
               </div>
-            </div>
-
-            <div className="hidden rounded-3xl border border-border bg-surface p-8 lg:block">
-              <h3 className="font-display text-xl font-bold text-primary">{current.title}</h3>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">{current.text}</p>
             </div>
           </div>
         </div>

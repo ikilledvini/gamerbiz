@@ -33,7 +33,7 @@ function LogoItem({ item, duplicate }: { item: ClientLogo; duplicate: boolean })
               alt={duplicate ? "" : item.alt}
               loading="lazy"
               onError={() => setFailed(true)}
-              className="max-h-full w-auto max-w-full object-contain opacity-60 grayscale brightness-[1.6]"
+              className="max-h-full w-auto max-w-full object-contain opacity-60 grayscale brightness-[1.6] transition-opacity duration-[180ms] ease-[var(--ease-out-gbz)] group-focus-visible:opacity-0 fine-hover:group-hover:opacity-0"
             />
             <img
               src={item.logo}

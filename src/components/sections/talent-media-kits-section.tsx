@@ -11,7 +11,10 @@ export function TalentMediaKitsSection() {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="eyebrow-gbz">{t.talents.eyebrow}</p>
-            <h2 className="title-gbz mt-4 max-w-[16ch]">{t.talents.title}</h2>
+            <h2 className="title-gbz mt-4 max-w-[16ch]">
+              <span className="block font-medium">{t.talents.title}</span>
+              <span className="block font-extrabold text-primary">{t.talents.titleAccent}</span>
+            </h2>
             <Link
               to="/mediakit"
               search={{ q: "", cat: "", page: 1 }}

@@ -43,6 +43,7 @@ export type Dict = {
   hero: {
     eyebrow: string;
     title: string;
+    titleAccent: string;
     description: string;
     ctaPrimary: string;
     ctaSecondary: string;
@@ -87,6 +88,7 @@ export type Dict = {
   talents: {
     eyebrow: string;
     title: string;
+    titleAccent: string;
     description: string;
     card: string;
     allButton: string;

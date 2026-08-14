@@ -36,6 +36,8 @@ import novadaxLogo from "@/assets/novadax.png.asset.json";
 import pichauLogo from "@/assets/pichau.png.asset.json";
 import exitlagLogo from "@/assets/exitlag.png.asset.json";
 
+const LOCAL_CLIENT_LOGOS = "/assets/client-logos";
+
 export type ClientLogo = {
   name: string;
   slug: string;
@@ -108,15 +110,14 @@ function slugify(name: string) {
 }
 
 const LOGO_DEV_TOKEN = import.meta.env["VITE_LOVABLE_CONNECTOR_LOGO_DEV_API_KEY"] as
-  | string
-  | undefined;
+  string | undefined;
 
 export function logoUrl(domain: string | null) {
   if (!domain || !LOGO_DEV_TOKEN) return null;
   return `https://img.logo.dev/${domain}?token=${LOGO_DEV_TOKEN}&size=200&format=png&retina=true&fallback=404&theme=light`;
 }
 
-/** Logos oficiais enviados manualmente (PNG transparente) */
+/** Logos locais para não depender do serviço externo no deploy. */
 const LOGO_OVERRIDES: Record<string, string> = {
   "Team Liquid": teamLiquidLogo.url,
   "Team Liquid Brazil": teamLiquidLogo.url,
@@ -124,38 +125,44 @@ const LOGO_OVERRIDES: Record<string, string> = {
   MIBR: mibrLogo.url,
   "Imperial Esports": imperialLogo.url,
   Legacy: legacyLogo.url,
-  "iFood": ifoodLogo.url,
+  iFood: ifoodLogo.url,
   "LG Electronics": lgLogo.url,
   Logitech: logitechLogo.url,
   "1XBET": xbetWiki.url,
   "ADATA/XPG": adataXpgWiki.url,
-  "Activision": activisionWiki.url,
-  "Betano": betanoWiki.url,
+  Activision: activisionWiki.url,
+  Betano: betanoWiki.url,
   "Caixa Econ\u00f4mica Federal": caixaEconMicaFederalWiki.url,
-  "Capcom": capcomWiki.url,
-  "Corsair": corsairWiki.url,
-  "Dove": doveWiki.url,
-  "Eneba": enebaWiki.url,
+  Capcom: capcomWiki.url,
+  Corsair: corsairWiki.url,
+  Dove: doveWiki.url,
+  Eneba: enebaWiki.url,
   "Epic Games": epicGamesWiki.url,
-  "GIGABYTE": gigabyteWiki.url,
-  "GameSir": gamesirWiki.url,
-  "Hasbro": hasbroWiki.url,
+  GIGABYTE: gigabyteWiki.url,
+  GameSir: gamesirWiki.url,
+  Hasbro: hasbroWiki.url,
   "KaBuM!": kabumWiki.url,
+  "Mercado Pago": `${LOCAL_CLIENT_LOGOS}/mercado-pago.svg`,
   "Mercado Bitcoin": mercadoBitcoinWiki.url,
   "Opera GX": operaGxWiki.url,
-  "Rebellion": rebellionWiki.url,
+  Rebellion: rebellionWiki.url,
   "Riot Games": riotGamesWiki.url,
-  "SEGA": segaWiki.url,
+  SEGA: segaWiki.url,
   "SNK Corporation": snkCorporationWiki.url,
-  "Sadia": sadiaWiki.url,
-  "Samsung": samsungWiki.url,
-  "Shure": shureWiki.url,
+  Sadia: sadiaWiki.url,
+  Samsung: samsungWiki.url,
+  Shure: shureWiki.url,
   "Tencent Games": tencentGamesWiki.url,
-  "Ubisoft": ubisoftWiki.url,
+  Ubisoft: ubisoftWiki.url,
   "Gamers Club": gamersClubLogo.url,
-  "NovaDAX": novadaxLogo.url,
-  "Pichau": pichauLogo.url,
-  "ExitLag": exitlagLogo.url,
+  NovaDAX: novadaxLogo.url,
+  Alares: `${LOCAL_CLIENT_LOGOS}/alares.png`,
+  NoPing: `${LOCAL_CLIENT_LOGOS}/noping.png`,
+  Pichau: pichauLogo.url,
+  ExitLag: exitlagLogo.url,
+  Insider: `${LOCAL_CLIENT_LOGOS}/insider.svg`,
+  Reserva: `${LOCAL_CLIENT_LOGOS}/reserva.svg`,
+  ODDIK: `${LOCAL_CLIENT_LOGOS}/oddik.webp`,
 };
 
 function build(entries: Array<[string, string | null]>, category: "brand" | "team"): ClientLogo[] {

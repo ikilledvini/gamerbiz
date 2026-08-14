@@ -37,7 +37,8 @@ export const ptBR: Dict = {
   },
   hero: {
     eyebrow: "Do conteúdo ao competitivo, a Gamerbiz movimenta o jogo",
-    title: "É hora de\nSubir de Nível",
+    title: "É hora de",
+    titleAccent: "Subir de Nível",
     description:
       "Conectamos marcas, talentos e comunidades através de campanhas, ativações e parcerias dentro do ecossistema gamer.",
     ctaPrimary: "Sou Marca",
@@ -157,7 +158,8 @@ export const ptBR: Dict = {
   },
   talents: {
     eyebrow: "Nosso casting",
-    title: "Não é só casting. É curadoria.",
+    title: "Não é só casting.",
+    titleAccent: "É curadoria",
     description:
       "Creators, streamers e jogadores profissionais com comunidades engajadas. Cada talento posicionado na oportunidade certa.",
     card: "ACESSAR MEDIA KIT",

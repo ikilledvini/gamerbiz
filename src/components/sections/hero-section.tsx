@@ -27,8 +27,9 @@ export function HeroSection() {
       <div className="container-gbz relative z-10 flex flex-col gap-12">
         <div className="animate-rise">
           <p className="eyebrow-gbz max-w-[40ch] leading-relaxed">{t.hero.eyebrow}</p>
-          <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(3.2rem,1.4rem+8vw,8.5rem)] font-extrabold uppercase leading-[0.86] tracking-[-0.05em] whitespace-pre-line">
-            {t.hero.title}
+          <h1 className="mt-6 max-w-[14ch] font-display text-[clamp(3.2rem,1.4rem+8vw,8.5rem)] uppercase leading-[0.86] tracking-[-0.05em]">
+            <span className="block font-medium">{t.hero.title}</span>
+            <span className="block font-extrabold text-primary">{t.hero.titleAccent}</span>
           </h1>
           <p className="mt-8 max-w-[52ch] text-base text-muted-foreground md:text-lg">
             {t.hero.description}

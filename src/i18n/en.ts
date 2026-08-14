@@ -37,7 +37,8 @@ export const en: Dict = {
   },
   hero: {
     eyebrow: "From content to competition, Gamerbiz moves the game forward",
-    title: "It's Time to Level Up",
+    title: "It's Time to",
+    titleAccent: "Level Up",
     description:
       "We connect brands, talents and communities through campaigns, activations and partnerships across the gaming ecosystem.",
     ctaPrimary: "I'm a Brand",
@@ -157,7 +158,8 @@ export const en: Dict = {
   },
   talents: {
     eyebrow: "Our roster",
-    title: "More than a roster. It's curation.",
+    title: "More than a roster.",
+    titleAccent: "It's curation",
     description:
       "Creators, streamers and professional players with engaged communities—each talent matched with the right opportunity.",
     card: "VIEW MEDIA KIT",
