@@ -190,7 +190,7 @@ export const ptBR: Dict = {
         tags: ["YouTube Gaming", "Vídeo Dedicado", "Beta Launch"],
       },
       bladexzd: {
-        title: "Bladexzd",
+        title: "Bladexzd + GameSir",
         resultLabel: "Entrega de campanha",
         tags: ["Gaming Creator", "Alta Retenção", "Conteúdo Integrado"],
       },

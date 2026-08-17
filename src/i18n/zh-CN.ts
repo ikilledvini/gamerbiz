@@ -185,7 +185,7 @@ export const zhCN: Dict = {
         tags: ["YouTube Gaming", "专属视频", "Beta Launch"],
       },
       bladexzd: {
-        title: "Bladexzd",
+        title: "Bladexzd + GameSir",
         resultLabel: "活动交付表现",
         tags: ["Gaming Creator", "高留存", "内容整合"],
       },
