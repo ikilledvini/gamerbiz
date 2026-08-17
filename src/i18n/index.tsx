@@ -54,10 +54,12 @@ export function I18nProvider({
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    const dict = DICTS[lang];
-    document.title = dict.meta.title;
-    const desc = document.querySelector('meta[name="description"]');
-    if (desc) desc.setAttribute("content", dict.meta.description);
+    if (window.location.pathname === "/") {
+      const dict = DICTS[lang];
+      document.title = dict.meta.title;
+      const desc = document.querySelector('meta[name="description"]');
+      if (desc) desc.setAttribute("content", dict.meta.description);
+    }
   }, [lang]);
 
   const setLang = useCallback(

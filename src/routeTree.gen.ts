@@ -18,6 +18,8 @@ import { Route as TermosDeServicoRouteImport } from './routes/termos-de-servico'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
 import { Route as AuthenticatedCreatorRouteImport } from './routes/_authenticated/creator'
+import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
+import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
 import { Route as MediakitIndexRouteImport } from './routes/mediakit.index'
 import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
 import { Route as PrivacyLangRouteImport } from './routes/privacy.$lang'
@@ -68,6 +70,16 @@ const AuthenticatedCreatorRoute = AuthenticatedCreatorRouteImport.update({
   path: '/creator',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/blogs/',
+  path: '/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsSlugRoute = BlogsSlugRouteImport.update({
+  id: '/blogs/$slug',
+  path: '/blogs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MediakitIndexRoute = MediakitIndexRouteImport.update({
   id: '/mediakit/',
   path: '/mediakit/',
@@ -98,9 +110,11 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/creator': typeof AuthenticatedCreatorRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/privacy/$lang': typeof PrivacyLangRoute
   '/tos/$lang': typeof TosLangRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRoutesByTo {
@@ -112,9 +126,11 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/creator': typeof AuthenticatedCreatorRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/privacy/$lang': typeof PrivacyLangRoute
   '/tos/$lang': typeof TosLangRoute
+  '/blogs': typeof BlogsIndexRoute
   '/mediakit': typeof MediakitIndexRoute
 }
 export interface FileRoutesById {
@@ -128,9 +144,11 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
   '/_authenticated/creator': typeof AuthenticatedCreatorRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
   '/mediakit/$slug': typeof MediakitSlugRoute
   '/privacy/$lang': typeof PrivacyLangRoute
   '/tos/$lang': typeof TosLangRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/mediakit/': typeof MediakitIndexRoute
 }
 export interface FileRouteTypes {
@@ -144,9 +162,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/change-password'
     | '/creator'
+    | '/blogs/$slug'
     | '/mediakit/$slug'
     | '/privacy/$lang'
     | '/tos/$lang'
+    | '/blogs/'
     | '/mediakit/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -158,9 +178,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/change-password'
     | '/creator'
+    | '/blogs/$slug'
     | '/mediakit/$slug'
     | '/privacy/$lang'
     | '/tos/$lang'
+    | '/blogs'
     | '/mediakit'
   id:
     | '__root__'
@@ -173,9 +195,11 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/change-password'
     | '/_authenticated/creator'
+    | '/blogs/$slug'
     | '/mediakit/$slug'
     | '/privacy/$lang'
     | '/tos/$lang'
+    | '/blogs/'
     | '/mediakit/'
   fileRoutesById: FileRoutesById
 }
@@ -186,9 +210,11 @@ export interface RootRouteChildren {
   LinksRoute: typeof LinksRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   TermosDeServicoRoute: typeof TermosDeServicoRoute
+  BlogsSlugRoute: typeof BlogsSlugRoute
   MediakitSlugRoute: typeof MediakitSlugRoute
   PrivacyLangRoute: typeof PrivacyLangRoute
   TosLangRoute: typeof TosLangRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
   MediakitIndexRoute: typeof MediakitIndexRoute
 }
 
@@ -257,6 +283,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCreatorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/blogs'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs/$slug': {
+      id: '/blogs/$slug'
+      path: '/blogs/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof BlogsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mediakit/': {
       id: '/mediakit/'
       path: '/mediakit'
@@ -310,9 +350,11 @@ const rootRouteChildren: RootRouteChildren = {
   LinksRoute: LinksRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   TermosDeServicoRoute: TermosDeServicoRoute,
+  BlogsSlugRoute: BlogsSlugRoute,
   MediakitSlugRoute: MediakitSlugRoute,
   PrivacyLangRoute: PrivacyLangRoute,
   TosLangRoute: TosLangRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
   MediakitIndexRoute: MediakitIndexRoute,
 }
 export const routeTree = rootRouteImport

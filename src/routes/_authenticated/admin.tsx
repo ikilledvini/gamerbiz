@@ -6,6 +6,9 @@ import {
   Activity,
   AlertTriangle,
   ArrowUpRight,
+  BookOpenText,
+  ChevronDown,
+  ChevronUp,
   CircleUserRound,
   Clock3,
   GripVertical,
@@ -20,6 +23,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PortalShell } from "@/components/dashboard/portal-shell";
+import { BlogEditorDialog } from "@/components/dashboard/blog-editor-dialog";
 import { TalentEditorDialog } from "@/components/dashboard/talent-editor-dialog";
 import { UserEditorDialog, type ManagedUserDraft } from "@/components/dashboard/user-editor-dialog";
 import { Toaster } from "@/components/ui/sonner";
@@ -36,6 +40,13 @@ import {
   type SocialConnectionRow,
 } from "@/lib/portal.functions";
 import { adminDeleteTalent, adminReorderTalents, adminSaveTalent } from "@/lib/talents.functions";
+import {
+  adminDeleteBlogPost,
+  adminListBlogPosts,
+  adminReorderBlogPosts,
+  adminSaveBlogPost,
+  type BlogPostRow,
+} from "@/lib/blog.functions";
 import type { TalentRow } from "@/lib/talent-mapper";
 import { normalizeForSearch, toSlug } from "@/lib/slug";
 
@@ -53,7 +64,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminRoute,
 });
 
-type AdminView = "overview" | "talents" | "leads" | "access";
+type AdminView = "overview" | "talents" | "blogs" | "leads" | "access";
 type LeadFilter = "all" | LeadRow["kind"];
 
 const EMPTY_TALENT: TalentRow = {
@@ -90,6 +101,24 @@ const EMPTY_USER: ManagedUserDraft = {
   talentId: "",
 };
 
+const EMPTY_BLOG_POST: BlogPostRow = {
+  id: "",
+  slug: "",
+  title: "",
+  excerpt: null,
+  content: "",
+  cover_image_url: null,
+  cover_image_alt: null,
+  category: "Gamerbiz",
+  author_name: "Gamerbiz",
+  status: "draft",
+  featured: false,
+  sort_order: 999,
+  published_at: null,
+  created_at: "",
+  updated_at: "",
+};
+
 const VIEW_ITEMS: Array<{
   key: AdminView;
   label: string;
@@ -97,6 +126,7 @@ const VIEW_ITEMS: Array<{
 }> = [
   { key: "overview", label: "Visão geral", icon: Activity },
   { key: "talents", label: "Media Kits", icon: UsersRound },
+  { key: "blogs", label: "Blogs", icon: BookOpenText },
   { key: "leads", label: "Oportunidades", icon: MessageSquareText },
   { key: "access", label: "Acessos", icon: ShieldCheck },
 ];
@@ -204,16 +234,25 @@ function AdminRoute() {
   const removeCreatorAccess = useServerFn(adminRemoveCreatorAccess);
   const manageUser = useServerFn(adminManageUser);
   const syncSocialMetrics = useServerFn(adminSyncSocialMetrics);
+  const listBlogPosts = useServerFn(adminListBlogPosts);
+  const saveBlogPost = useServerFn(adminSaveBlogPost);
+  const reorderBlogPosts = useServerFn(adminReorderBlogPosts);
+  const deleteBlogPost = useServerFn(adminDeleteBlogPost);
 
   const [view, setView] = useState<AdminView>("overview");
   const [term, setTerm] = useState("");
   const [accessTerm, setAccessTerm] = useState("");
+  const [blogTerm, setBlogTerm] = useState("");
   const [leadFilter, setLeadFilter] = useState<LeadFilter>("all");
   const [editing, setEditing] = useState<TalentRow | null>(null);
   const [editingUser, setEditingUser] = useState<ManagedUserDraft | null>(null);
+  const [editingBlogPost, setEditingBlogPost] = useState<BlogPostRow | null>(null);
   const [orderedTalentIds, setOrderedTalentIds] = useState<string[]>([]);
   const [draggedTalentId, setDraggedTalentId] = useState<string | null>(null);
   const [dropTargetTalentId, setDropTargetTalentId] = useState<string | null>(null);
+  const [orderedBlogIds, setOrderedBlogIds] = useState<string[]>([]);
+  const [draggedBlogId, setDraggedBlogId] = useState<string | null>(null);
+  const [dropTargetBlogId, setDropTargetBlogId] = useState<string | null>(null);
 
   const accessQuery = useQuery({ queryKey: ["portal-access"], queryFn: () => getAccess({}) });
   const isAdmin = accessQuery.data?.role === "admin";
@@ -222,8 +261,14 @@ function AdminRoute() {
     queryFn: () => loadDashboard({}),
     enabled: isAdmin,
   });
+  const blogsQuery = useQuery({
+    queryKey: ["admin-blogs"],
+    queryFn: () => listBlogPosts({}),
+    enabled: isAdmin,
+  });
 
   const refreshDashboard = () => queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+  const refreshBlogs = () => queryClient.invalidateQueries({ queryKey: ["admin-blogs"] });
 
   const syncMutation = useMutation({
     mutationFn: () => syncSocialMetrics({}),
@@ -293,6 +338,56 @@ function AdminRoute() {
     },
     onError: (error: Error, variables) => {
       setOrderedTalentIds(variables.previousIds);
+      toast.error(error.message);
+    },
+  });
+
+  const saveBlogMutation = useMutation({
+    mutationFn: (post: BlogPostRow) =>
+      saveBlogPost({
+        data: {
+          id: post.id || null,
+          slug: post.slug || toSlug(post.title),
+          title: post.title,
+          excerpt: post.excerpt || null,
+          content: post.content,
+          cover_image_url: post.cover_image_url || null,
+          cover_image_alt: post.cover_image_alt || null,
+          category: post.category || "Gamerbiz",
+          author_name: post.author_name || "Gamerbiz",
+          status: post.status,
+          featured: post.featured,
+          sort_order: Number(post.sort_order) || 0,
+          published_at: post.published_at,
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Artigo salvo.");
+      setEditingBlogPost(null);
+      void refreshBlogs();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const deleteBlogMutation = useMutation({
+    mutationFn: (id: string) => deleteBlogPost({ data: { id } }),
+    onSuccess: () => {
+      toast.success("Artigo excluído.");
+      setEditingBlogPost(null);
+      void refreshBlogs();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const reorderBlogMutation = useMutation({
+    mutationFn: ({ ids }: { ids: string[]; previousIds: string[] }) =>
+      reorderBlogPosts({ data: { ids } }),
+    onSuccess: () => {
+      toast.success("Ordem dos artigos atualizada.");
+      void refreshBlogs();
+    },
+    onError: (error: Error, variables) => {
+      setOrderedBlogIds(variables.previousIds);
       toast.error(error.message);
     },
   });
@@ -369,6 +464,12 @@ function AdminRoute() {
     }
   }, [dashboard?.talents]);
 
+  useEffect(() => {
+    if (blogsQuery.data) {
+      setOrderedBlogIds(blogsQuery.data.map((post) => post.id));
+    }
+  }, [blogsQuery.data]);
+
   const connectionsByTalent = useMemo(() => {
     const map = new Map<string, SocialConnectionRow[]>();
     for (const connection of dashboard?.connections ?? []) {
@@ -408,6 +509,17 @@ function AdminRoute() {
     return [...ordered, ...rows.filter((talent) => !orderedIds.has(talent.id))];
   }, [dashboard?.talents, orderedTalentIds]);
 
+  const orderedBlogs = useMemo(() => {
+    const rows = blogsQuery.data ?? [];
+    const rowsById = new Map(rows.map((post) => [post.id, post]));
+    const ordered = orderedBlogIds.flatMap((id) => {
+      const post = rowsById.get(id);
+      return post ? [post] : [];
+    });
+    const orderedIds = new Set(ordered.map((post) => post.id));
+    return [...ordered, ...rows.filter((post) => !orderedIds.has(post.id))];
+  }, [blogsQuery.data, orderedBlogIds]);
+
   const accessRows = useMemo(() => {
     const needle = normalizeForSearch(accessTerm);
     const talentNames = new Map(
@@ -433,6 +545,16 @@ function AdminRoute() {
       ).includes(needle),
     );
   }, [orderedTalents, term]);
+
+  const blogRows = useMemo(() => {
+    const needle = normalizeForSearch(blogTerm);
+    if (!needle) return orderedBlogs;
+    return orderedBlogs.filter((post) =>
+      normalizeForSearch(
+        `${post.title} ${post.category} ${post.author_name} ${post.status} ${post.slug}`,
+      ).includes(needle),
+    );
+  }, [blogTerm, orderedBlogs]);
 
   const filteredLeads = useMemo(
     () =>
@@ -490,6 +612,39 @@ function AdminRoute() {
     reorderMutation.mutate({ ids: nextIds, previousIds });
   }
 
+  function commitBlogOrder(nextIds: string[], previousIds: string[]) {
+    setOrderedBlogIds(nextIds);
+    reorderBlogMutation.mutate({ ids: nextIds, previousIds });
+  }
+
+  function handleBlogDrop(targetBlogId: string) {
+    if (!draggedBlogId || draggedBlogId === targetBlogId) return;
+    const currentIds = orderedBlogs.map((post) => post.id);
+    const previousIds = [...currentIds];
+    const nextIds = currentIds.filter((id) => id !== draggedBlogId);
+    const targetIndex = nextIds.indexOf(targetBlogId);
+    if (targetIndex < 0) return;
+    nextIds.splice(targetIndex, 0, draggedBlogId);
+    setDraggedBlogId(null);
+    setDropTargetBlogId(null);
+    commitBlogOrder(nextIds, previousIds);
+  }
+
+  function moveBlog(postId: string, direction: -1 | 1) {
+    if (reorderBlogMutation.isPending) return;
+    const previousIds = orderedBlogs.map((post) => post.id);
+    const index = previousIds.indexOf(postId);
+    const targetIndex = index + direction;
+    if (index < 0 || targetIndex < 0 || targetIndex >= previousIds.length) return;
+    const nextIds = [...previousIds];
+    const currentId = nextIds[index];
+    const targetId = nextIds[targetIndex];
+    if (!currentId || !targetId) return;
+    nextIds[index] = targetId;
+    nextIds[targetIndex] = currentId;
+    commitBlogOrder(nextIds, previousIds);
+  }
+
   async function handleSignOut() {
     await queryClient.cancelQueries();
     queryClient.clear();
@@ -504,8 +659,8 @@ function AdminRoute() {
   return (
     <PortalShell
       eyebrow="Central administrativa"
-      title="Operação dos Media Kits"
-      description="Acompanhe publicação, qualidade dos dados, conexões sociais, acessos e oportunidades comerciais em um só lugar."
+      title="Central de operação"
+      description="Gerencie Media Kits, blogs, conexões sociais, acessos e oportunidades comerciais em um só lugar."
       onSignOut={() => void handleSignOut()}
     >
       <Toaster />
@@ -880,6 +1035,169 @@ function AdminRoute() {
                 </div>
               </div>
             </section>
+          ) : view === "blogs" ? (
+            <section className="mt-6">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative flex-1 sm:max-w-md">
+                  <Search
+                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                    aria-hidden="true"
+                  />
+                  <input
+                    type="search"
+                    value={blogTerm}
+                    onChange={(event) => setBlogTerm(event.target.value)}
+                    placeholder="Buscar artigo"
+                    aria-label="Buscar artigo"
+                    className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[21rem]">
+                  Arraste ou use as setas para definir a ordem em /blogs. A reordenação fica
+                  disponível sem uma busca ativa.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setEditingBlogPost({ ...EMPTY_BLOG_POST })}
+                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
+                >
+                  <Plus className="h-4 w-4" aria-hidden="true" /> Novo artigo
+                </button>
+              </div>
+
+              {blogsQuery.isLoading ? (
+                <p className="mt-8 text-sm text-muted-foreground">Carregando os artigos...</p>
+              ) : blogsQuery.isError ? (
+                <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+                  Não foi possível carregar os blogs: {blogsQuery.error.message}
+                </div>
+              ) : (
+                <div className="mt-6 overflow-hidden rounded-[28px] border border-border bg-surface">
+                  <div className="hidden grid-cols-[1.4fr_0.75fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
+                    <span>Artigo</span>
+                    <span>Publicação</span>
+                    <span>Posição</span>
+                    <span>Ações</span>
+                  </div>
+                  <div className="divide-y divide-border">
+                    {blogRows.map((post, index) => {
+                      const isDragging = draggedBlogId === post.id;
+                      const isDropTarget =
+                        dropTargetBlogId === post.id && draggedBlogId !== post.id;
+                      const canReorder = !blogTerm.trim() && !reorderBlogMutation.isPending;
+                      return (
+                        <article
+                          key={post.id}
+                          onDragOver={(event) => {
+                            if (!canReorder || !draggedBlogId || draggedBlogId === post.id) return;
+                            event.preventDefault();
+                            event.dataTransfer.dropEffect = "move";
+                            setDropTargetBlogId(post.id);
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            handleBlogDrop(post.id);
+                          }}
+                          className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.4fr_0.75fr_0.8fr_auto] lg:items-center lg:px-6 ${
+                            isDragging ? "opacity-45" : ""
+                          } ${isDropTarget ? "bg-primary/10" : ""}`}
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <span
+                              draggable={canReorder}
+                              role="button"
+                              tabIndex={canReorder ? 0 : -1}
+                              aria-label={`Arrastar ${post.title} para reordenar`}
+                              title={canReorder ? "Arraste para reordenar" : undefined}
+                              onDragStart={(event) => {
+                                event.dataTransfer.effectAllowed = "move";
+                                event.dataTransfer.setData("text/plain", post.id);
+                                setDraggedBlogId(post.id);
+                                setDropTargetBlogId(null);
+                              }}
+                              onDragEnd={() => {
+                                setDraggedBlogId(null);
+                                setDropTargetBlogId(null);
+                              }}
+                              className={`grid h-9 w-7 shrink-0 place-items-center rounded-lg text-subtle transition-colors ${canReorder ? "cursor-grab active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary" : "cursor-not-allowed opacity-40"}`}
+                            >
+                              <GripVertical className="h-4 w-4" aria-hidden="true" />
+                            </span>
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h2 className="truncate font-display text-sm font-bold">
+                                  {post.title}
+                                </h2>
+                                {post.featured ? (
+                                  <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
+                                    Destaque
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="mt-1 truncate text-xs text-muted-foreground">
+                                {post.category} · /blogs/{post.slug}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <StatusPill status={post.status} />
+                            <p className="mt-2 text-xs text-muted-foreground">{post.author_name}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="min-w-8 text-center font-display text-sm font-bold">
+                              {index + 1}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => moveBlog(post.id, -1)}
+                              disabled={!canReorder || index === 0}
+                              aria-label={`Mover ${post.title} para cima`}
+                              className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                            >
+                              <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveBlog(post.id, 1)}
+                              disabled={!canReorder || index === blogRows.length - 1}
+                              aria-label={`Mover ${post.title} para baixo`}
+                              className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                            >
+                              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                            </button>
+                          </div>
+                          <div className="flex gap-2 lg:justify-end">
+                            {post.status === "published" ? (
+                              <Link
+                                to="/blogs/$slug"
+                                params={{ slug: post.slug }}
+                                target="_blank"
+                                aria-label={`Abrir artigo ${post.title}`}
+                                className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                              >
+                                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                              </Link>
+                            ) : null}
+                            <button
+                              type="button"
+                              onClick={() => setEditingBlogPost(post)}
+                              className="gbz-interactive min-h-10 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                            >
+                              Editar
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
+                    {blogRows.length === 0 ? (
+                      <p className="px-6 py-10 text-sm text-muted-foreground">
+                        {blogTerm ? "Nenhum artigo encontrado." : "Nenhum artigo cadastrado."}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              )}
+            </section>
           ) : view === "leads" ? (
             <section className="mt-6">
               <div className="flex flex-wrap gap-2">
@@ -1134,6 +1452,28 @@ function AdminRoute() {
           }
           saving={saveMutation.isPending}
           deleting={deleteMutation.isPending}
+        />
+      ) : null}
+
+      {editingBlogPost ? (
+        <BlogEditorDialog
+          post={editingBlogPost}
+          onChange={setEditingBlogPost}
+          onClose={() => setEditingBlogPost(null)}
+          onSave={() => saveBlogMutation.mutate(editingBlogPost)}
+          onDelete={
+            editingBlogPost.id
+              ? () => {
+                  if (
+                    window.confirm(`Excluir permanentemente o artigo “${editingBlogPost.title}”?`)
+                  ) {
+                    deleteBlogMutation.mutate(editingBlogPost.id);
+                  }
+                }
+              : undefined
+          }
+          saving={saveBlogMutation.isPending}
+          deleting={deleteBlogMutation.isPending}
         />
       ) : null}
 
