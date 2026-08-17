@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_name: string
+          category: string
+          content: string
+          cover_image_alt: string | null
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string | null
+          featured: boolean
+          id: string
+          published_at: string | null
+          slug: string
+          sort_order: number
+          status: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          category?: string
+          content?: string
+          cover_image_alt?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          published_at?: string | null
+          slug: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["publish_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          category?: string
+          content?: string
+          cover_image_alt?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          published_at?: string | null
+          slug?: string
+          sort_order?: number
+          status?: Database["public"]["Enums"]["publish_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       creator_talent_access: {
         Row: {
           created_at: string
