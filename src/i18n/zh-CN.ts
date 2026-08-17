@@ -186,8 +186,8 @@ export const zhCN: Dict = {
       },
       bladexzd: {
         title: "Bladexzd + GameSir",
-        resultLabel: "活动交付表现",
-        tags: ["Gaming Creator", "高留存", "内容整合"],
+        resultLabel: "YouTube 观看次数",
+        tags: ["Call of Duty: Warzone", "GameSir G7 Pro", "内容整合"],
       },
     },
   },
