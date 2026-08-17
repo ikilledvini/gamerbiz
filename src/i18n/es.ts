@@ -191,8 +191,8 @@ export const es: Dict = {
       },
       bladexzd: {
         title: "Bladexzd + GameSir",
-        resultLabel: "Entrega de campaña",
-        tags: ["Gaming Creator", "Alta Retención", "Contenido Integrado"],
+        resultLabel: "Visualizaciones en YouTube",
+        tags: ["Call of Duty: Warzone", "GameSir G7 Pro", "Contenido Integrado"],
       },
     },
   },

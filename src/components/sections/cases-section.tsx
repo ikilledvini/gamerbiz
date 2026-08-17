@@ -17,47 +17,74 @@ function CaseCard({
 }) {
   const { t } = useI18n();
   const content = t.cases.items[item.id]!;
+  const actionClassName =
+    "gbz-interactive mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-border px-5 py-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary";
 
   return (
     <article
       className={cn(
         "motion-lift-gbz flex flex-col justify-between rounded-3xl border border-border bg-surface p-8 transition-[transform,border-color] duration-[180ms] ease-[var(--ease-out-gbz)] fine-hover:hover:-translate-y-1 fine-hover:hover:border-primary/70",
-        featured && "lg:p-10",
+        featured && "overflow-hidden p-0",
       )}
     >
-      <div>
-        <ul className="flex flex-wrap gap-2">
-          {content.tags.map((tag) => (
-            <li
-              key={tag}
-              className="rounded-full border border-border px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
-            >
-              {tag}
-            </li>
-          ))}
-        </ul>
-        <h3
-          className={cn(
-            "mt-6 font-display font-extrabold tracking-tight",
-            featured ? "text-[clamp(1.8rem,1.2rem+2vw,3rem)]" : "text-2xl",
-          )}
+      {featured && item.imageUrl ? (
+        <a
+          href={item.href}
+          aria-label={`${t.cases.action}: ${content.title}`}
+          className="group/image block aspect-[16/9] overflow-hidden border-b border-border bg-muted"
         >
-          {content.title}
-        </h3>
-        <p className="mt-5 font-display text-[clamp(2rem,1.4rem+2vw,3.4rem)] font-extrabold leading-none text-primary">
-          {item.resultValue}
-        </p>
-        <p className="mt-2 text-sm text-muted-foreground">{content.resultLabel}</p>
-      </div>
+          <img
+            src={item.imageUrl}
+            alt={item.imageAlt ?? ""}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover transition-transform duration-500 ease-[var(--ease-out-gbz)] group-hover/image:scale-[1.025]"
+          />
+        </a>
+      ) : null}
 
-      <button
-        type="button"
-        onClick={(event) => onOpen(item, event.detail > 0)}
-        className="gbz-interactive mt-8 inline-flex w-fit items-center gap-2 rounded-full border border-border px-5 py-3 font-display text-xs font-bold uppercase tracking-[0.14em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
-      >
-        {t.cases.action}
-        <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-      </button>
+      <div className={cn("flex flex-1 flex-col justify-between", featured && "p-8 lg:p-10")}>
+        <div>
+          <ul className="flex flex-wrap gap-2">
+            {content.tags.map((tag) => (
+              <li
+                key={tag}
+                className="rounded-full border border-border px-3 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-muted-foreground"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
+          <h3
+            className={cn(
+              "mt-6 font-display font-extrabold tracking-tight",
+              featured ? "text-[clamp(1.8rem,1.2rem+2vw,3rem)]" : "text-2xl",
+            )}
+          >
+            {content.title}
+          </h3>
+          <p className="mt-5 font-display text-[clamp(2rem,1.4rem+2vw,3.4rem)] font-extrabold leading-none text-primary">
+            {item.resultValue}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{content.resultLabel}</p>
+        </div>
+
+        {item.href ? (
+          <a href={item.href} className={actionClassName}>
+            {t.cases.action}
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={(event) => onOpen(item, event.detail > 0)}
+            className={actionClassName}
+          >
+            {t.cases.action}
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
+      </div>
     </article>
   );
 }
