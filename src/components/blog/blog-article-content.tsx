@@ -1,15 +1,35 @@
 import type { ReactNode } from "react";
 
 function renderInline(value: string): ReactNode[] {
-  return value.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
-    part.startsWith("**") && part.endsWith("**") ? (
-      <strong key={`${part}-${index}`} className="font-semibold text-foreground">
-        {part.slice(2, -2)}
-      </strong>
-    ) : (
-      part
-    ),
-  );
+  return value
+    .split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^\s)]+\)|https?:\/\/[^\s]+)/g)
+    .map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={`${part}-${index}`} className="font-semibold text-foreground">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+
+      const markdownLink = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+      const href = markdownLink?.[2] ?? (part.startsWith("http") ? part : null);
+      if (href) {
+        return (
+          <a
+            key={`${part}-${index}`}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary underline decoration-primary/50 underline-offset-4 transition-colors hover:text-primary/80"
+          >
+            {markdownLink?.[1] ?? part}
+          </a>
+        );
+      }
+
+      return part;
+    });
 }
 
 export function BlogArticleContent({ content }: { content: string }) {
