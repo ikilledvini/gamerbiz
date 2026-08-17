@@ -190,7 +190,7 @@ export const en: Dict = {
         tags: ["YouTube Gaming", "Dedicated Video", "Beta Launch"],
       },
       bladexzd: {
-        title: "Bladexzd",
+        title: "Bladexzd + GameSir",
         resultLabel: "Campaign delivery",
         tags: ["Gaming Creator", "High Retention", "Integrated Content"],
       },
