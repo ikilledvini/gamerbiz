@@ -10,12 +10,9 @@ export function BrandsSolutionsSection() {
   return (
     <section id="marcas" className="section-gbz">
       <div className="container-gbz">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-          <div>
-            <p className="eyebrow-gbz">{t.brands.eyebrow}</p>
-            <h2 className="title-gbz mt-4 max-w-[18ch] whitespace-pre-line">{t.brands.title}</h2>
-          </div>
-          <p className="max-w-[52ch] text-base text-muted-foreground">{t.brands.description}</p>
+        <div>
+          <p className="eyebrow-gbz">{t.brands.eyebrow}</p>
+          <h2 className="title-gbz mt-4 max-w-[22ch]">{t.brands.title}</h2>
         </div>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-2 lg:items-start">

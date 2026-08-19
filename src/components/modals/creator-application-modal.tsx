@@ -111,7 +111,6 @@ export function CreatorApplicationModal({
             <input
               id="creator-name"
               className={inputClass}
-              placeholder={m.namePlaceholder}
               value={values.name}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "creator-name-error" : undefined}
@@ -126,7 +125,6 @@ export function CreatorApplicationModal({
               id="creator-email"
               type="email"
               className={inputClass}
-              placeholder={m.emailPlaceholder}
               value={values.email}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={errors.email ? "creator-email-error" : undefined}
@@ -147,7 +145,6 @@ export function CreatorApplicationModal({
               type="tel"
               inputMode="tel"
               className={inputClass}
-              placeholder={m.whatsappPlaceholder}
               value={values.whatsapp}
               onChange={(e) => set("whatsapp")(e.target.value)}
             />
@@ -157,7 +154,6 @@ export function CreatorApplicationModal({
             <textarea
               id="creator-type"
               className={textareaClass}
-              placeholder={m.typePlaceholder}
               value={values.type}
               aria-invalid={Boolean(errors.type)}
               aria-describedby={errors.type ? "creator-type-error" : undefined}
@@ -176,7 +172,6 @@ export function CreatorApplicationModal({
             <input
               id="creator-profiles"
               className={inputClass}
-              placeholder={m.profilesPlaceholder}
               value={values.profiles}
               aria-invalid={Boolean(errors.profiles)}
               aria-describedby={errors.profiles ? "creator-profiles-error" : undefined}

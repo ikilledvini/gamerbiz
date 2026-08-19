@@ -5,6 +5,7 @@ import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
 import { legalPath } from "@/lib/legal-routes";
+import { gamerbizLinks } from "@/data/links";
 
 export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   const { lang, t } = useI18n();
@@ -21,14 +22,14 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   ];
 
   const socials = [
-    { label: "Instagram", icon: FaInstagram },
-    { label: "YouTube", icon: FaYoutube },
-    { label: "LinkedIn", icon: FaLinkedin },
+    { label: "Instagram", icon: FaInstagram, href: gamerbizLinks.instagram },
+    { label: "YouTube", icon: FaYoutube, href: gamerbizLinks.youtube },
+    { label: "LinkedIn", icon: FaLinkedin, href: gamerbizLinks.linkedin },
   ];
 
   return (
     <footer id="contato" className="border-t border-border bg-surface">
-      <div className="container-gbz grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4 lg:py-20">
+      <div className="container-gbz grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:py-20">
         <div className="lg:col-span-1">
           <Logo className="h-10" />
           <p className="mt-5 max-w-[34ch] text-sm text-muted-foreground">{t.footer.phrase}</p>
@@ -39,7 +40,6 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
             <Mail className="h-4 w-4" aria-hidden="true" />
             contato@gamerbiz.com.br
           </a>
-          <p className="mt-2 font-display text-sm font-bold text-primary">@gamerbizbr</p>
         </div>
 
         <nav aria-label={t.footer.navigation}>
@@ -62,30 +62,20 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
 
         <div>
           <h2 className="font-display text-xs font-bold uppercase tracking-[0.2em] text-subtle">
-            {t.footer.services}
-          </h2>
-          <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
-            {[...t.brands.services, ...t.teams.services].slice(0, 6).map((service) => (
-              <li key={service.key}>{service.title}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="font-display text-xs font-bold uppercase tracking-[0.2em] text-subtle">
             {t.footer.social}
           </h2>
           <ul className="mt-5 flex gap-3">
             {socials.map((social) => (
               <li key={social.label}>
-                {/* TODO: substituir por URLs oficiais quando fornecidas */}
-                <span
+                <a
+                  href={social.href ?? "#"}
+                  target="_blank"
+                  rel="noreferrer"
                   aria-label={social.label}
-                  title={t.footer.legalUnavailable}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-subtle"
+                  className="gbz-interactive flex h-11 w-11 items-center justify-center rounded-full border border-border text-subtle transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-95 fine-hover:hover:border-primary fine-hover:hover:text-primary"
                 >
                   <social.icon className="h-4 w-4" aria-hidden="true" />
-                </span>
+                </a>
               </li>
             ))}
           </ul>

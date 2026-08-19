@@ -36,7 +36,7 @@ export const ptBR: Dict = {
     mediaKitSoon: "Media Kit em breve",
   },
   hero: {
-    eyebrow: "DO CONTEÚDO AO COMPETITIVO,\nA GAMERBIZ MOVIMENTA O JOGO",
+    eyebrow: "Do conteúdo ao competitivo, a Gamerbiz movimenta o jogo",
     title: "É hora de",
     titleAccent: "Subir de Nível",
     description:
@@ -59,7 +59,7 @@ export const ptBR: Dict = {
   ],
   stats: {
     eyebrow: "Resultados comprovados",
-    title: "Números \nque falam",
+    title: "Números que falam",
     items: [
       { value: 5, prefix: "+", label: "Anos no mercado gamer" },
       { value: 300, prefix: "+", label: "Projetos finalizados" },
@@ -68,7 +68,7 @@ export const ptBR: Dict = {
     ],
   },
   about: {
-    title: "A GENTE VIVE \nO QUE VENDE",
+    title: "A GENTE VIVE O QUE VENDE.",
     text: "A Gamerbiz combina experiência em marketing esportivo, gestão de pessoas, curadoria de talentos e vivência competitiva para desenvolver projetos com profundidade, estratégia e autenticidade.",
     mediaPlaceholder: "Bastidores Gamerbiz — imagem em breve",
     pillars: [
@@ -92,7 +92,7 @@ export const ptBR: Dict = {
   },
   brands: {
     eyebrow: "Soluções para marcas",
-    title: "Sua marca na \nvitrine do gaming",
+    title: "Campanhas que viram conteúdo, conexão e resultado",
     description:
       "Ativamos campanhas, parcerias e conteúdos que geram alcance real, conversão e autoridade dentro do universo gamer.",
     phrase: { top: "GAMERBIZ", mid: "SEU TIME.", bottom: "NOSSO JOGO." },
@@ -101,50 +101,53 @@ export const ptBR: Dict = {
       {
         key: "strategy",
         title: "Estratégia",
-        text: "Definimos posicionamento, escolhemos os creators certos e desenhamos campanhas que entregam ROI no gaming.",
+        text: "Desenvolvemos estratégias para posicionar marcas no universo gamer com inteligência, autenticidade e foco em resultados. Da escolha do talento ao formato ideal de campanha.",
       },
       {
         key: "influence",
         title: "Influência",
-        text: "Conectamos sua marca a creators e streamers que realmente conversam com o público que você quer alcançar.",
+        text: "Criamos campanhas com creators, streamers e talentos que geram conexão genuína, alcance qualificado e impacto direto no público gamer.",
       },
       {
         key: "experiences",
         title: "Experiências",
-        text: "Produzimos eventos, ativações e competições que transformam marcas em parte da cultura gamer.",
+        text: "Desenvolvemos eventos, campeonatos e ativações que aproximam marcas e comunidades através de experiências memoráveis.",
       },
       {
         key: "partnerships",
         title: "Parcerias",
-        text: "Fechamos alianças estratégicas entre marcas, times e projetos para gerar visibilidade e receita.",
+        text: "Conectamos marcas, talentos e projetos para gerar valor, crescimento e oportunidades dentro do ecossistema competitivo e de entretenimento.",
       },
     ],
   },
   teams: {
     eyebrow: "Soluções para times",
-    title: "Aceleramos seu time dentro e fora do servidor",
+    title: "Convoque a Gamerbiz para o seu time",
+    titleLead: "Convoque",
+    titleBrand: "a Gamerbiz",
+    titleAccent: "para o seu time",
     description:
-      "Oferecemos suporte comercial, branding e estrutura para organizações que querem crescer no cenário competitivo.",
+      "Com um histórico de parcerias de sucesso, a Gamerbiz oferece serviços personalizados para as necessidades do seu time, deixando que você foque no que mais importa.",
     services: [
       {
         key: "commercial",
         title: "Comercial",
-        text: "Abrimos portas com patrocinadores, parcerias e oportunidades de monetização para sua organização.",
+        text: "Conectamos organizações e projetos competitivos às marcas certas, estruturando patrocínios, campanhas e oportunidades de monetização.",
       },
       {
         key: "scouting",
         title: "Scouting",
-        text: "Encontramos talentos e projetos promissores que fortalecem seu lineup e sua marca.",
+        text: "Mapeamos talentos, lineups e projetos promissores para fortalecer organizações através de recrutamento estratégico e visão de mercado.",
       },
       {
         key: "performance",
         title: "Performance",
-        text: "Criamos estratégias para melhorar resultados competitivos e o valor do seu time no mercado.",
+        text: "Desenvolvemos estratégias para crescimento competitivo e estrutural, identificando oportunidades dentro e fora do servidor.",
       },
       {
         key: "branding",
         title: "Branding",
-        text: "Construímos identidade, presença digital e narrativa para tornar seu time reconhecido no cenário.",
+        text: "Fortalecemos a identidade da sua organização, ampliando sua presença no cenário e consolidando sua marca no ecossistema.",
       },
     ],
     button: "Fale com a Gamerbiz",
@@ -152,13 +155,13 @@ export const ptBR: Dict = {
   },
   clients: {
     eyebrow: "Quem confia na gente",
-    title: "Marcas e times que\njogaram com a Gamerbiz",
+    title: "Marcas e times que jogaram com a Gamerbiz",
     groupBrands: "MARCAS",
     groupTeams: "TIMES",
   },
   talents: {
     eyebrow: "Nosso casting",
-    title: "Não é só casting",
+    title: "Não é só casting.",
     titleAccent: "É curadoria",
     description:
       "Creators, streamers e jogadores profissionais com comunidades engajadas. Cada talento posicionado na oportunidade certa.",
@@ -173,7 +176,7 @@ export const ptBR: Dict = {
   },
   cases: {
     eyebrow: "Cases e resultados",
-    title: "Performance\nque converte",
+    title: "Performance que converte",
     description:
       "Dados reais. Estratégias reais. Resultados que transformam influência em campanhas de alto impacto.",
     action: "Ver case",
@@ -198,7 +201,7 @@ export const ptBR: Dict = {
   },
   finalCta: {
     eyebrow: "Próximo passo",
-    title: "ENTRE NO GAMING COM\nQUEM CONHECE O JOGO",
+    title: "ENTRE NO GAMING COM QUEM CONHECE O JOGO",
     button: "Fale com a gente",
   },
   footer: {
