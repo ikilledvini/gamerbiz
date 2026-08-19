@@ -20,6 +20,7 @@ export function UserEditorDialog({
   onClose,
   onSave,
   onDelete,
+  onResetPassword,
   saving,
   deleting,
 }: {
@@ -30,6 +31,7 @@ export function UserEditorDialog({
   onClose: () => void;
   onSave: () => void;
   onDelete?: (() => void) | undefined;
+  onResetPassword?: (() => void) | undefined;
   saving: boolean;
   deleting: boolean;
 }) {
@@ -171,22 +173,32 @@ export function UserEditorDialog({
             )}
 
             <div className="flex flex-col-reverse gap-3 border-t border-border pt-5 sm:flex-row sm:items-center sm:justify-between">
-              {onDelete ? (
-                <button
-                  type="button"
-                  onClick={onDelete}
-                  disabled={deleting || isCurrentUser}
-                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-primary/40 px-5 font-display text-xs font-bold uppercase tracking-[0.12em] text-primary disabled:cursor-not-allowed disabled:opacity-40"
-                  title={
-                    isCurrentUser ? "Não é possível excluir a conta da sessão atual" : undefined
-                  }
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden="true" />
-                  {deleting ? "Excluindo..." : "Excluir usuário"}
-                </button>
-              ) : (
-                <span />
-              )}
+              <div className="flex flex-wrap gap-2">
+                {onDelete ? (
+                  <button
+                    type="button"
+                    onClick={onDelete}
+                    disabled={deleting || isCurrentUser}
+                    className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-primary/40 px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.11em] text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                    title={
+                      isCurrentUser ? "Não é possível excluir a conta da sessão atual" : undefined
+                    }
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                    {deleting ? "Excluindo..." : "Excluir"}
+                  </button>
+                ) : null}
+                {onResetPassword ? (
+                  <button
+                    type="button"
+                    onClick={onResetPassword}
+                    className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.11em] text-muted-foreground"
+                  >
+                    <KeyRound className="h-4 w-4" />
+                    Enviar redefinição
+                  </button>
+                ) : null}
+              </div>
               <button
                 type="submit"
                 disabled={!canSubmit || saving}

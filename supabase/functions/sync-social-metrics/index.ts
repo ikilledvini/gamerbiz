@@ -227,16 +227,32 @@ Deno.serve(async (request) => {
       return json({ error: "Unauthorized" }, 401);
     }
 
+    const requestBody = (await request.json().catch(() => ({}))) as {
+      trigger?: string;
+      connectionIds?: unknown;
+    };
+    const connectionIds = Array.isArray(requestBody.connectionIds)
+      ? requestBody.connectionIds.filter((id): id is string => typeof id === "string").slice(0, 200)
+      : [];
+    const triggerSource = requestBody.trigger === "scheduler" ? "scheduler" : "admin";
+    const { data: syncRun } = await supabase
+      .from("social_sync_runs")
+      .insert({ trigger_source: triggerSource, connection_ids: connectionIds })
+      .select("id")
+      .maybeSingle();
+
     const youtubeApiKey = Deno.env.get("YOUTUBE_API_KEY");
     const googleClientId = Deno.env.get("GOOGLE_YOUTUBE_CLIENT_ID");
     const googleClientSecret = Deno.env.get("GOOGLE_YOUTUBE_CLIENT_SECRET");
     const tiktokClientKey = Deno.env.get("TIKTOK_CLIENT_KEY");
     const tiktokClientSecret = Deno.env.get("TIKTOK_CLIENT_SECRET");
-    const { data, error } = await supabase
+    let connectionQuery = supabase
       .from("social_connections")
       .select("id, talent_id, platform, handle, external_account_id, connection_method")
       .in("platform", ["youtube", "tiktok"])
       .eq("sync_enabled", true);
+    if (connectionIds.length) connectionQuery = connectionQuery.in("id", connectionIds);
+    const { data, error } = await connectionQuery;
 
     if (error) throw error;
 
@@ -340,12 +356,23 @@ Deno.serve(async (request) => {
       }
     }
 
-    return json({
+    const summary = {
       processed: results.length,
       succeeded: results.filter((result) => result.ok).length,
       failed: results.filter((result) => !result.ok).length,
       results,
-    });
+    };
+    if (syncRun?.id) {
+      await supabase
+        .from("social_sync_runs")
+        .update({
+          ...summary,
+          status: summary.failed === 0 ? "completed" : summary.succeeded > 0 ? "partial" : "failed",
+          completed_at: new Date().toISOString(),
+        })
+        .eq("id", syncRun.id);
+    }
+    return json(summary);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown sync error";
     return json({ error: message }, 500);

@@ -6,17 +6,21 @@ import {
   Activity,
   AlertTriangle,
   ArrowUpRight,
+  BarChart3,
   BookOpenText,
+  Cable,
   ChevronDown,
   ChevronUp,
   CircleUserRound,
-  Clock3,
+  FileClock,
   GripVertical,
+  LayoutDashboard,
   MessageSquareText,
   Pencil,
   Plus,
   RefreshCw,
   Search,
+  Settings2,
   ShieldCheck,
   UsersRound,
   WifiOff,
@@ -26,6 +30,16 @@ import { PortalShell } from "@/components/dashboard/portal-shell";
 import { BlogEditorDialog } from "@/components/dashboard/blog-editor-dialog";
 import { TalentEditorDialog } from "@/components/dashboard/talent-editor-dialog";
 import { UserEditorDialog, type ManagedUserDraft } from "@/components/dashboard/user-editor-dialog";
+import {
+  AccessHealthSummary,
+  AnalyticsPanel,
+  AuditPanel,
+  ConnectionsPanel,
+  ContentOperationsPanel,
+  LeadPipelinePanel,
+  SystemPanel,
+  type LeadDraft,
+} from "@/components/dashboard/admin-operations-panels";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -33,11 +47,13 @@ import {
   adminDashboardOverview,
   adminManageUser,
   adminRemoveCreatorAccess,
+  adminResolveNotification,
+  adminSaveSiteContent,
   adminSyncSocialMetrics,
-  adminUpdateLeadStatus,
+  adminUpdateLead,
   getCurrentPortalAccess,
-  type LeadRow,
   type SocialConnectionRow,
+  type SiteContentRow,
 } from "@/lib/portal.functions";
 import { adminDeleteTalent, adminReorderTalents, adminSaveTalent } from "@/lib/talents.functions";
 import {
@@ -64,8 +80,17 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminRoute,
 });
 
-type AdminView = "overview" | "talents" | "blogs" | "leads" | "access";
-type LeadFilter = "all" | LeadRow["kind"];
+type AdminView =
+  | "overview"
+  | "talents"
+  | "connections"
+  | "analytics"
+  | "blogs"
+  | "content"
+  | "leads"
+  | "access"
+  | "audit"
+  | "system";
 
 const EMPTY_TALENT: TalentRow = {
   id: "",
@@ -123,13 +148,47 @@ const VIEW_ITEMS: Array<{
   key: AdminView;
   label: string;
   icon: typeof Activity;
+  group: "Operação" | "Conteúdo" | "Gestão";
 }> = [
-  { key: "overview", label: "Visão geral", icon: Activity },
-  { key: "talents", label: "Media Kits", icon: UsersRound },
-  { key: "blogs", label: "Blogs", icon: BookOpenText },
-  { key: "leads", label: "Oportunidades", icon: MessageSquareText },
-  { key: "access", label: "Acessos", icon: ShieldCheck },
+  { key: "overview", label: "Visão geral", icon: LayoutDashboard, group: "Operação" },
+  { key: "talents", label: "Media Kits", icon: UsersRound, group: "Operação" },
+  { key: "connections", label: "Conexões", icon: Cable, group: "Operação" },
+  { key: "analytics", label: "Analytics", icon: BarChart3, group: "Operação" },
+  { key: "leads", label: "Pipeline", icon: MessageSquareText, group: "Gestão" },
+  { key: "access", label: "Usuários", icon: ShieldCheck, group: "Gestão" },
+  { key: "audit", label: "Auditoria", icon: FileClock, group: "Gestão" },
+  { key: "system", label: "Sistema", icon: Settings2, group: "Gestão" },
+  { key: "blogs", label: "Blogs", icon: BookOpenText, group: "Conteúdo" },
+  { key: "content", label: "Site", icon: Activity, group: "Conteúdo" },
 ];
+
+const VIEW_COPY: Record<AdminView, { title: string; description: string }> = {
+  overview: { title: "Visão geral", description: "Prioridades, indicadores e decisões do dia." },
+  talents: { title: "Media Kits", description: "Conteúdo, publicação, ordem e responsáveis." },
+  connections: {
+    title: "Conexões",
+    description: "Autorizações, sincronizações e erros por plataforma.",
+  },
+  analytics: {
+    title: "Analytics",
+    description: "Histórico, crescimento e qualidade das métricas.",
+  },
+  leads: {
+    title: "Pipeline comercial",
+    description: "Oportunidades, responsáveis e próximas ações.",
+  },
+  access: {
+    title: "Usuários e acessos",
+    description: "Contas, funções, segurança e Media Kits atribuídos.",
+  },
+  audit: { title: "Auditoria", description: "Alertas e histórico das alterações administrativas." },
+  system: {
+    title: "Saúde do sistema",
+    description: "Estado das integrações e serviços essenciais.",
+  },
+  blogs: { title: "Blogs", description: "Publicação, destaque e ordem editorial." },
+  content: { title: "Conteúdo do site", description: "Áreas institucionais e estado editorial." },
+};
 
 const STATUS_LABEL: Record<TalentRow["status"], string> = {
   draft: "Rascunho",
@@ -229,11 +288,13 @@ function AdminRoute() {
   const saveTalent = useServerFn(adminSaveTalent);
   const reorderTalents = useServerFn(adminReorderTalents);
   const deleteTalent = useServerFn(adminDeleteTalent);
-  const updateLeadStatus = useServerFn(adminUpdateLeadStatus);
+  const updateLead = useServerFn(adminUpdateLead);
   const assignCreator = useServerFn(adminAssignCreator);
   const removeCreatorAccess = useServerFn(adminRemoveCreatorAccess);
   const manageUser = useServerFn(adminManageUser);
   const syncSocialMetrics = useServerFn(adminSyncSocialMetrics);
+  const resolveNotification = useServerFn(adminResolveNotification);
+  const saveSiteContent = useServerFn(adminSaveSiteContent);
   const listBlogPosts = useServerFn(adminListBlogPosts);
   const saveBlogPost = useServerFn(adminSaveBlogPost);
   const reorderBlogPosts = useServerFn(adminReorderBlogPosts);
@@ -243,7 +304,6 @@ function AdminRoute() {
   const [term, setTerm] = useState("");
   const [accessTerm, setAccessTerm] = useState("");
   const [blogTerm, setBlogTerm] = useState("");
-  const [leadFilter, setLeadFilter] = useState<LeadFilter>("all");
   const [editing, setEditing] = useState<TalentRow | null>(null);
   const [editingUser, setEditingUser] = useState<ManagedUserDraft | null>(null);
   const [editingBlogPost, setEditingBlogPost] = useState<BlogPostRow | null>(null);
@@ -271,7 +331,7 @@ function AdminRoute() {
   const refreshBlogs = () => queryClient.invalidateQueries({ queryKey: ["admin-blogs"] });
 
   const syncMutation = useMutation({
-    mutationFn: () => syncSocialMetrics({}),
+    mutationFn: (connectionIds: string[] = []) => syncSocialMetrics({ data: { connectionIds } }),
     onSuccess: async (result) => {
       await refreshDashboard();
       const warning = result.results.find((item) => item.warning)?.warning;
@@ -392,11 +452,55 @@ function AdminRoute() {
     },
   });
 
-  const leadMutation = useMutation({
-    mutationFn: (input: { id: string; status: LeadRow["status"] }) =>
-      updateLeadStatus({ data: input }),
+  const leadDetailsMutation = useMutation({
+    mutationFn: ({ id, draft }: { id: string; draft: LeadDraft }) =>
+      updateLead({
+        data: {
+          id,
+          pipelineStage: draft.pipelineStage,
+          priority: draft.priority,
+          ownerId: draft.ownerId || null,
+          nextActionAt: draft.nextActionAt ? new Date(draft.nextActionAt).toISOString() : null,
+          internalNotes: draft.internalNotes || null,
+          estimatedValue: draft.estimatedValue ? Number(draft.estimatedValue) : null,
+          source: draft.source || null,
+          tags: draft.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter(Boolean),
+        },
+      }),
     onSuccess: () => {
       toast.success("Oportunidade atualizada.");
+      void refreshDashboard();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const contentMutation = useMutation({
+    mutationFn: (item: SiteContentRow) =>
+      saveSiteContent({
+        data: {
+          id: item.id,
+          contentKey: item.content_key,
+          locale: item.locale,
+          title: item.title,
+          description: item.description,
+          payload: item.payload,
+          status: item.status,
+        },
+      }),
+    onSuccess: () => {
+      toast.success("Conteúdo atualizado.");
+      void refreshDashboard();
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  const notificationMutation = useMutation({
+    mutationFn: (id: number) => resolveNotification({ data: { id, resolved: true } }),
+    onSuccess: () => {
+      toast.success("Alerta resolvido.");
       void refreshDashboard();
     },
     onError: (error: Error) => toast.error(error.message),
@@ -456,6 +560,12 @@ function AdminRoute() {
     onError: (error: Error) => toast.error(error.message),
   });
 
+  const resetUserMutation = useMutation({
+    mutationFn: (userId: string) => manageUser({ data: { action: "reset", userId } }),
+    onSuccess: () => toast.success("E-mail de redefinição enviado."),
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   const dashboard = dashboardQuery.data;
 
   useEffect(() => {
@@ -496,6 +606,10 @@ function AdminRoute() {
   const adminUserIds = useMemo(
     () => new Set(dashboard?.adminUserIds ?? []),
     [dashboard?.adminUserIds],
+  );
+  const authUsersById = useMemo(
+    () => new Map((dashboard?.authUsers ?? []).map((user) => [user.id, user])),
+    [dashboard?.authUsers],
   );
 
   const orderedTalents = useMemo(() => {
@@ -555,12 +669,6 @@ function AdminRoute() {
       ).includes(needle),
     );
   }, [blogTerm, orderedBlogs]);
-
-  const filteredLeads = useMemo(
-    () =>
-      (dashboard?.leads ?? []).filter((lead) => leadFilter === "all" || lead.kind === leadFilter),
-    [dashboard?.leads, leadFilter],
-  );
 
   const publishedTalents = (dashboard?.talents ?? []).filter(
     (talent) => talent.status === "published",
@@ -662,6 +770,7 @@ function AdminRoute() {
       title="Central de operação"
       description="Gerencie Media Kits, blogs, conexões sociais, acessos e oportunidades comerciais em um só lugar."
       onSignOut={() => void handleSignOut()}
+      workspace
     >
       <Toaster />
       {!isAdmin ? (
@@ -679,508 +788,393 @@ function AdminRoute() {
           </Link>
         </section>
       ) : (
-        <>
-          <div className="flex flex-col gap-3 rounded-[24px] border border-border bg-surface p-2 md:flex-row md:items-center">
-            <div
-              role="tablist"
-              aria-label="Seções administrativas"
-              className="flex flex-1 gap-1 overflow-x-auto"
-            >
-              {VIEW_ITEMS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    key={item.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={view === item.key}
-                    onClick={() => setView(item.key)}
-                    className={`gbz-interactive inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[18px] px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] transition-colors ${
-                      view === item.key
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground fine-hover:hover:bg-muted fine-hover:hover:text-foreground"
-                    }`}
-                  >
-                    <Icon className="h-4 w-4" aria-hidden="true" />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </div>
-            <button
-              type="button"
-              onClick={() => syncMutation.mutate()}
-              disabled={syncMutation.isPending}
-              className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-[18px] border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-            >
-              <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
-              {syncMutation.isPending ? "Sincronizando" : "Atualizar"}
-            </button>
-          </div>
-
-          {dashboardQuery.isLoading ? (
-            <p className="mt-8 text-sm text-muted-foreground">Carregando a operação...</p>
-          ) : dashboardQuery.isError ? (
-            <p className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
-              {dashboardQuery.error.message}
-            </p>
-          ) : view === "overview" ? (
-            <div className="mt-6 space-y-6">
-              <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
-                <KpiCard
-                  icon={UsersRound}
-                  label="Media Kits"
-                  value={publishedTalents.length}
-                  detail="publicados no diretório"
-                />
-                <KpiCard
-                  icon={MessageSquareText}
-                  label="Novas respostas"
-                  value={newLeads.length}
-                  detail="marcas e creators aguardando retorno"
-                  urgent
-                />
-                <KpiCard
-                  icon={AlertTriangle}
-                  label="Dados incompletos"
-                  value={missingData.length}
-                  detail="Media Kits abaixo de 80%"
-                  urgent
-                />
-                <KpiCard
-                  icon={WifiOff}
-                  label="Sem conexão"
-                  value={missingConnections.length}
-                  detail="talentos sem nenhuma rede ativa"
-                  urgent
-                />
-                <KpiCard
-                  icon={Activity}
-                  label="Erros de sync"
-                  value={syncErrors.length}
-                  detail="integrações que exigem revisão"
-                  urgent
-                />
-                <KpiCard
-                  icon={RefreshCw}
-                  label="Atualização pendente"
-                  value={pendingMetricTalentIds.size}
-                  detail="creators aguardando métricas novas"
-                  urgent
-                />
-              </section>
-
-              <section className="grid gap-6 xl:grid-cols-[1.35fr_0.9fr]">
-                <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
-                        Prioridades
-                      </p>
-                      <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
-                        Fila de atenção
-                      </h2>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setView("talents")}
-                      className="text-xs font-semibold text-primary"
-                    >
-                      Ver todos
-                    </button>
-                  </div>
-                  <div className="mt-6 space-y-3">
-                    {publishedTalents
-                      .filter(
-                        (talent) =>
-                          talentHealth(talent).score < 100 ||
-                          !connectionsByTalent.get(talent.id)?.length ||
-                          pendingMetricTalentIds.has(talent.id),
-                      )
-                      .slice(0, 7)
-                      .map((talent) => {
-                        const health = talentHealth(talent);
-                        const connected = (connectionsByTalent.get(talent.id) ?? []).filter(
-                          (item) => item.sync_enabled,
-                        ).length;
-                        const awaitingMetrics = (connectionsByTalent.get(talent.id) ?? []).filter(
-                          (item) => pendingMetricConnectionIds.has(item.id),
-                        ).length;
+        <div className="grid gap-5 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[250px_minmax(0,1fr)]">
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <div className="rounded-[24px] border border-border bg-surface p-3">
+              <div className="px-3 pb-4 pt-2">
+                <p className="font-display text-[0.6rem] font-bold uppercase tracking-[0.18em] text-primary">
+                  Central administrativa
+                </p>
+                <p className="mt-2 font-display text-lg font-bold tracking-[-0.03em]">
+                  Operação Gamerbiz
+                </p>
+              </div>
+              <nav aria-label="Seções administrativas" className="space-y-4">
+                {(["Operação", "Conteúdo", "Gestão"] as const).map((group) => (
+                  <div key={group}>
+                    <p className="px-3 pb-1.5 font-display text-[0.55rem] font-bold uppercase tracking-[0.16em] text-subtle">
+                      {group}
+                    </p>
+                    <div className="space-y-1">
+                      {VIEW_ITEMS.filter((item) => item.group === group).map((item) => {
+                        const Icon = item.icon;
                         return (
                           <button
-                            key={talent.id}
+                            key={item.key}
                             type="button"
-                            onClick={() => {
-                              setEditing(talent);
-                              setView("talents");
-                            }}
-                            className="gbz-interactive flex w-full items-center gap-4 rounded-2xl border border-border bg-background p-4 text-left transition-colors fine-hover:hover:border-primary/60"
+                            aria-current={view === item.key ? "page" : undefined}
+                            onClick={() => setView(item.key)}
+                            className={`gbz-interactive flex min-h-10 w-full items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold transition-colors ${
+                              view === item.key
+                                ? "bg-primary text-primary-foreground"
+                                : "text-muted-foreground fine-hover:hover:bg-muted fine-hover:hover:text-foreground"
+                            }`}
                           >
-                            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted font-display text-sm font-bold text-foreground">
-                              {talent.stage_name.slice(0, 2).toUpperCase()}
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className="block truncate font-display text-sm font-bold">
-                                {talent.stage_name}
+                            <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                            {item.label}
+                            {item.key === "audit" && (dashboard?.notifications.length ?? 0) > 0 ? (
+                              <span className="ml-auto grid h-5 min-w-5 place-items-center rounded-full bg-background px-1 text-[0.6rem] font-bold text-primary">
+                                {dashboard?.notifications.length}
                               </span>
-                              <span className="mt-1 block truncate text-xs text-muted-foreground">
-                                {health.missing.length
-                                  ? `Falta: ${health.missing.join(", ")}`
-                                  : awaitingMetrics
-                                    ? `${awaitingMetrics} conexões aguardando dados`
-                                    : "Dados essenciais completos"}
-                              </span>
-                            </span>
-                            <span className="text-right text-xs text-muted-foreground">
-                              {health.score}%<br />
-                              {connected} redes
-                            </span>
+                            ) : null}
                           </button>
                         );
                       })}
-                    {publishedTalents.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">Nenhum Media Kit publicado.</p>
-                    ) : null}
-                  </div>
-                </article>
-
-                <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
-                  <div className="flex items-center justify-between gap-4">
-                    <div>
-                      <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
-                        Entrada
-                      </p>
-                      <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
-                        Últimas respostas
-                      </h2>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setView("leads")}
-                      className="text-xs font-semibold text-primary"
-                    >
-                      Abrir inbox
-                    </button>
                   </div>
-                  <div className="mt-6 space-y-3">
-                    {(dashboard?.leads ?? []).slice(0, 6).map((lead) => (
-                      <div
-                        key={lead.id}
-                        className="rounded-2xl border border-border bg-background p-4"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="min-w-0">
-                            <p className="truncate font-display text-sm font-bold">{lead.name}</p>
-                            <p className="mt-1 truncate text-xs text-muted-foreground">
-                              {lead.kind === "brand" ? lead.company : lead.creator_type}
-                            </p>
-                          </div>
-                          <StatusPill status={lead.status} />
-                        </div>
-                        <p className="mt-3 text-[0.65rem] uppercase tracking-[0.12em] text-subtle">
-                          {lead.kind === "brand" ? "Marca" : "Creator"} ·{" "}
-                          {formatDate(lead.created_at)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </article>
-              </section>
+                ))}
+              </nav>
+              <div className="mt-4 border-t border-border p-2 pt-4">
+                <button
+                  type="button"
+                  onClick={() => syncMutation.mutate([])}
+                  disabled={syncMutation.isPending}
+                  className="gbz-interactive inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-border px-3 font-display text-[0.6rem] font-bold uppercase tracking-[0.11em] text-muted-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                >
+                  <RefreshCw
+                    className={`h-3.5 w-3.5 ${syncMutation.isPending ? "animate-spin" : ""}`}
+                  />
+                  {syncMutation.isPending ? "Sincronizando" : "Sincronizar tudo"}
+                </button>
+              </div>
             </div>
-          ) : view === "talents" ? (
-            <section className="mt-6">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <div className="relative flex-1 sm:max-w-md">
-                  <Search
-                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="search"
-                    value={term}
-                    onChange={(event) => setTerm(event.target.value)}
-                    placeholder="Buscar Media Kit"
-                    aria-label="Buscar Media Kit"
-                    className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[18rem]">
-                  Arraste pelo ícone de alça para definir a ordem exibida na frontpage.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setEditing({ ...EMPTY_TALENT })}
-                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
-                >
-                  <Plus className="h-4 w-4" aria-hidden="true" /> Novo talento
-                </button>
-              </div>
+          </aside>
 
-              <div className="mt-6 overflow-hidden rounded-[28px] border border-border bg-surface">
-                <div className="hidden grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
-                  <span>Talento</span>
-                  <span>Qualidade</span>
-                  <span>Conexões</span>
-                  <span>Acesso</span>
-                  <span>Ação</span>
-                </div>
-                <div className="divide-y divide-border">
-                  {talentRows.map((talent) => {
-                    const health = talentHealth(talent);
-                    const connections = connectionsByTalent.get(talent.id) ?? [];
-                    const assignedProfile = profilesById.get(accessByTalent.get(talent.id) ?? "");
-                    const isDragging = draggedTalentId === talent.id;
-                    const isDropTarget =
-                      dropTargetTalentId === talent.id && draggedTalentId !== talent.id;
-                    return (
-                      <article
-                        key={talent.id}
-                        onDragOver={(event) => {
-                          if (!draggedTalentId || draggedTalentId === talent.id) return;
-                          event.preventDefault();
-                          event.dataTransfer.dropEffect = "move";
-                          setDropTargetTalentId(talent.id);
-                        }}
-                        onDrop={(event) => {
-                          event.preventDefault();
-                          handleDrop(talent.id);
-                        }}
-                        className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] lg:items-center lg:px-6 ${
-                          isDragging ? "opacity-45" : ""
-                        } ${isDropTarget ? "bg-primary/10" : ""}`}
-                      >
-                        <div className="flex min-w-0 items-center gap-3">
-                          <span
-                            draggable={!reorderMutation.isPending}
-                            role="button"
-                            tabIndex={0}
-                            aria-label={`Arrastar ${talent.stage_name} para reordenar`}
-                            title="Arraste para reordenar"
-                            onDragStart={(event) => {
-                              event.dataTransfer.effectAllowed = "move";
-                              event.dataTransfer.setData("text/plain", talent.id);
-                              setDraggedTalentId(talent.id);
-                              setDropTargetTalentId(null);
-                            }}
-                            onDragEnd={() => {
-                              setDraggedTalentId(null);
-                              setDropTargetTalentId(null);
-                            }}
-                            className="grid h-9 w-7 shrink-0 cursor-grab place-items-center rounded-lg text-subtle transition-colors active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary"
-                          >
-                            <GripVertical className="h-4 w-4" aria-hidden="true" />
-                          </span>
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <h2 className="font-display text-sm font-bold">
-                                {talent.stage_name}
-                              </h2>
-                              <StatusPill status={talent.status} />
-                            </div>
-                            <p className="mt-1 truncate text-xs text-muted-foreground">
-                              {talent.category} · /{talent.slug}
-                            </p>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="text-muted-foreground">Completude</span>
-                            <span className="font-bold">{health.score}%</span>
-                          </div>
-                          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                            <div
-                              className="h-full rounded-full bg-primary"
-                              style={{ width: `${health.score}%` }}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {connections.length ? (
-                            connections
-                              .slice(0, 3)
-                              .map((connection) => (
-                                <StatusPill
-                                  key={connection.id}
-                                  status={connection.connection_status}
-                                />
-                              ))
-                          ) : (
-                            <span className="text-xs text-primary">Nenhuma</span>
-                          )}
-                        </div>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {assignedProfile?.email ?? "Sem creator atribuído"}
+          <div className="min-w-0">
+            <header className="mb-5 flex flex-col gap-4 rounded-[24px] border border-border bg-surface px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
+              <div>
+                <p className="font-display text-[0.6rem] font-bold uppercase tracking-[0.17em] text-primary">
+                  {VIEW_ITEMS.find((item) => item.key === view)?.group}
+                </p>
+                <h1 className="mt-2 font-display text-2xl font-bold tracking-[-0.04em] md:text-3xl">
+                  {VIEW_COPY[view].title}
+                </h1>
+                <p className="mt-2 text-sm text-muted-foreground">{VIEW_COPY[view].description}</p>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${dashboardQuery.isError ? "bg-primary" : "bg-emerald-400"}`}
+                />
+                {dashboardQuery.isError ? "Operação indisponível" : "Sistema operacional"}
+              </div>
+            </header>
+
+            {dashboardQuery.isLoading ? (
+              <p className="mt-8 text-sm text-muted-foreground">Carregando a operação...</p>
+            ) : dashboardQuery.isError ? (
+              <p className="mt-8 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+                {dashboardQuery.error.message}
+              </p>
+            ) : view === "overview" ? (
+              <div className="mt-6 space-y-6">
+                <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+                  <KpiCard
+                    icon={UsersRound}
+                    label="Media Kits"
+                    value={publishedTalents.length}
+                    detail="publicados no diretório"
+                  />
+                  <KpiCard
+                    icon={MessageSquareText}
+                    label="Novas respostas"
+                    value={newLeads.length}
+                    detail="marcas e creators aguardando retorno"
+                    urgent
+                  />
+                  <KpiCard
+                    icon={AlertTriangle}
+                    label="Dados incompletos"
+                    value={missingData.length}
+                    detail="Media Kits abaixo de 80%"
+                    urgent
+                  />
+                  <KpiCard
+                    icon={WifiOff}
+                    label="Sem conexão"
+                    value={missingConnections.length}
+                    detail="talentos sem nenhuma rede ativa"
+                    urgent
+                  />
+                  <KpiCard
+                    icon={Activity}
+                    label="Erros de sync"
+                    value={syncErrors.length}
+                    detail="integrações que exigem revisão"
+                    urgent
+                  />
+                  <KpiCard
+                    icon={RefreshCw}
+                    label="Atualização pendente"
+                    value={pendingMetricTalentIds.size}
+                    detail="creators aguardando métricas novas"
+                    urgent
+                  />
+                </section>
+
+                <section className="grid gap-6 xl:grid-cols-[1.35fr_0.9fr]">
+                  <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
+                          Prioridades
                         </p>
-                        <div className="flex gap-2 lg:justify-end">
-                          <Link
-                            to="/mediakit/$slug"
-                            params={{ slug: talent.slug }}
-                            target="_blank"
-                            aria-label={`Abrir Media Kit de ${talent.stage_name}`}
-                            className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                          >
-                            <ArrowUpRight className="h-4 w-4" />
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => setEditing(talent)}
-                            className="gbz-interactive min-h-10 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                          >
-                            Editar
-                          </button>
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-          ) : view === "blogs" ? (
-            <section className="mt-6">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <div className="relative flex-1 sm:max-w-md">
-                  <Search
-                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="search"
-                    value={blogTerm}
-                    onChange={(event) => setBlogTerm(event.target.value)}
-                    placeholder="Buscar artigo"
-                    aria-label="Buscar artigo"
-                    className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[21rem]">
-                  Arraste ou use as setas para definir a ordem em /blogs. A reordenação fica
-                  disponível sem uma busca ativa.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => setEditingBlogPost({ ...EMPTY_BLOG_POST })}
-                  className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
-                >
-                  <Plus className="h-4 w-4" aria-hidden="true" /> Novo artigo
-                </button>
-              </div>
+                        <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
+                          Fila de atenção
+                        </h2>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setView("talents")}
+                        className="text-xs font-semibold text-primary"
+                      >
+                        Ver todos
+                      </button>
+                    </div>
+                    <div className="mt-6 space-y-3">
+                      {publishedTalents
+                        .filter(
+                          (talent) =>
+                            talentHealth(talent).score < 100 ||
+                            !connectionsByTalent.get(talent.id)?.length ||
+                            pendingMetricTalentIds.has(talent.id),
+                        )
+                        .slice(0, 7)
+                        .map((talent) => {
+                          const health = talentHealth(talent);
+                          const connected = (connectionsByTalent.get(talent.id) ?? []).filter(
+                            (item) => item.sync_enabled,
+                          ).length;
+                          const awaitingMetrics = (connectionsByTalent.get(talent.id) ?? []).filter(
+                            (item) => pendingMetricConnectionIds.has(item.id),
+                          ).length;
+                          return (
+                            <button
+                              key={talent.id}
+                              type="button"
+                              onClick={() => {
+                                setEditing(talent);
+                                setView("talents");
+                              }}
+                              className="gbz-interactive flex w-full items-center gap-4 rounded-2xl border border-border bg-background p-4 text-left transition-colors fine-hover:hover:border-primary/60"
+                            >
+                              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted font-display text-sm font-bold text-foreground">
+                                {talent.stage_name.slice(0, 2).toUpperCase()}
+                              </span>
+                              <span className="min-w-0 flex-1">
+                                <span className="block truncate font-display text-sm font-bold">
+                                  {talent.stage_name}
+                                </span>
+                                <span className="mt-1 block truncate text-xs text-muted-foreground">
+                                  {health.missing.length
+                                    ? `Falta: ${health.missing.join(", ")}`
+                                    : awaitingMetrics
+                                      ? `${awaitingMetrics} conexões aguardando dados`
+                                      : "Dados essenciais completos"}
+                                </span>
+                              </span>
+                              <span className="text-right text-xs text-muted-foreground">
+                                {health.score}%<br />
+                                {connected} redes
+                              </span>
+                            </button>
+                          );
+                        })}
+                      {publishedTalents.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">Nenhum Media Kit publicado.</p>
+                      ) : null}
+                    </div>
+                  </article>
 
-              {blogsQuery.isLoading ? (
-                <p className="mt-8 text-sm text-muted-foreground">Carregando os artigos...</p>
-              ) : blogsQuery.isError ? (
-                <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
-                  Não foi possível carregar os blogs: {blogsQuery.error.message}
+                  <article className="rounded-[28px] border border-border bg-surface p-5 md:p-7">
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-display text-[0.65rem] font-bold uppercase tracking-[0.18em] text-primary">
+                          Entrada
+                        </p>
+                        <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
+                          Últimas respostas
+                        </h2>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setView("leads")}
+                        className="text-xs font-semibold text-primary"
+                      >
+                        Abrir inbox
+                      </button>
+                    </div>
+                    <div className="mt-6 space-y-3">
+                      {(dashboard?.leads ?? []).slice(0, 6).map((lead) => (
+                        <div
+                          key={lead.id}
+                          className="rounded-2xl border border-border bg-background p-4"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="min-w-0">
+                              <p className="truncate font-display text-sm font-bold">{lead.name}</p>
+                              <p className="mt-1 truncate text-xs text-muted-foreground">
+                                {lead.kind === "brand" ? lead.company : lead.creator_type}
+                              </p>
+                            </div>
+                            <StatusPill status={lead.status} />
+                          </div>
+                          <p className="mt-3 text-[0.65rem] uppercase tracking-[0.12em] text-subtle">
+                            {lead.kind === "brand" ? "Marca" : "Creator"} ·{" "}
+                            {formatDate(lead.created_at)}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                </section>
+              </div>
+            ) : view === "talents" ? (
+              <section className="mt-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="relative flex-1 sm:max-w-md">
+                    <Search
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                      aria-hidden="true"
+                    />
+                    <input
+                      type="search"
+                      value={term}
+                      onChange={(event) => setTerm(event.target.value)}
+                      placeholder="Buscar Media Kit"
+                      aria-label="Buscar Media Kit"
+                      className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[18rem]">
+                    Arraste pelo ícone de alça para definir a ordem exibida na frontpage.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setEditing({ ...EMPTY_TALENT })}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
+                  >
+                    <Plus className="h-4 w-4" aria-hidden="true" /> Novo talento
+                  </button>
                 </div>
-              ) : (
+
                 <div className="mt-6 overflow-hidden rounded-[28px] border border-border bg-surface">
-                  <div className="hidden grid-cols-[1.4fr_0.75fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
-                    <span>Artigo</span>
-                    <span>Publicação</span>
-                    <span>Posição</span>
-                    <span>Ações</span>
+                  <div className="hidden grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
+                    <span>Talento</span>
+                    <span>Qualidade</span>
+                    <span>Conexões</span>
+                    <span>Acesso</span>
+                    <span>Ação</span>
                   </div>
                   <div className="divide-y divide-border">
-                    {blogRows.map((post, index) => {
-                      const isDragging = draggedBlogId === post.id;
+                    {talentRows.map((talent) => {
+                      const health = talentHealth(talent);
+                      const connections = connectionsByTalent.get(talent.id) ?? [];
+                      const assignedProfile = profilesById.get(accessByTalent.get(talent.id) ?? "");
+                      const isDragging = draggedTalentId === talent.id;
                       const isDropTarget =
-                        dropTargetBlogId === post.id && draggedBlogId !== post.id;
-                      const canReorder = !blogTerm.trim() && !reorderBlogMutation.isPending;
+                        dropTargetTalentId === talent.id && draggedTalentId !== talent.id;
                       return (
                         <article
-                          key={post.id}
+                          key={talent.id}
                           onDragOver={(event) => {
-                            if (!canReorder || !draggedBlogId || draggedBlogId === post.id) return;
+                            if (!draggedTalentId || draggedTalentId === talent.id) return;
                             event.preventDefault();
                             event.dataTransfer.dropEffect = "move";
-                            setDropTargetBlogId(post.id);
+                            setDropTargetTalentId(talent.id);
                           }}
                           onDrop={(event) => {
                             event.preventDefault();
-                            handleBlogDrop(post.id);
+                            handleDrop(talent.id);
                           }}
-                          className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.4fr_0.75fr_0.8fr_auto] lg:items-center lg:px-6 ${
+                          className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.25fr_0.8fr_0.7fr_0.8fr_auto] lg:items-center lg:px-6 ${
                             isDragging ? "opacity-45" : ""
                           } ${isDropTarget ? "bg-primary/10" : ""}`}
                         >
                           <div className="flex min-w-0 items-center gap-3">
                             <span
-                              draggable={canReorder}
+                              draggable={!reorderMutation.isPending}
                               role="button"
-                              tabIndex={canReorder ? 0 : -1}
-                              aria-label={`Arrastar ${post.title} para reordenar`}
-                              title={canReorder ? "Arraste para reordenar" : undefined}
+                              tabIndex={0}
+                              aria-label={`Arrastar ${talent.stage_name} para reordenar`}
+                              title="Arraste para reordenar"
                               onDragStart={(event) => {
                                 event.dataTransfer.effectAllowed = "move";
-                                event.dataTransfer.setData("text/plain", post.id);
-                                setDraggedBlogId(post.id);
-                                setDropTargetBlogId(null);
+                                event.dataTransfer.setData("text/plain", talent.id);
+                                setDraggedTalentId(talent.id);
+                                setDropTargetTalentId(null);
                               }}
                               onDragEnd={() => {
-                                setDraggedBlogId(null);
-                                setDropTargetBlogId(null);
+                                setDraggedTalentId(null);
+                                setDropTargetTalentId(null);
                               }}
-                              className={`grid h-9 w-7 shrink-0 place-items-center rounded-lg text-subtle transition-colors ${canReorder ? "cursor-grab active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary" : "cursor-not-allowed opacity-40"}`}
+                              className="grid h-9 w-7 shrink-0 cursor-grab place-items-center rounded-lg text-subtle transition-colors active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary"
                             >
                               <GripVertical className="h-4 w-4" aria-hidden="true" />
                             </span>
                             <div className="min-w-0">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h2 className="truncate font-display text-sm font-bold">
-                                  {post.title}
+                                <h2 className="font-display text-sm font-bold">
+                                  {talent.stage_name}
                                 </h2>
-                                {post.featured ? (
-                                  <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
-                                    Destaque
-                                  </span>
-                                ) : null}
+                                <StatusPill status={talent.status} />
                               </div>
                               <p className="mt-1 truncate text-xs text-muted-foreground">
-                                {post.category} · /blogs/{post.slug}
+                                {talent.category} · /{talent.slug}
                               </p>
                             </div>
                           </div>
                           <div>
-                            <StatusPill status={post.status} />
-                            <p className="mt-2 text-xs text-muted-foreground">{post.author_name}</p>
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-muted-foreground">Completude</span>
+                              <span className="font-bold">{health.score}%</span>
+                            </div>
+                            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
+                              <div
+                                className="h-full rounded-full bg-primary"
+                                style={{ width: `${health.score}%` }}
+                              />
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="min-w-8 text-center font-display text-sm font-bold">
-                              {index + 1}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => moveBlog(post.id, -1)}
-                              disabled={!canReorder || index === 0}
-                              aria-label={`Mover ${post.title} para cima`}
-                              className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                            >
-                              <ChevronUp className="h-4 w-4" aria-hidden="true" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => moveBlog(post.id, 1)}
-                              disabled={!canReorder || index === blogRows.length - 1}
-                              aria-label={`Mover ${post.title} para baixo`}
-                              className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                            >
-                              <ChevronDown className="h-4 w-4" aria-hidden="true" />
-                            </button>
+                          <div className="flex flex-wrap gap-1.5">
+                            {connections.length ? (
+                              connections
+                                .slice(0, 3)
+                                .map((connection) => (
+                                  <StatusPill
+                                    key={connection.id}
+                                    status={connection.connection_status}
+                                  />
+                                ))
+                            ) : (
+                              <span className="text-xs text-primary">Nenhuma</span>
+                            )}
                           </div>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {assignedProfile?.email ?? "Sem creator atribuído"}
+                          </p>
                           <div className="flex gap-2 lg:justify-end">
-                            {post.status === "published" ? (
-                              <Link
-                                to="/blogs/$slug"
-                                params={{ slug: post.slug }}
-                                target="_blank"
-                                aria-label={`Abrir artigo ${post.title}`}
-                                className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                              >
-                                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-                              </Link>
-                            ) : null}
+                            <Link
+                              to="/mediakit/$slug"
+                              params={{ slug: talent.slug }}
+                              target="_blank"
+                              aria-label={`Abrir Media Kit de ${talent.stage_name}`}
+                              className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                            >
+                              <ArrowUpRight className="h-4 w-4" />
+                            </Link>
                             <button
                               type="button"
-                              onClick={() => setEditingBlogPost(post)}
+                              onClick={() => setEditing(talent)}
                               className="gbz-interactive min-h-10 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
                             >
                               Editar
@@ -1189,248 +1183,386 @@ function AdminRoute() {
                         </article>
                       );
                     })}
-                    {blogRows.length === 0 ? (
-                      <p className="px-6 py-10 text-sm text-muted-foreground">
-                        {blogTerm ? "Nenhum artigo encontrado." : "Nenhum artigo cadastrado."}
-                      </p>
-                    ) : null}
                   </div>
                 </div>
-              )}
-            </section>
-          ) : view === "leads" ? (
-            <section className="mt-6">
-              <div className="flex flex-wrap gap-2">
-                {(["all", "brand", "creator"] as LeadFilter[]).map((filter) => (
+              </section>
+            ) : view === "connections" ? (
+              <ConnectionsPanel
+                talents={dashboard?.talents ?? []}
+                connections={dashboard?.connections ?? []}
+                snapshots={dashboard?.snapshots ?? []}
+                syncRuns={dashboard?.syncRuns ?? []}
+                syncing={syncMutation.isPending}
+                onSync={(ids) => syncMutation.mutate(ids)}
+              />
+            ) : view === "analytics" ? (
+              <AnalyticsPanel
+                talents={dashboard?.talents ?? []}
+                connections={dashboard?.connections ?? []}
+                snapshots={dashboard?.snapshots ?? []}
+              />
+            ) : view === "blogs" ? (
+              <section className="mt-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="relative flex-1 sm:max-w-md">
+                    <Search
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                      aria-hidden="true"
+                    />
+                    <input
+                      type="search"
+                      value={blogTerm}
+                      onChange={(event) => setBlogTerm(event.target.value)}
+                      placeholder="Buscar artigo"
+                      aria-label="Buscar artigo"
+                      className="h-12 w-full rounded-full border border-border bg-surface pl-11 pr-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                  <p className="text-xs leading-relaxed text-muted-foreground sm:max-w-[21rem]">
+                    Arraste ou use as setas para definir a ordem em /blogs. A reordenação fica
+                    disponível sem uma busca ativa.
+                  </p>
                   <button
-                    key={filter}
                     type="button"
-                    onClick={() => setLeadFilter(filter)}
-                    className={`min-h-10 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] ${leadFilter === filter ? "bg-primary text-primary-foreground" : "border border-border text-muted-foreground"}`}
+                    onClick={() => setEditingBlogPost({ ...EMPTY_BLOG_POST })}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-primary px-6 font-display text-xs font-bold uppercase tracking-[0.14em] text-primary-foreground"
                   >
-                    {filter === "all" ? "Todas" : filter === "brand" ? "Marcas" : "Creators"}
+                    <Plus className="h-4 w-4" aria-hidden="true" /> Novo artigo
                   </button>
-                ))}
-              </div>
-              <div className="mt-5 grid gap-4 xl:grid-cols-2">
-                {filteredLeads.map((lead) => (
-                  <article
-                    key={lead.id}
-                    className="rounded-[26px] border border-border bg-surface p-5 md:p-6"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="min-w-0">
-                        <p className="font-display text-[0.6rem] font-bold uppercase tracking-[0.16em] text-primary">
-                          {lead.kind === "brand" ? "Marca" : "Creator"}
-                        </p>
-                        <h2 className="mt-2 truncate font-display text-lg font-bold">
-                          {lead.name}
-                        </h2>
-                        <p className="mt-1 truncate text-sm text-muted-foreground">{lead.email}</p>
-                      </div>
-                      <select
-                        aria-label={`Status de ${lead.name}`}
-                        value={lead.status}
-                        onChange={(event) =>
-                          leadMutation.mutate({
-                            id: lead.id,
-                            status: event.target.value as LeadRow["status"],
-                          })
-                        }
-                        className="min-h-10 rounded-full border border-border bg-background px-3 text-xs text-foreground outline-none focus:border-primary"
-                      >
-                        <option value="new">Nova</option>
-                        <option value="contacted">Contatada</option>
-                        <option value="archived">Arquivada</option>
-                      </select>
+                </div>
+
+                {blogsQuery.isLoading ? (
+                  <p className="mt-8 text-sm text-muted-foreground">Carregando os artigos...</p>
+                ) : blogsQuery.isError ? (
+                  <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+                    Não foi possível carregar os blogs: {blogsQuery.error.message}
+                  </div>
+                ) : (
+                  <div className="mt-6 overflow-hidden rounded-[28px] border border-border bg-surface">
+                    <div className="hidden grid-cols-[1.4fr_0.75fr_0.8fr_auto] gap-4 border-b border-border px-6 py-4 font-display text-[0.6rem] font-bold uppercase tracking-[0.15em] text-subtle lg:grid">
+                      <span>Artigo</span>
+                      <span>Publicação</span>
+                      <span>Posição</span>
+                      <span>Ações</span>
                     </div>
-                    <dl className="mt-5 grid gap-4 border-t border-border pt-5 text-sm sm:grid-cols-2">
-                      <div>
-                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
-                          Contexto
-                        </dt>
-                        <dd className="mt-2 text-muted-foreground">
-                          {lead.kind === "brand" ? lead.company : lead.creator_type}
-                        </dd>
-                      </div>
-                      <div>
-                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
-                          WhatsApp
-                        </dt>
-                        <dd className="mt-2 text-muted-foreground">
-                          {lead.whatsapp || "Não informado"}
-                        </dd>
-                      </div>
-                      <div className="sm:col-span-2">
-                        <dt className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-subtle">
-                          {lead.kind === "brand" ? "Mensagem" : "Perfis"}
-                        </dt>
-                        <dd className="mt-2 whitespace-pre-wrap leading-relaxed text-muted-foreground">
-                          {lead.kind === "brand" ? lead.message : lead.profiles}
-                        </dd>
-                      </div>
-                    </dl>
-                    <p className="mt-5 flex items-center gap-2 text-xs text-subtle">
-                      <Clock3 className="h-3.5 w-3.5" />
-                      {formatDate(lead.created_at)}
-                    </p>
-                  </article>
-                ))}
-              </div>
-            </section>
-          ) : (
-            <section className="mt-6 grid gap-6 xl:grid-cols-[0.9fr_1.4fr]">
-              {dashboard?.authUsersError ? (
-                <div className="xl:col-span-2 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
-                  A gestão de contas está temporariamente indisponível. A visão geral continua
-                  funcionando, mas a Edge Function de usuários precisa ser republicada.
-                </div>
-              ) : null}
-              <article className="rounded-[28px] border border-border bg-surface p-6 md:p-7">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary">
-                  <CircleUserRound className="h-5 w-5" />
-                </span>
-                <h2 className="mt-6 font-display text-xl font-bold tracking-[-0.03em]">
-                  Acesso mínimo por design
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                  Cada creator recebe acesso a um único Media Kit. Ele pode apenas conectar ou
-                  desconectar as próprias redes; textos, métricas manuais e publicação continuam sob
-                  controle da Gamerbiz.
-                </p>
-                <div className="mt-6 rounded-2xl border border-border bg-background p-4 text-xs leading-relaxed text-muted-foreground">
-                  <strong className="text-foreground">Gestão centralizada:</strong> crie, edite,
-                  redefina senhas e exclua contas diretamente por esta tela. Senhas existentes nunca
-                  são exibidas.
-                </div>
-              </article>
-              <article className="overflow-hidden rounded-[28px] border border-border bg-surface">
-                <div className="flex flex-col gap-4 border-b border-border px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <h2 className="font-display text-lg font-bold">Usuários e Media Kits</h2>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {dashboard?.profiles.length ?? 0} contas disponíveis no Supabase
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setEditingUser({ ...EMPTY_USER })}
-                    className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
-                  >
-                    <Plus className="h-4 w-4" aria-hidden="true" />
-                    Novo usuário
-                  </button>
-                </div>
-                <div className="relative border-b border-border px-6 py-4">
-                  <Search
-                    className="pointer-events-none absolute left-10 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-                    aria-hidden="true"
-                  />
-                  <input
-                    type="search"
-                    value={accessTerm}
-                    onChange={(event) => setAccessTerm(event.target.value)}
-                    placeholder="Buscar por nome, e-mail ou Media Kit"
-                    aria-label="Buscar acessos por nome, e-mail ou Media Kit"
-                    className="h-11 w-full rounded-full border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition-[border-color] focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                  {accessTerm ? (
-                    <p className="mt-2 px-2 text-xs text-muted-foreground" aria-live="polite">
-                      {accessRows.length} resultado{accessRows.length === 1 ? "" : "s"}
-                    </p>
-                  ) : null}
-                </div>
-                <div className="divide-y divide-border">
-                  {accessRows.map((profile) => {
-                    const talentId = accessByUser.get(profile.user_id) ?? "";
-                    const isCreator = dashboard?.creatorUserIds.includes(profile.user_id);
-                    const isProfileAdmin = adminUserIds.has(profile.user_id);
-                    return (
-                      <div
-                        key={profile.user_id}
-                        className="grid gap-4 px-6 py-5 md:grid-cols-[1fr_minmax(220px,0.9fr)_auto] md:items-center"
-                      >
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="truncate font-display text-sm font-bold">
-                              {profile.display_name || profile.email.split("@")[0]}
-                            </p>
-                            {isCreator ? (
-                              <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
-                                Creator
-                              </span>
-                            ) : null}
-                            {isCreator && profile.must_change_password ? (
-                              <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-amber-300">
-                                Troca de senha pendente
-                              </span>
-                            ) : null}
-                            {isProfileAdmin ? (
-                              <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-emerald-400">
-                                Administrador
-                              </span>
-                            ) : null}
-                          </div>
-                          <p className="mt-1 truncate text-xs text-muted-foreground">
-                            {profile.email}
-                          </p>
-                        </div>
-                        {isProfileAdmin ? (
-                          <div className="flex min-h-11 items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 text-xs font-semibold text-emerald-300">
-                            Acesso total — sem Media Kit
-                          </div>
-                        ) : (
-                          <select
-                            value={talentId}
-                            onChange={(event) =>
-                              accessMutation.mutate({
-                                userId: profile.user_id,
-                                talentId: event.target.value || null,
-                              })
-                            }
-                            disabled={accessMutation.isPending}
-                            aria-label={`Media Kit atribuído a ${profile.email}`}
-                            className="min-h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+                    <div className="divide-y divide-border">
+                      {blogRows.map((post, index) => {
+                        const isDragging = draggedBlogId === post.id;
+                        const isDropTarget =
+                          dropTargetBlogId === post.id && draggedBlogId !== post.id;
+                        const canReorder = !blogTerm.trim() && !reorderBlogMutation.isPending;
+                        return (
+                          <article
+                            key={post.id}
+                            onDragOver={(event) => {
+                              if (!canReorder || !draggedBlogId || draggedBlogId === post.id)
+                                return;
+                              event.preventDefault();
+                              event.dataTransfer.dropEffect = "move";
+                              setDropTargetBlogId(post.id);
+                            }}
+                            onDrop={(event) => {
+                              event.preventDefault();
+                              handleBlogDrop(post.id);
+                            }}
+                            className={`grid gap-4 px-5 py-5 transition-[background-color,opacity] lg:grid-cols-[1.4fr_0.75fr_0.8fr_auto] lg:items-center lg:px-6 ${
+                              isDragging ? "opacity-45" : ""
+                            } ${isDropTarget ? "bg-primary/10" : ""}`}
                           >
-                            <option value="">Sem Media Kit</option>
-                            {(dashboard?.talents ?? []).map((talent) => (
-                              <option key={talent.id} value={talent.id}>
-                                {talent.stage_name}
-                              </option>
-                            ))}
-                          </select>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditingUser({
-                              userId: profile.user_id,
-                              email: profile.email,
-                              displayName: profile.display_name || "",
-                              password: "",
-                              role: isProfileAdmin ? "admin" : "creator",
-                              talentId,
-                            })
-                          }
-                          aria-label={`Editar usuário ${profile.email}`}
-                          className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
-                        >
-                          <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
-                          Editar
-                        </button>
-                      </div>
-                    );
-                  })}
-                  {accessRows.length === 0 ? (
-                    <p className="px-6 py-8 text-sm text-muted-foreground">
-                      Nenhum acesso encontrado.
-                    </p>
+                            <div className="flex min-w-0 items-center gap-3">
+                              <span
+                                draggable={canReorder}
+                                role="button"
+                                tabIndex={canReorder ? 0 : -1}
+                                aria-label={`Arrastar ${post.title} para reordenar`}
+                                title={canReorder ? "Arraste para reordenar" : undefined}
+                                onDragStart={(event) => {
+                                  event.dataTransfer.effectAllowed = "move";
+                                  event.dataTransfer.setData("text/plain", post.id);
+                                  setDraggedBlogId(post.id);
+                                  setDropTargetBlogId(null);
+                                }}
+                                onDragEnd={() => {
+                                  setDraggedBlogId(null);
+                                  setDropTargetBlogId(null);
+                                }}
+                                className={`grid h-9 w-7 shrink-0 place-items-center rounded-lg text-subtle transition-colors ${canReorder ? "cursor-grab active:cursor-grabbing fine-hover:hover:bg-muted fine-hover:hover:text-primary" : "cursor-not-allowed opacity-40"}`}
+                              >
+                                <GripVertical className="h-4 w-4" aria-hidden="true" />
+                              </span>
+                              <div className="min-w-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <h2 className="truncate font-display text-sm font-bold">
+                                    {post.title}
+                                  </h2>
+                                  {post.featured ? (
+                                    <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
+                                      Destaque
+                                    </span>
+                                  ) : null}
+                                </div>
+                                <p className="mt-1 truncate text-xs text-muted-foreground">
+                                  {post.category} · /blogs/{post.slug}
+                                </p>
+                              </div>
+                            </div>
+                            <div>
+                              <StatusPill status={post.status} />
+                              <p className="mt-2 text-xs text-muted-foreground">
+                                {post.author_name}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="min-w-8 text-center font-display text-sm font-bold">
+                                {index + 1}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => moveBlog(post.id, -1)}
+                                disabled={!canReorder || index === 0}
+                                aria-label={`Mover ${post.title} para cima`}
+                                className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                              >
+                                <ChevronUp className="h-4 w-4" aria-hidden="true" />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => moveBlog(post.id, 1)}
+                                disabled={!canReorder || index === blogRows.length - 1}
+                                aria-label={`Mover ${post.title} para baixo`}
+                                className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors disabled:opacity-30 fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                              >
+                                <ChevronDown className="h-4 w-4" aria-hidden="true" />
+                              </button>
+                            </div>
+                            <div className="flex gap-2 lg:justify-end">
+                              {post.status === "published" ? (
+                                <Link
+                                  to="/blogs/$slug"
+                                  params={{ slug: post.slug }}
+                                  target="_blank"
+                                  aria-label={`Abrir artigo ${post.title}`}
+                                  className="gbz-interactive grid h-10 w-10 place-items-center rounded-full border border-border text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                                >
+                                  <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                                </Link>
+                              ) : null}
+                              <button
+                                type="button"
+                                onClick={() => setEditingBlogPost(post)}
+                                className="gbz-interactive min-h-10 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                              >
+                                Editar
+                              </button>
+                            </div>
+                          </article>
+                        );
+                      })}
+                      {blogRows.length === 0 ? (
+                        <p className="px-6 py-10 text-sm text-muted-foreground">
+                          {blogTerm ? "Nenhum artigo encontrado." : "Nenhum artigo cadastrado."}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </section>
+            ) : view === "content" ? (
+              <ContentOperationsPanel
+                content={dashboard?.siteContent ?? []}
+                blogCount={blogsQuery.data?.length ?? 0}
+                saving={contentMutation.isPending}
+                onSave={(item) => contentMutation.mutate(item)}
+              />
+            ) : view === "leads" ? (
+              <LeadPipelinePanel
+                leads={dashboard?.leads ?? []}
+                profiles={dashboard?.profiles ?? []}
+                saving={leadDetailsMutation.isPending}
+                onSave={(id, draft) => leadDetailsMutation.mutate({ id, draft })}
+              />
+            ) : view === "audit" ? (
+              <AuditPanel
+                logs={dashboard?.auditLogs ?? []}
+                notifications={dashboard?.notifications ?? []}
+                profiles={dashboard?.profiles ?? []}
+                onResolve={(id) => notificationMutation.mutate(id)}
+              />
+            ) : view === "system" ? (
+              <SystemPanel
+                connections={dashboard?.connections ?? []}
+                syncRuns={dashboard?.syncRuns ?? []}
+                authUsersError={dashboard?.authUsersError ?? null}
+                schemaReady={dashboard?.operationsSchemaReady ?? false}
+              />
+            ) : (
+              <section>
+                <AccessHealthSummary
+                  profiles={dashboard?.profiles ?? []}
+                  authUsers={dashboard?.authUsers ?? []}
+                  creatorUserIds={dashboard?.creatorUserIds ?? []}
+                />
+                <div className="grid gap-6 xl:grid-cols-[0.9fr_1.4fr]">
+                  {dashboard?.authUsersError ? (
+                    <div className="xl:col-span-2 rounded-2xl border border-primary/30 bg-primary/10 p-5 text-sm text-primary">
+                      A gestão de contas está temporariamente indisponível. A visão geral continua
+                      funcionando, mas a Edge Function de usuários precisa ser republicada.
+                    </div>
                   ) : null}
+                  <article className="rounded-[28px] border border-border bg-surface p-6 md:p-7">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary">
+                      <CircleUserRound className="h-5 w-5" />
+                    </span>
+                    <h2 className="mt-6 font-display text-xl font-bold tracking-[-0.03em]">
+                      Acesso mínimo por design
+                    </h2>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      Cada creator recebe acesso a um único Media Kit. Ele pode apenas conectar ou
+                      desconectar as próprias redes; textos, métricas manuais e publicação continuam
+                      sob controle da Gamerbiz.
+                    </p>
+                    <div className="mt-6 rounded-2xl border border-border bg-background p-4 text-xs leading-relaxed text-muted-foreground">
+                      <strong className="text-foreground">Gestão centralizada:</strong> crie, edite,
+                      redefina senhas e exclua contas diretamente por esta tela. Senhas existentes
+                      nunca são exibidas.
+                    </div>
+                  </article>
+                  <article className="overflow-hidden rounded-[28px] border border-border bg-surface">
+                    <div className="flex flex-col gap-4 border-b border-border px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <h2 className="font-display text-lg font-bold">Usuários e Media Kits</h2>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {dashboard?.profiles.length ?? 0} contas disponíveis no Supabase
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setEditingUser({ ...EMPTY_USER })}
+                        className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary px-5 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary-foreground"
+                      >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
+                        Novo usuário
+                      </button>
+                    </div>
+                    <div className="relative border-b border-border px-6 py-4">
+                      <Search
+                        className="pointer-events-none absolute left-10 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                        aria-hidden="true"
+                      />
+                      <input
+                        type="search"
+                        value={accessTerm}
+                        onChange={(event) => setAccessTerm(event.target.value)}
+                        placeholder="Buscar por nome, e-mail ou Media Kit"
+                        aria-label="Buscar acessos por nome, e-mail ou Media Kit"
+                        className="h-11 w-full rounded-full border border-border bg-background pl-11 pr-4 text-sm text-foreground outline-none transition-[border-color] focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      />
+                      {accessTerm ? (
+                        <p className="mt-2 px-2 text-xs text-muted-foreground" aria-live="polite">
+                          {accessRows.length} resultado{accessRows.length === 1 ? "" : "s"}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="divide-y divide-border">
+                      {accessRows.map((profile) => {
+                        const talentId = accessByUser.get(profile.user_id) ?? "";
+                        const isCreator = dashboard?.creatorUserIds.includes(profile.user_id);
+                        const isProfileAdmin = adminUserIds.has(profile.user_id);
+                        const authUser = authUsersById.get(profile.user_id);
+                        return (
+                          <div
+                            key={profile.user_id}
+                            className="grid gap-4 px-6 py-5 md:grid-cols-[1fr_minmax(220px,0.9fr)_auto] md:items-center"
+                          >
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="truncate font-display text-sm font-bold">
+                                  {profile.display_name || profile.email.split("@")[0]}
+                                </p>
+                                {isCreator ? (
+                                  <span className="rounded-full bg-primary/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-primary">
+                                    Creator
+                                  </span>
+                                ) : null}
+                                {isCreator && profile.must_change_password ? (
+                                  <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-amber-300">
+                                    Troca de senha pendente
+                                  </span>
+                                ) : null}
+                                {isProfileAdmin ? (
+                                  <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-[0.55rem] font-bold uppercase tracking-[0.12em] text-emerald-400">
+                                    Administrador
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="mt-1 truncate text-xs text-muted-foreground">
+                                {profile.email}
+                              </p>
+                              <p className="mt-1 text-[0.65rem] text-subtle">
+                                Último acesso:{" "}
+                                {authUser?.lastSignInAt
+                                  ? formatDate(authUser.lastSignInAt)
+                                  : "nunca"}
+                              </p>
+                            </div>
+                            {isProfileAdmin ? (
+                              <div className="flex min-h-11 items-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 text-xs font-semibold text-emerald-300">
+                                Acesso total — sem Media Kit
+                              </div>
+                            ) : (
+                              <select
+                                value={talentId}
+                                onChange={(event) =>
+                                  accessMutation.mutate({
+                                    userId: profile.user_id,
+                                    talentId: event.target.value || null,
+                                  })
+                                }
+                                disabled={accessMutation.isPending}
+                                aria-label={`Media Kit atribuído a ${profile.email}`}
+                                className="min-h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none focus:border-primary"
+                              >
+                                <option value="">Sem Media Kit</option>
+                                {(dashboard?.talents ?? []).map((talent) => (
+                                  <option key={talent.id} value={talent.id}>
+                                    {talent.stage_name}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setEditingUser({
+                                  userId: profile.user_id,
+                                  email: profile.email,
+                                  displayName: profile.display_name || "",
+                                  password: "",
+                                  role: isProfileAdmin ? "admin" : "creator",
+                                  talentId,
+                                })
+                              }
+                              aria-label={`Editar usuário ${profile.email}`}
+                              className="gbz-interactive inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-border px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-colors fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                            >
+                              <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+                              Editar
+                            </button>
+                          </div>
+                        );
+                      })}
+                      {accessRows.length === 0 ? (
+                        <p className="px-6 py-8 text-sm text-muted-foreground">
+                          Nenhum acesso encontrado.
+                        </p>
+                      ) : null}
+                    </div>
+                  </article>
                 </div>
-              </article>
-            </section>
-          )}
-        </>
+              </section>
+            )}
+          </div>
+        </div>
       )}
 
       {editing ? (
@@ -1493,6 +1625,9 @@ function AdminRoute() {
                   }
                 }
               : undefined
+          }
+          onResetPassword={
+            editingUser.userId ? () => resetUserMutation.mutate(editingUser.userId!) : undefined
           }
           saving={userMutation.isPending}
           deleting={deleteUserMutation.isPending}

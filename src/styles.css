@@ -220,6 +220,32 @@
   scale: var(--gbz-press-scale);
 }
 
+.admin-drawer {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    transform 220ms var(--ease-out-gbz),
+    opacity 180ms var(--ease-out-gbz);
+
+  @starting-style {
+    opacity: 0.96;
+    transform: translateX(100%);
+  }
+}
+
+.admin-dialog {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    transform 200ms var(--ease-out-gbz),
+    opacity 160ms var(--ease-out-gbz);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -248,6 +274,12 @@
     translate: 0 0 !important;
     rotate: 0deg !important;
     transition-property: color, background-color, border-color, opacity !important;
+  }
+
+  .admin-drawer,
+  .admin-dialog {
+    transform: none !important;
+    transition: opacity 120ms ease !important;
   }
 }
 

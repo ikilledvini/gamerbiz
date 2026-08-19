@@ -19,17 +19,14 @@ export function TeamsSolutionsSection() {
           <h2 className="title-gbz mt-4 max-w-[15ch]">
             {t.teams.titleLead && t.teams.titleBrand && t.teams.titleAccent ? (
               <>
-                <span className="block font-medium">{t.teams.titleLead}</span>
-                <span className="block font-bold">{t.teams.titleBrand}</span>
-                <span className="block font-medium text-primary">{t.teams.titleAccent}</span>
+                <span className="block">{t.teams.titleLead}</span>
+                <span className="block">{t.teams.titleBrand}</span>
+                <span className="block text-primary">{t.teams.titleAccent}</span>
               </>
             ) : (
               t.teams.title
             )}
           </h2>
-          <p className="mt-6 max-w-[52ch] text-base leading-relaxed text-muted-foreground md:text-lg">
-            {t.teams.description}
-          </p>
           <div className="mt-8">
             <GbzButton variant="outline" onClick={() => openBrandModal(t.teams.subject)}>
               {t.teams.button}

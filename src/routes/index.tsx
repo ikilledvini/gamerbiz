@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
-import { I18nProvider, useI18n } from "@/i18n";
+import { I18nProvider, useI18n, type DeepPartial, type Dict, type LangCode } from "@/i18n";
+import { supabase } from "@/integrations/supabase/client";
 import { ModalProvider } from "@/components/modals/modal-provider";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -99,8 +101,29 @@ function HomeContent() {
 }
 
 function Index() {
+  const contentQuery = useQuery({
+    queryKey: ["public-homepage-content"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("locale, payload")
+        .eq("content_key", "homepage")
+        .eq("status", "published");
+      if (error) return [];
+      return data ?? [];
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const overrides = useMemo(
+    () =>
+      Object.fromEntries(
+        (contentQuery.data ?? []).map((item) => [item.locale, item.payload as DeepPartial<Dict>]),
+      ) as Partial<Record<LangCode, DeepPartial<Dict>>>,
+    [contentQuery.data],
+  );
+
   return (
-    <I18nProvider>
+    <I18nProvider overrides={overrides}>
       <ModalProvider>
         <HomeContent />
         <Toaster />

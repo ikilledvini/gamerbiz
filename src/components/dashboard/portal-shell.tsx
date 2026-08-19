@@ -9,6 +9,7 @@ export function PortalShell({
   description,
   userLabel,
   onSignOut,
+  workspace = false,
   children,
 }: {
   eyebrow: string;
@@ -16,6 +17,7 @@ export function PortalShell({
   description: string;
   userLabel?: string | null | undefined;
   onSignOut: () => void;
+  workspace?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -57,20 +59,22 @@ export function PortalShell({
         </div>
       </header>
 
-      <div className="container-gbz py-8 md:py-12">
-        <div className="max-w-4xl">
-          <p className="font-display text-[0.6875rem] font-bold uppercase tracking-[0.22em] text-primary">
-            {userLabel || eyebrow}
-          </p>
-          <h1 className="mt-3 font-display text-3xl font-bold leading-[1.02] tracking-[-0.04em] text-foreground md:text-5xl">
-            {title}
-          </h1>
-          <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-foreground md:text-base">
-            {description}
-          </p>
-        </div>
+      <div className={`container-gbz ${workspace ? "py-5 md:py-6" : "py-8 md:py-12"}`}>
+        {!workspace ? (
+          <div className="max-w-4xl">
+            <p className="font-display text-[0.6875rem] font-bold uppercase tracking-[0.22em] text-primary">
+              {userLabel || eyebrow}
+            </p>
+            <h1 className="mt-3 font-display text-3xl font-bold leading-[1.02] tracking-[-0.04em] text-foreground md:text-5xl">
+              {title}
+            </h1>
+            <p className="mt-4 max-w-[66ch] text-sm leading-relaxed text-muted-foreground md:text-base">
+              {description}
+            </p>
+          </div>
+        ) : null}
 
-        <div className="mt-8">{children}</div>
+        <div className={workspace ? "" : "mt-8"}>{children}</div>
       </div>
     </main>
   );

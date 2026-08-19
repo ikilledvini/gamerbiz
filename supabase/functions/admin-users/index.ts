@@ -17,6 +17,7 @@ type RequestBody =
   | ({ action: "create" } & AccountInput)
   | ({ action: "update"; userId: string } & Partial<AccountInput>)
   | { action: "delete"; userId: string }
+  | { action: "reset"; userId: string }
   | { action: "bootstrap"; accounts: AccountInput[] };
 
 const corsHeaders = {
@@ -212,6 +213,21 @@ Deno.serve(async (request) => {
 
     if (body.action === "create") {
       return respond({ user: await createOrUpdateAccount(body) }, 201);
+    }
+
+    if (body.action === "reset") {
+      const { data: current, error: currentError } = await service.auth.admin.getUserById(
+        body.userId,
+      );
+      if (currentError || !current.user?.email) {
+        throw currentError ?? new Error("User not found");
+      }
+      const siteUrl = Deno.env.get("PUBLIC_SITE_URL") || "https://gamerbiz.com.br";
+      const { error: resetError } = await service.auth.resetPasswordForEmail(current.user.email, {
+        redirectTo: `${siteUrl.replace(/\/$/, "")}/change-password`,
+      });
+      if (resetError) throw resetError;
+      return respond({ ok: true });
     }
 
     if (body.action === "update") {

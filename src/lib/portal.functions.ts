@@ -10,6 +10,12 @@ export type SocialConnectionRow = Database["public"]["Tables"]["social_connectio
 export type LeadRow = Database["public"]["Tables"]["lead_submissions"]["Row"];
 export type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 export type CreatorAccessRow = Database["public"]["Tables"]["creator_talent_access"]["Row"];
+export type SocialMetricSnapshotRow =
+  Database["public"]["Tables"]["social_metric_snapshots"]["Row"];
+export type SocialSyncRunRow = Database["public"]["Tables"]["social_sync_runs"]["Row"];
+export type AdminAuditRow = Database["public"]["Tables"]["admin_audit_logs"]["Row"];
+export type AdminNotificationRow = Database["public"]["Tables"]["admin_notifications"]["Row"];
+export type SiteContentRow = Database["public"]["Tables"]["site_content"]["Row"];
 export type AdminUserRow = {
   id: string;
   email: string;
@@ -113,7 +119,20 @@ export const adminDashboardOverview = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await requireAdmin(context.supabase, context.userId);
 
-    const [talents, connections, leads, profiles, access, roles, authUsers] = await Promise.all([
+    const [
+      talents,
+      connections,
+      leads,
+      profiles,
+      access,
+      roles,
+      authUsers,
+      snapshots,
+      syncRuns,
+      auditLogs,
+      notifications,
+      siteContent,
+    ] = await Promise.all([
       context.supabase.from("talents").select(TALENT_COLUMNS).order("sort_order"),
       context.supabase
         .from("social_connections")
@@ -129,6 +148,28 @@ export const adminDashboardOverview = createServerFn({ method: "GET" })
       context.supabase.functions.invoke<{ users: AdminUserRow[] }>("admin-users", {
         body: { action: "list" },
       }),
+      context.supabase
+        .from("social_metric_snapshots")
+        .select("*")
+        .order("captured_at", { ascending: false })
+        .limit(1200),
+      context.supabase
+        .from("social_sync_runs")
+        .select("*")
+        .order("started_at", { ascending: false })
+        .limit(30),
+      context.supabase
+        .from("admin_audit_logs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100),
+      context.supabase
+        .from("admin_notifications")
+        .select("*")
+        .is("resolved_at", null)
+        .order("created_at", { ascending: false })
+        .limit(100),
+      context.supabase.from("site_content").select("*").order("content_key"),
     ]);
 
     const firstError = [
@@ -155,6 +196,12 @@ export const adminDashboardOverview = createServerFn({ method: "GET" })
         .map((role) => role.user_id),
       authUsers: authUsers.data?.users ?? [],
       authUsersError: authUsers.error?.message ?? null,
+      snapshots: (snapshots.data ?? []) as SocialMetricSnapshotRow[],
+      syncRuns: (syncRuns.data ?? []) as SocialSyncRunRow[],
+      auditLogs: (auditLogs.data ?? []) as AdminAuditRow[],
+      notifications: (notifications.data ?? []) as AdminNotificationRow[],
+      siteContent: (siteContent.data ?? []) as SiteContentRow[],
+      operationsSchemaReady: !syncRuns.error && !auditLogs.error && !notifications.error,
     };
   });
 
@@ -180,7 +227,8 @@ export const adminManageUser = createServerFn({ method: "POST" })
             role: ManagedUserRole;
             talentId: string | null;
           }
-        | { action: "delete"; userId: string },
+        | { action: "delete"; userId: string }
+        | { action: "reset"; userId: string },
     ) => input,
   )
   .handler(async ({ data, context }) => {
@@ -205,12 +253,13 @@ export const adminManageUser = createServerFn({ method: "POST" })
 
 export const adminSyncSocialMetrics = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .validator((input: { connectionIds?: string[] }) => input)
+  .handler(async ({ data, context }) => {
     await requireAdmin(context.supabase, context.userId);
 
     const result = await context.supabase.functions.invoke<SocialSyncResult>(
       "sync-social-metrics",
-      { body: { trigger: "admin" } },
+      { body: { trigger: "admin", connectionIds: data.connectionIds ?? [] } },
     );
     if (result.error) {
       let message = result.error.message;
@@ -239,6 +288,88 @@ export const adminUpdateLeadStatus = createServerFn({ method: "POST" })
       .from("lead_submissions")
       .update({ status: data.status })
       .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminUpdateLead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(
+    (input: {
+      id: string;
+      pipelineStage: string;
+      priority: string;
+      ownerId: string | null;
+      nextActionAt: string | null;
+      internalNotes: string | null;
+      estimatedValue: number | null;
+      source: string | null;
+      tags: string[];
+    }) => input,
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context.supabase, context.userId);
+    const { error } = await context.supabase
+      .from("lead_submissions")
+      .update({
+        pipeline_stage: data.pipelineStage,
+        priority: data.priority,
+        owner_id: data.ownerId,
+        next_action_at: data.nextActionAt,
+        internal_notes: data.internalNotes,
+        estimated_value: data.estimatedValue,
+        source: data.source,
+        tags: data.tags,
+      })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminResolveNotification = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((input: { id: number; resolved: boolean }) => input)
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context.supabase, context.userId);
+    const { error } = await context.supabase
+      .from("admin_notifications")
+      .update({
+        read_at: new Date().toISOString(),
+        resolved_at: data.resolved ? new Date().toISOString() : null,
+      })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminSaveSiteContent = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator(
+    (input: {
+      id: string | null;
+      contentKey: string;
+      locale: string;
+      title: string | null;
+      description: string | null;
+      payload: Database["public"]["Tables"]["site_content"]["Row"]["payload"];
+      status: string;
+    }) => input,
+  )
+  .handler(async ({ data, context }) => {
+    await requireAdmin(context.supabase, context.userId);
+    const values = {
+      content_key: data.contentKey,
+      locale: data.locale,
+      title: data.title,
+      description: data.description,
+      payload: data.payload,
+      status: data.status,
+      published_at: data.status === "published" ? new Date().toISOString() : null,
+    };
+    const query = data.id
+      ? context.supabase.from("site_content").update(values).eq("id", data.id)
+      : context.supabase.from("site_content").insert(values);
+    const { error } = await query;
     if (error) throw new Error(error.message);
     return { ok: true };
   });

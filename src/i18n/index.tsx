@@ -9,6 +9,14 @@ import { LANGUAGES, type Dict, type LangCode } from "./types";
 export { LANGUAGES };
 export type { Dict, LangCode };
 
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T[P] extends object
+      ? DeepPartial<T[P]>
+      : T[P];
+};
+
 const DICTS: Record<LangCode, Dict> = {
   "pt-BR": ptBR,
   en,
@@ -35,10 +43,12 @@ export function I18nProvider({
   children,
   initialLang,
   onLangChange,
+  overrides,
 }: {
   children: ReactNode;
   initialLang?: LangCode | undefined;
   onLangChange?: (lang: LangCode) => void;
+  overrides?: Partial<Record<LangCode, DeepPartial<Dict>>>;
 }) {
   const [lang, setLangState] = useState<LangCode>(initialLang ?? DEFAULT_LANG);
 
@@ -75,10 +85,23 @@ export function I18nProvider({
     [onLangChange],
   );
 
-  const value = useMemo<I18nContextValue>(
-    () => ({ lang, setLang, t: DICTS[lang] }),
-    [lang, setLang],
-  );
+  const value = useMemo<I18nContextValue>(() => {
+    const merge = (base: unknown, extra: unknown): unknown => {
+      if (extra === "") return base;
+      if (!extra || typeof extra !== "object" || Array.isArray(extra)) return extra ?? base;
+      if (!base || typeof base !== "object" || Array.isArray(base)) return extra;
+      const result = { ...(base as Record<string, unknown>) };
+      for (const [key, nextValue] of Object.entries(extra as Record<string, unknown>)) {
+        result[key] = merge(result[key], nextValue);
+      }
+      return result;
+    };
+    return {
+      lang,
+      setLang,
+      t: merge(DICTS[lang], overrides?.[lang]) as Dict,
+    };
+  }, [lang, overrides, setLang]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

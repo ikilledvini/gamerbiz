@@ -94,7 +94,7 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
               className="flex shrink-0 items-center"
               aria-label="Ir para a página inicial da Gamerbiz"
             >
-              <Logo className="h-10" />
+              <Logo className="h-11" />
             </a>
 
             <nav
@@ -156,7 +156,7 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
               aria-label="Ir para a página inicial da Gamerbiz"
               onClick={() => setMenuOpen(false)}
             >
-              <Logo className="h-10" />
+              <Logo className="h-11" />
             </a>
             <Dialog.Close asChild>
               <button
