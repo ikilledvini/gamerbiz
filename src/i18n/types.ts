@@ -74,6 +74,9 @@ export type Dict = {
   teams: {
     eyebrow: string;
     title: string;
+    titleLead?: string;
+    titleBrand?: string;
+    titleAccent?: string;
     description: string;
     services: { key: string; title: string; text: string }[];
     button: string;

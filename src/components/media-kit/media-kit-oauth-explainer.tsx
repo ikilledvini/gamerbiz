@@ -13,78 +13,78 @@ export function MediaKitOAuthExplainer() {
     <section
       id="como-funciona"
       aria-labelledby="mediakit-oauth-title"
-      className="relative mt-14 overflow-hidden rounded-[40px] border border-primary/30 bg-surface px-6 py-12 md:px-10 md:py-16 lg:px-16 lg:py-20"
+      className="relative mt-10 overflow-hidden rounded-[32px] border border-border bg-surface/60 px-5 py-8 md:px-8 md:py-10"
     >
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute -right-20 -top-24 h-64 w-64 rotate-12 rounded-[48px] border-[28px] border-primary/15" />
-        <div className="absolute -bottom-24 -left-20 h-56 w-56 -rotate-12 rounded-[48px] border-[24px] border-primary/10" />
-        <div className="absolute left-1/2 top-0 h-52 w-[38rem] -translate-x-1/2 bg-primary/10 blur-[150px]" />
+        <div className="absolute -right-20 -top-24 h-56 w-56 rotate-12 rounded-[48px] border-[24px] border-primary/[0.06]" />
+        <div className="absolute left-1/3 top-0 h-32 w-80 bg-primary/[0.04] blur-[110px]" />
       </div>
 
       <div className="relative">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <p className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 font-display text-[0.6875rem] font-bold uppercase tracking-[0.2em] text-primary">
-            <Link2 className="h-4 w-4" aria-hidden="true" />
-            {content.eyebrow}
-          </p>
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <p className="inline-flex items-center gap-2 font-display text-[0.625rem] font-bold uppercase tracking-[0.18em] text-primary">
+              <Link2 className="h-3.5 w-3.5" aria-hidden="true" />
+              {content.eyebrow}
+            </p>
 
-          <h2
-            id="mediakit-oauth-title"
-            className="mt-7 max-w-[18ch] font-display text-[clamp(2.25rem,1.3rem+4vw,4.8rem)] font-bold leading-[0.95] tracking-[-0.045em]"
-          >
-            <span className="block">{content.title}</span>
-            <span className="block text-primary">{content.titleAccent}</span>
-          </h2>
+            <h2
+              id="mediakit-oauth-title"
+              className="mt-4 max-w-[20ch] font-display text-[clamp(1.75rem,1.25rem+2vw,3rem)] font-bold leading-[1.02] tracking-[-0.04em]"
+            >
+              {content.title} <span className="text-primary">{content.titleAccent}</span>
+            </h2>
+          </div>
 
-          <p className="mt-7 max-w-[66ch] text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="max-w-[66ch] text-sm leading-relaxed text-muted-foreground md:text-base">
             {content.description}
           </p>
         </div>
 
-        <ol className="mx-auto mt-12 grid max-w-6xl gap-4 md:grid-cols-3">
+        <ol className="mt-8 grid gap-3 md:grid-cols-3">
           {content.steps.map((step, index) => {
             const Icon = STEP_ICONS[index] ?? ShieldCheck;
 
             return (
               <li
                 key={step.title}
-                className="rounded-[28px] border border-border bg-background/75 p-6 backdrop-blur-sm md:p-7"
+                className="rounded-2xl border border-border/80 bg-background/50 p-5"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/[0.08] text-primary">
+                    <Icon className="h-4 w-4" aria-hidden="true" />
                   </span>
                   <span
-                    className="font-display text-xs font-bold tracking-[0.18em] text-subtle"
+                    className="font-display text-[0.625rem] font-bold tracking-[0.16em] text-subtle"
                     aria-hidden="true"
                   >
                     0{index + 1}
                   </span>
                 </div>
-                <h3 className="mt-6 font-display text-xl font-bold tracking-[-0.02em]">
+                <h3 className="mt-4 font-display text-base font-bold tracking-[-0.02em]">
                   {step.title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{step.text}</p>
               </li>
             );
           })}
         </ol>
 
-        <div className="mx-auto mt-10 flex max-w-4xl flex-col items-center text-center">
-          <p className="max-w-[60ch] text-sm leading-relaxed text-subtle">{content.note}</p>
+        <div className="mt-6 flex flex-col gap-4 border-t border-border/70 pt-5 md:flex-row md:items-center md:justify-between">
+          <p className="max-w-[70ch] text-xs leading-relaxed text-subtle">{content.note}</p>
           <nav
             aria-label={content.legalLabel}
-            className="mt-5 flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
+            className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-2"
           >
             <Link
               to={legalPath("privacy", lang)}
-              className="gbz-interactive font-display text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+              className="gbz-interactive font-display text-[0.625rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
             >
               {content.privacy}
             </Link>
             <Link
               to={legalPath("tos", lang)}
-              className="gbz-interactive font-display text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+              className="gbz-interactive font-display text-[0.625rem] font-bold uppercase tracking-[0.12em] text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
             >
               {content.terms}
             </Link>

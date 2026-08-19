@@ -133,7 +133,6 @@ export function BrandContactModal({
             <input
               id="brand-name"
               className={inputClass}
-              placeholder={m.namePlaceholder}
               value={values.name}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? "brand-name-error" : undefined}
@@ -147,7 +146,6 @@ export function BrandContactModal({
             <input
               id="brand-company"
               className={inputClass}
-              placeholder={m.companyPlaceholder}
               value={values.company}
               aria-invalid={Boolean(errors.company)}
               aria-describedby={errors.company ? "brand-company-error" : undefined}
@@ -162,7 +160,6 @@ export function BrandContactModal({
               id="brand-email"
               type="email"
               className={inputClass}
-              placeholder={m.emailPlaceholder}
               value={values.email}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={errors.email ? "brand-email-error" : undefined}
@@ -178,7 +175,6 @@ export function BrandContactModal({
               type="tel"
               inputMode="tel"
               className={inputClass}
-              placeholder={m.whatsappPlaceholder}
               value={values.whatsapp}
               onChange={(e) =>
                 set("whatsapp")(lang === "pt-BR" ? maskBrPhone(e.target.value) : e.target.value)
@@ -190,7 +186,6 @@ export function BrandContactModal({
             <textarea
               id="brand-help"
               className={textareaClass}
-              placeholder={m.helpPlaceholder}
               value={values.help}
               aria-invalid={Boolean(errors.help)}
               aria-describedby={errors.help ? "brand-help-error" : undefined}

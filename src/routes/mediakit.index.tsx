@@ -179,86 +179,100 @@ function DirectoryContent() {
             <p className="mt-10 max-w-[52ch] text-muted-foreground">{t.mediakit.emptyAll}</p>
           ) : (
             <>
-              <div className="mt-12 rounded-[32px] border border-border bg-surface/70 p-3 md:flex md:items-center md:gap-3">
-                <div className="relative w-full md:max-w-[440px]">
-                  <Search
-                    className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
-                    aria-hidden="true"
-                  />
-                  <input
-                    ref={inputRef}
-                    type="search"
-                    value={q}
-                    aria-label={t.mediakit.searchLabel}
-                    placeholder={t.mediakit.searchPlaceholder}
-                    onChange={(event) => setSearch({ q: event.target.value, page: 1 })}
-                    onKeyDown={(event) => {
-                      if (event.key === "Escape") setSearch({ q: "", page: 1 });
-                    }}
-                    className="h-13 w-full rounded-full border border-border bg-background pl-11 pr-11 text-sm text-foreground outline-offset-2 transition-[border-color] duration-[160ms] ease-[var(--ease-out-gbz)] placeholder:text-subtle focus:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-                  />
-                  {q ? (
+              <div className="mt-12 rounded-[32px] border border-border bg-surface/70 p-3">
+                <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                  <div className="relative w-full md:max-w-[560px]">
+                    <Search
+                      className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle"
+                      aria-hidden="true"
+                    />
+                    <input
+                      ref={inputRef}
+                      type="search"
+                      value={q}
+                      aria-label={t.mediakit.searchLabel}
+                      placeholder={t.mediakit.searchPlaceholder}
+                      onChange={(event) => setSearch({ q: event.target.value, page: 1 })}
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") setSearch({ q: "", page: 1 });
+                      }}
+                      className="h-13 w-full rounded-full border border-border bg-background pl-11 pr-11 text-sm text-foreground outline-offset-2 transition-[border-color] duration-[160ms] ease-[var(--ease-out-gbz)] placeholder:text-subtle focus:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+                    />
+                    {q ? (
+                      <button
+                        type="button"
+                        aria-label={t.mediakit.clearSearch}
+                        onClick={() => {
+                          setSearch({ q: "", page: 1 });
+                          inputRef.current?.focus();
+                        }}
+                        className="gbz-interactive absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+                      >
+                        <X className="h-4 w-4" aria-hidden="true" />
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {hasFilters ? (
                     <button
                       type="button"
-                      aria-label={t.mediakit.clearSearch}
-                      onClick={() => {
-                        setSearch({ q: "", page: 1 });
-                        inputRef.current?.focus();
-                      }}
-                      className="gbz-interactive absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:text-primary"
+                      onClick={() => setSearch({ q: "", cat: "", page: 1 })}
+                      className="gbz-interactive h-13 shrink-0 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
                     >
-                      <X className="h-4 w-4" aria-hidden="true" />
+                      {t.mediakit.clearFilters}
                     </button>
                   ) : null}
-                </div>
 
-                <label className="mt-3 flex items-center gap-3 md:mt-0">
-                  <span className="sr-only">{t.mediakit.category}</span>
-                  <select
-                    value={cat}
-                    onChange={(event) => setSearch({ cat: event.target.value, page: 1 })}
-                    className="h-13 w-full rounded-full border border-border bg-background px-5 text-sm text-foreground outline-offset-2 transition-[border-color] duration-[160ms] ease-[var(--ease-out-gbz)] focus:border-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary md:w-auto"
+                  <div
+                    role="group"
+                    aria-label={t.mediakit.viewLabel}
+                    className="flex h-13 items-center gap-1 rounded-full border border-border bg-background p-1 md:ml-auto"
                   >
-                    <option value="">{t.mediakit.allCategories}</option>
-                    {talentCategoryGroups.map((category) => (
-                      <option key={category} value={category}>
-                        {category}
-                      </option>
+                    {[
+                      { key: "list" as const, label: t.mediakit.viewList, Icon: List },
+                      { key: "grid" as const, label: t.mediakit.viewGrid, Icon: LayoutGrid },
+                    ].map(({ key, label, Icon }) => (
+                      <button
+                        key={key}
+                        type="button"
+                        aria-pressed={view === key}
+                        onClick={() => setView(key)}
+                        className={`gbz-interactive inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] md:flex-none ${
+                          view === key
+                            ? "bg-primary text-primary-foreground"
+                            : "text-muted-foreground fine-hover:hover:text-primary"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" aria-hidden="true" />
+                        {label}
+                      </button>
                     ))}
-                  </select>
-                </label>
-
-                {hasFilters ? (
-                  <button
-                    type="button"
-                    onClick={() => setSearch({ q: "", cat: "", page: 1 })}
-                    className="gbz-interactive mt-3 h-13 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary md:mt-0"
-                  >
-                    {t.mediakit.clearFilters}
-                  </button>
-                ) : null}
+                  </div>
+                </div>
 
                 <div
                   role="group"
-                  aria-label={t.mediakit.viewLabel}
-                  className="mt-3 flex h-13 items-center gap-1 rounded-full border border-border bg-background p-1 md:ml-auto md:mt-0"
+                  aria-label={t.mediakit.category}
+                  className="mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]"
                 >
                   {[
-                    { key: "list" as const, label: t.mediakit.viewList, Icon: List },
-                    { key: "grid" as const, label: t.mediakit.viewGrid, Icon: LayoutGrid },
-                  ].map(({ key, label, Icon }) => (
+                    { value: "", label: t.mediakit.allCategories },
+                    ...talentCategoryGroups.map((category) => ({
+                      value: category,
+                      label: category,
+                    })),
+                  ].map(({ value, label }) => (
                     <button
-                      key={key}
+                      key={value || "all"}
                       type="button"
-                      aria-pressed={view === key}
-                      onClick={() => setView(key)}
-                      className={`gbz-interactive inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-full px-4 font-display text-[0.65rem] font-bold uppercase tracking-[0.14em] transition-[transform,background-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] md:flex-none ${
-                        view === key
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground fine-hover:hover:text-primary"
+                      aria-pressed={cat === value}
+                      onClick={() => setSearch({ cat: value, page: 1 })}
+                      className={`gbz-interactive min-h-11 shrink-0 rounded-full border px-5 font-display text-xs font-bold transition-[transform,background-color,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] ${
+                        cat === value
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-border bg-background text-muted-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
                       }`}
                     >
-                      <Icon className="h-4 w-4" aria-hidden="true" />
                       {label}
                     </button>
                   ))}
