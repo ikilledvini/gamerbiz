@@ -154,10 +154,10 @@ export function TalentCarousel() {
             <span
               aria-hidden="true"
               className={cn(
-                "block h-2 w-2 rounded-full transition-[transform,background-color] duration-[160ms] ease-[var(--ease-out-gbz)]",
+                "block h-2 rounded-full transition-[width,background-color] duration-[160ms] ease-[var(--ease-out-gbz)]",
                 index === selected
-                  ? "scale-x-4 bg-primary"
-                  : "scale-x-100 bg-border fine-hover:group-hover:bg-subtle",
+                  ? "w-7 bg-primary"
+                  : "w-2 bg-border fine-hover:group-hover:bg-subtle",
               )}
             />
           </button>

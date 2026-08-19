@@ -1,7 +1,7 @@
 import { Mail } from "lucide-react";
 import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa6";
 import { Logo } from "@/components/ui/logo";
-import { GbzButton } from "@/components/ui/gbz-button";
+import { GbzButton, gbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
 import { legalPath } from "@/lib/legal-routes";
@@ -11,10 +11,7 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   const { lang, t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
 
-  const navLinks = [
-    { href: "/blogs", label: "Blog" },
-    { href: "/mediakit", label: t.mediakit.nav },
-  ];
+  const navLinks = [{ href: "/blogs", label: "Blog" }];
 
   const socials = [
     { label: "Instagram", icon: FaInstagram, href: gamerbizLinks.instagram },
@@ -53,6 +50,9 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
               </li>
             ))}
           </ul>
+          <a href="/mediakit" className={gbzButton({ variant: "outline", size: "sm" }) + " mt-5"}>
+            {t.mediakit.nav}
+          </a>
         </nav>
 
         <div>
@@ -89,12 +89,10 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
       <div className="border-t border-border">
         <div className="container-gbz flex flex-col items-center justify-between gap-4 py-6 text-center md:flex-row md:items-start md:text-left">
           <p className="text-xs text-subtle">{t.footer.rights}</p>
-          <p className="max-w-[50ch] text-xs leading-relaxed text-subtle">
-            CNPJ 41.605.881/0001-51
-            <br />
-            Rua Cel Conrado Siqueira Campos, 133 — Apt 103, Jardim das Acácias, São Paulo/SP, CEP
-            04704-900
-          </p>
+          <div className="text-xs leading-relaxed text-subtle">
+            <p>GAMERBIZ CONSULTORIA EM JOGOS ELETRONICOS LTDA</p>
+            <p>CNPJ 41.605.881/0001-51</p>
+          </div>
           <nav
             aria-label={`${t.footer.privacy} / ${t.footer.terms}`}
             className="flex flex-wrap items-center justify-center gap-2"

@@ -249,7 +249,7 @@ export const adminIsAdmin = createServerFn({ method: "GET" })
 
 export const adminSaveTalent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: TalentInput) => input)
+  .validator((input: TalentInput) => input)
   .handler(async ({ data, context }) => {
     const { id, ...values } = data;
     const query = id
@@ -262,7 +262,7 @@ export const adminSaveTalent = createServerFn({ method: "POST" })
 
 export const adminReorderTalents = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { ids: string[] }) => input)
+  .validator((input: { ids: string[] }) => input)
   .handler(async ({ data, context }) => {
     for (const [index, id] of data.ids.entries()) {
       const { error } = await context.supabase
@@ -276,7 +276,7 @@ export const adminReorderTalents = createServerFn({ method: "POST" })
 
 export const adminDeleteTalent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { id: string }) => input)
+  .validator((input: { id: string }) => input)
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("talents").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
