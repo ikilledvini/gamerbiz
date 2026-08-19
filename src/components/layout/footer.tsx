@@ -11,7 +11,10 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   const { lang, t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
 
-  const navLinks = [{ href: "/blogs", label: "Blog" }];
+  const navLinks = [
+    { href: "/blogs", label: "Blog" },
+    { href: "/mediakit", label: t.mediakit.nav },
+  ];
 
   const socials = [
     { label: "Instagram", icon: FaInstagram, href: gamerbizLinks.instagram },
