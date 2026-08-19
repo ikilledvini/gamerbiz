@@ -253,7 +253,7 @@ function DirectoryContent() {
                 <div
                   role="group"
                   aria-label={t.mediakit.category}
-                  className="mt-3 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:thin]"
+                  className="mt-4 flex flex-wrap items-center gap-2 px-1"
                 >
                   {[
                     { value: "", label: t.mediakit.allCategories },
@@ -267,7 +267,7 @@ function DirectoryContent() {
                       type="button"
                       aria-pressed={cat === value}
                       onClick={() => setSearch({ cat: value, page: 1 })}
-                      className={`gbz-interactive min-h-11 shrink-0 rounded-full border px-5 font-display text-xs font-bold transition-[transform,background-color,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] ${
+                      className={`gbz-interactive min-h-11 whitespace-nowrap rounded-full border px-5 font-display text-xs font-bold transition-[transform,background-color,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] ${
                         cat === value
                           ? "border-primary bg-primary text-primary-foreground"
                           : "border-border bg-background text-muted-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
