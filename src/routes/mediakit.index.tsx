@@ -338,7 +338,7 @@ function DirectoryContent() {
                               </span>
                             </span>
                             <ArrowUpRight
-                              className="ml-auto h-4 w-4 shrink-0 text-subtle transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:group-hover:-translate-y-0.5 fine-hover:group-hover:translate-x-0.5 fine-hover:group-hover:text-primary"
+                              className="motion-lift-gbz ml-auto h-4 w-4 shrink-0 text-subtle transition-[transform,color] duration-[160ms] ease-[var(--ease-out-gbz)] fine-hover:group-hover:-translate-y-0.5 fine-hover:group-hover:translate-x-0.5 fine-hover:group-hover:text-primary"
                               aria-hidden="true"
                             />
                           </Link>

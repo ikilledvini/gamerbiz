@@ -41,12 +41,14 @@ export function BrandsSolutionsSection() {
                       aria-expanded={isActive}
                       aria-controls={`brand-panel-${service.key}`}
                       onClick={() => setActive(index)}
-                      className="gbz-interactive flex w-full items-start justify-between gap-6 px-5 py-6 text-left transition-transform duration-[120ms] ease-[var(--ease-out-gbz)] active:scale-[0.99] md:px-7 md:py-7"
+                      className="gbz-interactive group flex w-full items-start justify-between gap-6 px-5 py-6 text-left active:scale-[0.99] md:px-7 md:py-7"
                     >
                       <span
                         className={cn(
                           "font-display text-3xl font-bold leading-none tracking-[-0.035em] transition-colors duration-[160ms] md:text-[2.65rem]",
-                          isActive ? "text-primary" : "text-foreground hover:text-primary",
+                          isActive
+                            ? "text-primary"
+                            : "text-foreground fine-hover:group-hover:text-primary",
                         )}
                       >
                         {service.title}

@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { TalentCard } from "@/components/ui/talent-card";
 import { publishedTalents as fallbackTalents, type Talent } from "@/data/talents";
+import { usePrefersReducedMotion } from "@/hooks/use-motion";
 import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { listPublicTalents } from "@/lib/talents.functions";
@@ -19,6 +20,7 @@ const PAGE_SIZE = 5;
 export function TalentCarousel() {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const reducedMotion = usePrefersReducedMotion();
   const { data: publicTalents } = useQuery({
     queryKey: ["public-talents-carousel"],
     queryFn: () => listPublicTalents(),
@@ -92,7 +94,7 @@ export function TalentCarousel() {
           type="button"
           aria-label={t.a11y.prevSlide}
           disabled={selected === 0}
-          onClick={() => scrollPrevPage()}
+          onClick={() => scrollPrevPage(reducedMotion)}
           className="gbz-interactive hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-[transform,border-color,color,opacity] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 fine-hover:hover:border-primary fine-hover:hover:text-primary sm:flex"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -132,7 +134,7 @@ export function TalentCarousel() {
           type="button"
           aria-label={t.a11y.nextSlide}
           disabled={selected === totalPages - 1}
-          onClick={() => scrollNextPage()}
+          onClick={() => scrollNextPage(reducedMotion)}
           className="gbz-interactive hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border text-foreground transition-[transform,border-color,color,opacity] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-35 fine-hover:hover:border-primary fine-hover:hover:text-primary sm:flex"
         >
           <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -146,7 +148,7 @@ export function TalentCarousel() {
             type="button"
             aria-label={`${t.a11y.goToSlide} ${index + 1}`}
             aria-current={index === selected ? "true" : undefined}
-            onClick={() => scrollToPage(index)}
+            onClick={() => scrollToPage(index, reducedMotion)}
             className="group flex h-8 w-8 items-center justify-center rounded-full"
           >
             <span

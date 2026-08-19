@@ -57,7 +57,7 @@
 
   --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
   --animate-marquee-reverse: marquee-reverse var(--marquee-duration, 40s) linear infinite;
-  --animate-rise: rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-rise: rise 260ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
 @keyframes marquee {
@@ -208,6 +208,18 @@
   letter-spacing: -0.03em;
 }
 
+.gbz-interactive {
+  --gbz-press-scale: 0.97;
+  transition-property:
+    transform, translate, scale, rotate, color, background-color, border-color, opacity;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out-gbz);
+}
+
+.gbz-interactive:not(:disabled):not([aria-disabled="true"]):active {
+  scale: var(--gbz-press-scale);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -226,7 +238,15 @@
 
   .gbz-interactive,
   .motion-lift-gbz {
+    --gbz-press-scale: 1;
+    --tw-translate-x: 0px !important;
+    --tw-translate-y: 0px !important;
+    --tw-scale-x: 1 !important;
+    --tw-scale-y: 1 !important;
     transform: none !important;
+    scale: 1 !important;
+    translate: 0 0 !important;
+    rotate: 0deg !important;
     transition-property: color, background-color, border-color, opacity !important;
   }
 }

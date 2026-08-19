@@ -38,7 +38,7 @@ function CaseCard({
             alt={item.imageAlt ?? ""}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition-transform duration-500 ease-[var(--ease-out-gbz)] group-hover/image:scale-[1.025]"
+            className="motion-lift-gbz h-full w-full object-cover transition-transform duration-[220ms] ease-[var(--ease-out-gbz)] fine-hover:group-hover/image:[transform:scale(1.025)]"
           />
         </a>
       ) : null}

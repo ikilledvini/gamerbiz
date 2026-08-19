@@ -39,7 +39,7 @@ function formatDate(value: string | null) {
 function PostCard({ post, featured = false }: { post: BlogPostRow; featured?: boolean }) {
   return (
     <article
-      className={`group overflow-hidden rounded-[32px] border border-border bg-surface transition-[transform,border-color] duration-200 fine-hover:hover:-translate-y-1 fine-hover:hover:border-primary/60 ${featured ? "lg:grid lg:grid-cols-[1.15fr_0.85fr]" : ""}`}
+      className={`motion-lift-gbz group overflow-hidden rounded-[32px] border border-border bg-surface transition-[transform,border-color] duration-200 fine-hover:hover:-translate-y-1 fine-hover:hover:border-primary/60 ${featured ? "lg:grid lg:grid-cols-[1.15fr_0.85fr]" : ""}`}
     >
       <Link
         to="/blogs/$slug"
@@ -51,7 +51,7 @@ function PostCard({ post, featured = false }: { post: BlogPostRow; featured?: bo
           <img
             src={post.cover_image_url}
             alt={post.cover_image_alt || ""}
-            className="h-full w-full object-cover transition-transform duration-500 fine-hover:group-hover:scale-[1.03]"
+            className="motion-lift-gbz h-full w-full object-cover transition-transform duration-[220ms] ease-[var(--ease-out-gbz)] fine-hover:group-hover:[transform:scale(1.03)]"
           />
         ) : (
           <span className="grid h-full min-h-64 place-items-center bg-[radial-gradient(circle_at_25%_20%,rgba(255,20,20,0.24),transparent_42%),linear-gradient(135deg,#171717,#080808)] text-primary">

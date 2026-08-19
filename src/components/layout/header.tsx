@@ -33,17 +33,33 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
     }
 
     let lastScrollY = window.scrollY;
+    let accumulatedDelta = 0;
+    let lastDirection: "up" | "down" | null = null;
     let ticking = false;
 
     const onScroll = () => {
       if (ticking) return;
       window.requestAnimationFrame(() => {
         const currentScrollY = window.scrollY;
+        const delta = currentScrollY - lastScrollY;
 
         if (currentScrollY < 20) {
           setVisible(true);
-        } else {
-          setVisible(currentScrollY <= lastScrollY);
+          accumulatedDelta = 0;
+          lastDirection = null;
+        } else if (delta !== 0) {
+          const direction = delta > 0 ? "down" : "up";
+
+          if (direction !== lastDirection) {
+            accumulatedDelta = 0;
+            lastDirection = direction;
+          }
+
+          accumulatedDelta += Math.abs(delta);
+          if (accumulatedDelta >= 10) {
+            setVisible(direction === "up");
+            accumulatedDelta = 0;
+          }
         }
 
         lastScrollY = currentScrollY;
