@@ -3,17 +3,16 @@ import { gamerbizLinks } from "@/data/links";
 import { useI18n } from "@/i18n";
 
 const baseClass =
-  "flex min-h-[60px] w-full items-center gap-3 rounded-[16px] px-5 text-left font-display text-sm font-bold uppercase tracking-[0.08em] outline-offset-2 duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.97] sm:min-h-[68px] sm:text-base";
+  "gbz-interactive flex min-h-[60px] w-full items-center gap-3 rounded-[16px] px-5 text-left font-display text-sm font-bold uppercase tracking-[0.08em] outline-offset-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground sm:min-h-[68px] sm:text-base";
 
 const activeClass =
-  "bg-primary text-primary-foreground border border-transparent hover:-translate-y-0.5 hover:border-white/25 hover:bg-primary-dark";
+  "border border-transparent bg-primary text-primary-foreground fine-hover:hover:-translate-y-0.5 fine-hover:hover:border-white/25 fine-hover:hover:bg-primary-dark";
 
 export function PrimaryLinks() {
   const { t } = useI18n();
 
   return (
     <nav aria-label={t.links.primaryNav} className="mt-9 flex flex-col gap-3">
-
       {gamerbizLinks.website ? (
         <a
           href={gamerbizLinks.website}

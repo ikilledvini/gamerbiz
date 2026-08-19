@@ -56,7 +56,7 @@ function LinksContent() {
             <Link
               to="/"
               aria-label={t.links.backToWebsite}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-border bg-links text-foreground duration-200 ease-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground active:scale-[0.96] hover:border-primary hover:text-primary"
+              className="gbz-interactive flex h-11 w-11 items-center justify-center rounded-full border border-border bg-links text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -86,7 +86,7 @@ function LinksContent() {
                 <Link
                   to="/mediakit"
                   search={{ q: "", cat: "", page: 1 }}
-                  className="mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-colors duration-200 hover:border-primary hover:text-primary"
+                  className="gbz-interactive mt-6 inline-flex rounded-full border border-border px-7 py-3.5 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
                 >
                   {t.mediakit.ctaHome}
                 </Link>
@@ -107,20 +107,20 @@ function LinksContent() {
           <p className="text-xs text-subtle">© Gamerbiz. {t.links.rights}</p>
           <Link
             to="/"
-            className="font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-200 hover:text-primary"
+            className="gbz-interactive inline-flex font-display text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground fine-hover:hover:text-primary"
           >
             {t.links.websiteLink}
           </Link>
           <nav className="flex flex-wrap justify-center gap-2" aria-label={t.footer.navigation}>
             <Link
               to={legalPath("privacy", lang)}
-              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] hover:border-primary hover:text-primary"
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
             >
               {t.footer.privacy}
             </Link>
             <Link
               to={legalPath("tos", lang)}
-              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground transition-[transform,border-color,color] duration-200 active:scale-[0.97] hover:border-primary hover:text-primary"
+              className="gbz-interactive inline-flex min-h-10 items-center rounded-full border border-border px-4 font-display text-[0.6875rem] font-bold uppercase tracking-[0.1em] text-muted-foreground fine-hover:hover:border-primary fine-hover:hover:text-primary"
             >
               {t.footer.terms}
             </Link>

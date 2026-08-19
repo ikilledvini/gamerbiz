@@ -21,7 +21,7 @@ function renderInline(value: string): ReactNode[] {
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary underline decoration-primary/50 underline-offset-4 transition-colors hover:text-primary/80"
+            className="font-medium text-primary underline decoration-primary/50 underline-offset-4 transition-colors fine-hover:hover:text-primary/80"
           >
             {markdownLink?.[1] ?? part}
           </a>
