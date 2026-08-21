@@ -24,6 +24,7 @@ export const ptBR: Dict = {
     clients: "Clientes",
     talents: "Talentos",
     cases: "Cases",
+    contact: "Contato",
   },
   actions: {
     brand: "Sou Marca",

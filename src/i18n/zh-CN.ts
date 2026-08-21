@@ -23,6 +23,7 @@ export const zhCN: Dict = {
     clients: "客户",
     talents: "达人",
     cases: "案例",
+    contact: "联系我们",
   },
   actions: {
     brand: "我是品牌方",

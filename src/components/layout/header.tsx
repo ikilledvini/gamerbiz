@@ -20,10 +20,9 @@ export function Header({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
     { href: `${homeHrefPrefix}#sobre`, label: t.nav.about },
     { href: `${homeHrefPrefix}#marcas`, label: t.nav.brands },
     { href: `${homeHrefPrefix}#times`, label: t.nav.teams },
-    { href: `${homeHrefPrefix}#clientes`, label: t.nav.clients },
     { href: `${homeHrefPrefix}#talentos`, label: t.nav.talents },
     { href: `${homeHrefPrefix}#cases`, label: t.nav.cases },
-    { href: "/blogs", label: "Blog" },
+    { href: `${homeHrefPrefix}#contato`, label: t.nav.contact },
   ];
 
   useEffect(() => {

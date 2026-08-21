@@ -7,7 +7,7 @@ export function FinalCtaSection() {
   const { openBrandModal } = useModals();
 
   return (
-    <section className="relative overflow-hidden border-y border-border bg-surface py-28 md:py-36">
+    <section id="contato" className="relative overflow-hidden border-y border-border bg-surface py-28 md:py-36">
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute left-1/2 top-1/2 h-[420px] w-[720px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/25 blur-[170px]" />
       </div>
