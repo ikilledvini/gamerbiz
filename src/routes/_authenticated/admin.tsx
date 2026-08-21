@@ -13,6 +13,7 @@ import {
   ChevronUp,
   CircleUserRound,
   FileClock,
+  Inbox,
   GripVertical,
   LayoutDashboard,
   MessageSquareText,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PortalShell } from "@/components/dashboard/portal-shell";
+import { FormInboxPanel } from "@/components/dashboard/form-inbox-panel";
 import { BlogEditorDialog } from "@/components/dashboard/blog-editor-dialog";
 import { TalentEditorDialog } from "@/components/dashboard/talent-editor-dialog";
 import { UserEditorDialog, type ManagedUserDraft } from "@/components/dashboard/user-editor-dialog";
