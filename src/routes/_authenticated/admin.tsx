@@ -13,6 +13,7 @@ import {
   ChevronUp,
   CircleUserRound,
   FileClock,
+  Inbox,
   GripVertical,
   LayoutDashboard,
   MessageSquareText,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { PortalShell } from "@/components/dashboard/portal-shell";
+import { FormInboxPanel } from "@/components/dashboard/form-inbox-panel";
 import { BlogEditorDialog } from "@/components/dashboard/blog-editor-dialog";
 import { TalentEditorDialog } from "@/components/dashboard/talent-editor-dialog";
 import { UserEditorDialog, type ManagedUserDraft } from "@/components/dashboard/user-editor-dialog";
@@ -88,6 +90,7 @@ type AdminView =
   | "blogs"
   | "content"
   | "leads"
+  | "inbox"
   | "access"
   | "audit"
   | "system";
@@ -155,6 +158,7 @@ const VIEW_ITEMS: Array<{
   { key: "connections", label: "Conexões", icon: Cable, group: "Operação" },
   { key: "analytics", label: "Analytics", icon: BarChart3, group: "Operação" },
   { key: "leads", label: "Pipeline", icon: MessageSquareText, group: "Gestão" },
+  { key: "inbox", label: "Formulários", icon: Inbox, group: "Gestão" },
   { key: "access", label: "Usuários", icon: ShieldCheck, group: "Gestão" },
   { key: "audit", label: "Auditoria", icon: FileClock, group: "Gestão" },
   { key: "system", label: "Sistema", icon: Settings2, group: "Gestão" },
@@ -176,6 +180,10 @@ const VIEW_COPY: Record<AdminView, { title: string; description: string }> = {
   leads: {
     title: "Pipeline comercial",
     description: "Oportunidades, responsáveis e próximas ações.",
+  },
+  inbox: {
+    title: "Entradas dos formulários",
+    description: "Mensagens enviadas nos formulários de marca e creator.",
   },
   access: {
     title: "Usuários e acessos",
@@ -1381,6 +1389,8 @@ function AdminRoute() {
                 saving={leadDetailsMutation.isPending}
                 onSave={(id, draft) => leadDetailsMutation.mutate({ id, draft })}
               />
+            ) : view === "inbox" ? (
+              <FormInboxPanel leads={dashboard?.leads ?? []} />
             ) : view === "audit" ? (
               <AuditPanel
                 logs={dashboard?.auditLogs ?? []}
