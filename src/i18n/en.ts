@@ -214,9 +214,9 @@ export const en: Dict = {
   },
   brandModal: {
     eyebrow: "GAMERBIZ · BRANDS",
-    title: "Let's",
-    titleHighlight: "talk?",
-    description: "Fill out the form and our team will get back to you within 24 hours.",
+    title: "Let's level up?",
+    titleHighlight: "",
+    description: "Tell us your challenge and let's build the next play together.",
     name: "Your name",
     namePlaceholder: "e.g. Alex Smith",
     company: "Company",
