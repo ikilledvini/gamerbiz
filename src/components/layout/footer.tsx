@@ -11,7 +11,14 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   const { lang, t } = useI18n();
   const { openBrandModal, openCreatorModal } = useModals();
 
-  const navLinks = [{ href: "/blogs", label: "Blog" }];
+  const navLinks = [
+    { href: `${homeHrefPrefix}#sobre`, label: t.nav.about },
+    { href: `${homeHrefPrefix}#marcas`, label: t.nav.brands },
+    { href: `${homeHrefPrefix}#times`, label: t.nav.teams },
+    { href: `${homeHrefPrefix}#talentos`, label: t.nav.talents },
+    { href: `${homeHrefPrefix}#cases`, label: t.nav.cases },
+    { href: `${homeHrefPrefix}#contato`, label: t.nav.contact },
+  ];
 
   const socials = [
     { label: "Instagram", icon: FaInstagram, href: gamerbizLinks.instagram },
@@ -20,7 +27,7 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
   ];
 
   return (
-    <footer id="contato" className="border-t border-border bg-surface">
+    <footer className="border-t border-border bg-surface">
       <div className="container-gbz grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr] lg:py-20">
         <div className="lg:col-span-1">
           <Logo className="h-10" />
