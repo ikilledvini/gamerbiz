@@ -1,7 +1,7 @@
 import { Mail } from "lucide-react";
 import { FaInstagram, FaYoutube, FaLinkedin } from "react-icons/fa6";
 import { Logo } from "@/components/ui/logo";
-import { GbzButton, gbzButton } from "@/components/ui/gbz-button";
+import { GbzButton } from "@/components/ui/gbz-button";
 import { useModals } from "@/components/modals/modal-provider";
 import { useI18n } from "@/i18n";
 import { legalPath } from "@/lib/legal-routes";
@@ -58,9 +58,6 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
               </li>
             ))}
           </ul>
-          <a href="/mediakit" className={gbzButton({ variant: "outline", size: "sm" }) + " mt-5"}>
-            {t.mediakit.nav}
-          </a>
         </nav>
 
         <div>
