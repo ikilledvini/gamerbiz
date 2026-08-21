@@ -233,9 +233,9 @@ export const en: Dict = {
   },
   creatorModal: {
     eyebrow: "GAMERBIZ · CREATORS",
-    title: "Join",
-    titleHighlight: "our team",
-    description: "Fill out the form and our team will be in touch soon.",
+    title: "Ready for the next level?",
+    titleHighlight: "",
+    description: "Show your content, share your channels, and come unlock new opportunities with us.",
     name: "Your name",
     namePlaceholder: "e.g. Alex Smith",
     email: "Email",
