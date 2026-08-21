@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after_data: Json | null
+          before_data: Json | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: number
+          summary: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: number
+          summary: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: number
+          summary?: string
+        }
+        Relationships: []
+      }
+      admin_notifications: {
+        Row: {
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: number
+          message: string
+          read_at: string | null
+          resolved_at: string | null
+          severity: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: number
+          message: string
+          read_at?: string | null
+          resolved_at?: string | null
+          severity?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: number
+          message?: string
+          read_at?: string | null
+          resolved_at?: string | null
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_name: string
@@ -110,14 +182,23 @@ export type Database = {
           created_at: string
           creator_type: string | null
           email: string
+          estimated_value: number | null
           id: string
+          internal_notes: string | null
           kind: Database["public"]["Enums"]["lead_kind"]
           locale: string
           message: string | null
           name: string
+          next_action_at: string | null
+          owner_id: string | null
+          pipeline_stage: string
+          priority: string
           profiles: string | null
+          source: string | null
           status: Database["public"]["Enums"]["lead_status"]
           subject: string | null
+          tags: string[]
+          updated_at: string
           whatsapp: string | null
         }
         Insert: {
@@ -125,14 +206,23 @@ export type Database = {
           created_at?: string
           creator_type?: string | null
           email: string
+          estimated_value?: number | null
           id?: string
+          internal_notes?: string | null
           kind: Database["public"]["Enums"]["lead_kind"]
           locale?: string
           message?: string | null
           name: string
+          next_action_at?: string | null
+          owner_id?: string | null
+          pipeline_stage?: string
+          priority?: string
           profiles?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
           subject?: string | null
+          tags?: string[]
+          updated_at?: string
           whatsapp?: string | null
         }
         Update: {
@@ -140,14 +230,23 @@ export type Database = {
           created_at?: string
           creator_type?: string | null
           email?: string
+          estimated_value?: number | null
           id?: string
+          internal_notes?: string | null
           kind?: Database["public"]["Enums"]["lead_kind"]
           locale?: string
           message?: string | null
           name?: string
+          next_action_at?: string | null
+          owner_id?: string | null
+          pipeline_stage?: string
+          priority?: string
           profiles?: string | null
+          source?: string | null
           status?: Database["public"]["Enums"]["lead_status"]
           subject?: string | null
+          tags?: string[]
+          updated_at?: string
           whatsapp?: string | null
         }
         Relationships: []
@@ -176,6 +275,45 @@ export type Database = {
           must_change_password?: boolean
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          content_key: string
+          created_at: string
+          description: string | null
+          id: string
+          locale: string
+          payload: Json
+          published_at: string | null
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content_key: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          locale?: string
+          payload?: Json
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content_key?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          locale?: string
+          payload?: Json
+          published_at?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -348,6 +486,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      social_sync_runs: {
+        Row: {
+          completed_at: string | null
+          connection_ids: string[]
+          failed: number
+          id: string
+          processed: number
+          requested_by: string | null
+          results: Json
+          started_at: string
+          status: string
+          succeeded: number
+          trigger_source: string
+        }
+        Insert: {
+          completed_at?: string | null
+          connection_ids?: string[]
+          failed?: number
+          id?: string
+          processed?: number
+          requested_by?: string | null
+          results?: Json
+          started_at?: string
+          status?: string
+          succeeded?: number
+          trigger_source?: string
+        }
+        Update: {
+          completed_at?: string | null
+          connection_ids?: string[]
+          failed?: number
+          id?: string
+          processed?: number
+          requested_by?: string | null
+          results?: Json
+          started_at?: string
+          status?: string
+          succeeded?: number
+          trigger_source?: string
+        }
+        Relationships: []
       }
       talents: {
         Row: {
