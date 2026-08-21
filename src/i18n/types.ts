@@ -29,6 +29,7 @@ export type Dict = {
     clients: string;
     talents: string;
     cases: string;
+    contact: string;
   };
   actions: {
     brand: string;

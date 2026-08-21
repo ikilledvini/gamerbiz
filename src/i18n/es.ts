@@ -24,6 +24,7 @@ export const es: Dict = {
     clients: "Clientes",
     talents: "Talentos",
     cases: "Casos",
+    contact: "Contacto",
   },
   actions: {
     brand: "Soy una Marca",

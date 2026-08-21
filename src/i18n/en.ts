@@ -24,6 +24,7 @@ export const en: Dict = {
     clients: "Clients",
     talents: "Talents",
     cases: "Case Studies",
+    contact: "Contact",
   },
   actions: {
     brand: "I'm a Brand",
