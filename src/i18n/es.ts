@@ -214,10 +214,9 @@ export const es: Dict = {
   },
   brandModal: {
     eyebrow: "GAMERBIZ · MARCAS",
-    title: "",
-    titleHighlight: "¿Hablamos?",
-    description:
-      "Completa el formulario y nuestro equipo se pondrá en contacto contigo en un plazo de 24 horas.",
+    title: "¿Subamos de nivel?",
+    titleHighlight: "",
+    description: "Cuéntanos tu desafío y vamos a construir la próxima jugada juntos.",
     name: "Tu nombre",
     namePlaceholder: "Ej.: Pablo Santos",
     company: "Empresa",

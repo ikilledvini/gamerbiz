@@ -209,9 +209,9 @@ export const zhCN: Dict = {
   },
   brandModal: {
     eyebrow: "GAMERBIZ · 品牌",
-    title: "聊聊",
-    titleHighlight: "你的项目？",
-    description: "请填写以下信息，我们的团队将在 24 小时内与您联系。",
+    title: "让我们一起升级吧？",
+    titleHighlight: "",
+    description: "告诉我们您的挑战，让我们一起打造下一步。",
     name: "您的姓名",
     namePlaceholder: "例如：张伟",
     company: "公司",

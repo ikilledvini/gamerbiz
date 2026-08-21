@@ -217,9 +217,9 @@ export const ptBR: Dict = {
   },
   brandModal: {
     eyebrow: "GAMERBIZ · MARCAS",
-    title: "Vamos",
-    titleHighlight: "conversar?",
-    description: "Preencha abaixo e nossa equipe entra em contato em até 24h.",
+    title: "Vamos subir de nível?",
+    titleHighlight: "",
+    description: "Conte seu desafio e vamos construir a próxima jogada juntos.",
     name: "Seu nome",
     namePlaceholder: "Ex.: Paulo Santos",
     company: "Empresa",
