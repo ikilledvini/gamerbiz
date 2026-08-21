@@ -236,9 +236,9 @@ export const ptBR: Dict = {
   },
   creatorModal: {
     eyebrow: "GAMERBIZ · CREATORS",
-    title: "Faça parte do",
-    titleHighlight: "nosso time",
-    description: "Preencha abaixo e nossa equipe entra em contato em breve.",
+    title: "Pronto para a próxima fase?",
+    titleHighlight: "",
+    description: "Apresente seu conteúdo, compartilhe suas redes e venha desbloquear novas oportunidades com a gente.",
     name: "Seu nome",
     namePlaceholder: "Ex.: Paulo Santos",
     email: "E-mail",

@@ -234,9 +234,9 @@ export const es: Dict = {
   },
   creatorModal: {
     eyebrow: "GAMERBIZ · CREATORS",
-    title: "Forma parte de",
-    titleHighlight: "nuestro equipo",
-    description: "Completa el formulario y nuestro equipo se pondrá en contacto contigo pronto.",
+    title: "¿Listo para la siguiente fase?",
+    titleHighlight: "",
+    description: "Presenta tu contenido, comparte tus redes y ven a desbloquear nuevas oportunidades con nosotros.",
     name: "Tu nombre",
     namePlaceholder: "Ej.: Pablo Santos",
     email: "E-mail",

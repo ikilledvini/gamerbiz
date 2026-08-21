@@ -228,9 +228,9 @@ export const zhCN: Dict = {
   },
   creatorModal: {
     eyebrow: "GAMERBIZ · 创作者",
-    title: "加入",
-    titleHighlight: "我们的团队",
-    description: "请填写以下信息，我们的团队将尽快与您联系。",
+    title: "准备好进入下一阶段了吗？",
+    titleHighlight: "",
+    description: "展示你的内容，分享你的社交账号，与我们一起解锁新的机会。",
     name: "您的姓名",
     namePlaceholder: "例如：张伟",
     email: "电子邮箱",
