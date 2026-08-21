@@ -1,30 +1,18 @@
-# Configurar GitHub Sync para o projeto Gamerbiz
+# Corrigir o favicon para o Google
 
-## Objetivo
-Sincronizar o código do projeto Gamerbiz com um repositório do GitHub via Git sync de duas vias.
+## O que o relatório mostra
 
-## Observação importante
-A conexão com o GitHub é feita diretamente pela interface do Lovable e exige autorização do usuário no GitHub. Não é possível ativar essa integração apenas editando arquivos do projeto.
+O HTML publicado está correto no essencial: a tag do favicon existe no `<head>` do site (`<link rel="icon" type="image/png" href="/favicon.png">`), o arquivo responde normalmente em `https://gamerbiz.com.br/favicon.png` (200, image/png) e o `robots.txt` não bloqueia nada.
 
-## Passos
+O único ponto fora das exigências do Google: o arquivo tem **64x64 px**. O Google pede um ícone quadrado com lado **múltiplo de 48 px** (48, 96, 144, 192...). Ícones fora dessa medida costumam ser ignorados e o Google mostra o globo padrão.
 
-1. **Abrir o menu de conexão**
-   - No editor do Lovable, clicar no botão **Plus (+)** ao lado do input do chat.
-   - Selecionar **GitHub** → **Connect project**.
+## O que vou fazer
 
-2. **Autorizar o app do Lovable no GitHub**
-   - Confirmar a instalação do app "Lovable" na conta/organização desejada.
+1. Gerar o favicon em 96x96 e 192x192 a partir da arte atual (escudo vermelho Gamerbiz), mantendo a mesma identidade.
+2. Salvar `public/favicon.png` (96x96), `public/favicon-192.png` e um `public/favicon.ico` como fallback clássico.
+3. Declarar os três no `head()` da rota raiz (`src/routes/__root.tsx`), com `sizes` corretos e um `apple-touch-icon`.
+4. Adicionar a linha `Sitemap: https://gamerbiz.com.br/sitemap.xml` ao `public/robots.txt`, que hoje está sem ela.
 
-3. **Escolher conta ou organização**
-   - Selecionar a conta pessoal ou a organização onde o repositório será criado.
+## Depois de publicar
 
-4. **Criar o repositório**
-   - Clicar em **Create Repository** no Lovable.
-   - O código atual do projeto será enviado automaticamente para o novo repositório.
-
-5. **Verificar sincronização futura**
-   - Após ativado, edições feitas no Lovable serão enviadas automaticamente para o GitHub.
-   - Alterações feitas diretamente no GitHub também sincronizam de volta para o Lovable.
-
-## Resultado esperado
-Repositório criado no GitHub com o código atual do projeto e sincronização bidirecional ativa.
+O Google só troca o favicon quando rastreia a home de novo — pode levar de dias a algumas semanas. Dá para acelerar pedindo reindexação da home no Search Console.
