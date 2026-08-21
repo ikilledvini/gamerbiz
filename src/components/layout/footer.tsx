@@ -18,6 +18,7 @@ export function Footer({ homeHrefPrefix = "" }: { homeHrefPrefix?: string }) {
     { href: `${homeHrefPrefix}#talentos`, label: t.nav.talents },
     { href: `${homeHrefPrefix}#cases`, label: t.nav.cases },
     { href: `${homeHrefPrefix}#contato`, label: t.nav.contact },
+    { href: "/mediakit", label: t.mediakit.nav },
   ];
 
   const socials = [
