@@ -1,5 +1,6 @@
 import { TALENT_IMAGES } from "./talent-images";
 import { toSlug } from "@/lib/slug";
+import { withManualSocials } from "@/lib/talent-socials";
 
 export type PublishStatus = "draft" | "published" | "hidden";
 
@@ -99,6 +100,8 @@ export type Talent = {
     youtube: string | null;
     twitch: string | null;
     twitter: string | null;
+    youtube2?: string | null;
+    kick?: string | null;
   };
   stats: {
     followers: string | null;
@@ -235,7 +238,13 @@ export const talents: Talent[] = TALENT_NAMES.map((stageName, index) => {
     city: null,
     image,
     mediaKitUrl: null,
-    socials: { instagram: null, tiktok: null, youtube: null, twitch: null, twitter: null },
+    socials: withManualSocials(stageName, {
+      instagram: null,
+      tiktok: null,
+      youtube: null,
+      twitch: null,
+      twitter: null,
+    }),
     stats: { followers: null, avgViews: null, engagement: null, audience: null },
     achievements: null,
     contactEmail: null,

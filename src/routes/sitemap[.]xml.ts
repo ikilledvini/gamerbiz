@@ -60,6 +60,11 @@ async function dynamicEntries(): Promise<SitemapEntry[]> {
   for (const talent of talents.data ?? []) {
     if (!talent.slug) continue;
     entries.push({ path: `/mediakit/${talent.slug}`, changefreq: "monthly", priority: "0.7" });
+    entries.push({
+      path: `/mediakit/${talent.slug}/link`,
+      changefreq: "monthly",
+      priority: "0.6",
+    });
   }
 
   for (const post of posts.data ?? []) {

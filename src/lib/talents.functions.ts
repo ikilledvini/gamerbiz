@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { TALENT_COLUMNS, mapTalentRow, type TalentRow } from "@/lib/talent-mapper";
+import { withManualSocials } from "@/lib/talent-socials";
 import type {
   SocialPlatform,
   SyncedSocialMetrics,
@@ -213,13 +214,18 @@ export const listPublicTalents = createServerFn({ method: "GET" }).handler(async
     const profiles = profilesByTalent.get(row.id) ?? {};
     return {
       ...talent,
-      socials: {
-        instagram: profiles.instagram ?? null,
-        tiktok: profiles.tiktok ?? null,
-        youtube: profiles.youtube ?? null,
-        twitch: profiles.twitch ?? null,
-        twitter: profiles.twitter ?? null,
-      },
+      socials: withManualSocials(
+        row.stage_name,
+        {
+          instagram: profiles.instagram ?? null,
+          tiktok: profiles.tiktok ?? null,
+          youtube: profiles.youtube ?? null,
+          twitch: profiles.twitch ?? null,
+          twitter: profiles.twitter ?? null,
+        },
+        row.slug,
+        row.username,
+      ),
       socialMetrics: metricsByTalent.get(row.id) ?? null,
     };
   });

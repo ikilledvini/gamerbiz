@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { FaInstagram, FaYoutube, FaTiktok, FaTwitch, FaXTwitter } from "react-icons/fa6";
-import { Gamepad2, Info, Mail, MapPin, Share2, User } from "lucide-react";
+import { SiKick } from "react-icons/si";
+import { Gamepad2, Info, Link as LinkIcon, Mail, MapPin, Share2, User } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
@@ -10,6 +11,7 @@ import { MediaKitSectionHeading } from "@/components/media-kit/media-kit-section
 import { MediaKitAnalytics } from "@/components/media-kit/analytics-panel";
 import { type Talent } from "@/data/talents";
 import { listPublicTalents } from "@/lib/talents.functions";
+import { socialEntries } from "@/lib/talent-socials";
 
 const SITE = "https://idea-to-site-muse.lovable.app";
 const DEFAULT_CONTACT_EMAIL = "contato@gamerbiz.com.br";
@@ -206,40 +208,30 @@ function MediaKitContent({ talent }: { talent: Talent }) {
   const contactEmail = talent.contactEmail || DEFAULT_CONTACT_EMAIL;
   const mailtoSubject = `${t.mediakit.contactSubject} ${talent.stageName}`;
 
-  const socialRows = (
-    [
-      {
-        key: "instagram",
-        url: talent.socials.instagram,
-        label: t.mediakit.platforms.instagram,
-        icon: <FaInstagram className="h-4 w-4 text-white" />,
-      },
-      {
-        key: "youtube",
-        url: talent.socials.youtube,
-        label: t.mediakit.platforms.youtube,
-        icon: <FaYoutube className="h-4 w-4 text-white" />,
-      },
-      {
-        key: "tiktok",
-        url: talent.socials.tiktok,
-        label: t.mediakit.platforms.tiktok,
-        icon: <FaTiktok className="h-4 w-4 text-white" />,
-      },
-      {
-        key: "twitch",
-        url: talent.socials.twitch,
-        label: t.mediakit.platforms.twitch,
-        icon: <FaTwitch className="h-4 w-4 text-white" />,
-      },
-      {
-        key: "twitter",
-        url: talent.socials.twitter,
-        label: t.mediakit.platforms.twitter,
-        icon: <FaXTwitter className="h-4 w-4 text-white" />,
-      },
-    ] as { key: string; url: string | null; label: string; icon: React.ReactNode }[]
-  ).filter((item) => item.url);
+  const socialIcons: Record<string, React.ReactNode> = {
+    instagram: <FaInstagram className="h-4 w-4 text-white" />,
+    youtube: <FaYoutube className="h-4 w-4 text-white" />,
+    tiktok: <FaTiktok className="h-4 w-4 text-white" />,
+    twitch: <FaTwitch className="h-4 w-4 text-white" />,
+    twitter: <FaXTwitter className="h-4 w-4 text-white" />,
+    kick: <SiKick className="h-4 w-4 text-white" />,
+  };
+
+  const platformLabels: Record<string, string> = {
+    instagram: t.mediakit.platforms.instagram,
+    youtube: t.mediakit.platforms.youtube,
+    tiktok: t.mediakit.platforms.tiktok,
+    twitch: t.mediakit.platforms.twitch,
+    twitter: t.mediakit.platforms.twitter,
+    kick: "Kick",
+  };
+
+  const socialRows = socialEntries(talent.socials).map((entry) => ({
+    key: entry.key,
+    url: entry.url,
+    label: platformLabels[entry.platform] ?? entry.label,
+    icon: socialIcons[entry.platform],
+  }));
 
   function handleLabel(url: string) {
     try {
@@ -417,8 +409,8 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                       key={item.key}
                       icon={item.icon}
                       label={item.label}
-                      value={handleLabel(item.url!)}
-                      href={item.url!}
+                      value={handleLabel(item.url)}
+                      href={item.url}
                     />
                   ))}
                 </ul>
@@ -438,6 +430,14 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                     <Share2 className="h-4 w-4" aria-hidden="true" />
                     {t.mediakit.share}
                   </button>
+                  <Link
+                    to="/mediakit/$slug/link"
+                    params={{ slug: talent.slug }}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                  >
+                    <LinkIcon className="h-4 w-4" aria-hidden="true" />
+                    Links
+                  </Link>
                 </div>
               </aside>
             </div>

@@ -1,5 +1,6 @@
 import { TALENT_IMAGES } from "@/data/talent-images";
 import type { PublishStatus, Talent, TalentAnalytics } from "@/data/talents";
+import { withManualSocials } from "@/lib/talent-socials";
 
 export type TalentRow = {
   id: string;
@@ -50,13 +51,13 @@ export function mapTalentRow(row: TalentRow): Talent {
     city: row.city,
     image: row.image_url ?? TALENT_IMAGES[row.stage_name] ?? null,
     mediaKitUrl: row.media_kit_url,
-    socials: {
+    socials: withManualSocials(row.stage_name, {
       instagram: row.instagram_url ?? null,
       tiktok: row.tiktok_url ?? null,
       youtube: row.youtube_url ?? null,
       twitch: row.twitch_url ?? null,
       twitter: row.twitter_url ?? null,
-    },
+    }, row.slug, row.username),
     stats: {
       followers: row.followers ?? null,
       avgViews: row.avg_views ?? null,
