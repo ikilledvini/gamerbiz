@@ -25,6 +25,7 @@ import { Route as MediakitIndexRouteImport } from './routes/mediakit.index'
 import { Route as MediakitSlugRouteImport } from './routes/mediakit.$slug'
 import { Route as PrivacyLangRouteImport } from './routes/privacy.$lang'
 import { Route as TosLangRouteImport } from './routes/tos.$lang'
+import { Route as MediakitSlugLinkRouteImport } from './routes/mediakit.$slug_.link'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -106,6 +107,11 @@ const TosLangRoute = TosLangRouteImport.update({
   path: '/tos/$lang',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MediakitSlugLinkRoute = MediakitSlugLinkRouteImport.update({
+  id: '/mediakit/$slug_/link',
+  path: '/mediakit/$slug/link',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/tos/$lang': typeof TosLangRoute
   '/blogs/': typeof BlogsIndexRoute
   '/mediakit/': typeof MediakitIndexRoute
+  '/mediakit/$slug/link': typeof MediakitSlugLinkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/tos/$lang': typeof TosLangRoute
   '/blogs': typeof BlogsIndexRoute
   '/mediakit': typeof MediakitIndexRoute
+  '/mediakit/$slug/link': typeof MediakitSlugLinkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/tos/$lang': typeof TosLangRoute
   '/blogs/': typeof BlogsIndexRoute
   '/mediakit/': typeof MediakitIndexRoute
+  '/mediakit/$slug_/link': typeof MediakitSlugLinkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/tos/$lang'
     | '/blogs/'
     | '/mediakit/'
+    | '/mediakit/$slug/link'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,6 +205,7 @@ export interface FileRouteTypes {
     | '/tos/$lang'
     | '/blogs'
     | '/mediakit'
+    | '/mediakit/$slug/link'
   id:
     | '__root__'
     | '/'
@@ -213,6 +224,7 @@ export interface FileRouteTypes {
     | '/tos/$lang'
     | '/blogs/'
     | '/mediakit/'
+    | '/mediakit/$slug_/link'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   TosLangRoute: typeof TosLangRoute
   BlogsIndexRoute: typeof BlogsIndexRoute
   MediakitIndexRoute: typeof MediakitIndexRoute
+  MediakitSlugLinkRoute: typeof MediakitSlugLinkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TosLangRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mediakit/$slug_/link': {
+      id: '/mediakit/$slug_/link'
+      path: '/mediakit/$slug/link'
+      fullPath: '/mediakit/$slug/link'
+      preLoaderRoute: typeof MediakitSlugLinkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -377,6 +397,7 @@ const rootRouteChildren: RootRouteChildren = {
   TosLangRoute: TosLangRoute,
   BlogsIndexRoute: BlogsIndexRoute,
   MediakitIndexRoute: MediakitIndexRoute,
+  MediakitSlugLinkRoute: MediakitSlugLinkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

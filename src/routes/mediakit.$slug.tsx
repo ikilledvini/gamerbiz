@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { FaInstagram, FaYoutube, FaTiktok, FaTwitch, FaXTwitter } from "react-icons/fa6";
 import { SiKick } from "react-icons/si";
-import { Gamepad2, Info, Mail, MapPin, Share2, User } from "lucide-react";
+import { Gamepad2, Info, Link as LinkIcon, Mail, MapPin, Share2, User } from "lucide-react";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { I18nProvider, useI18n } from "@/i18n";
@@ -430,6 +430,14 @@ function MediaKitContent({ talent }: { talent: Talent }) {
                     <Share2 className="h-4 w-4" aria-hidden="true" />
                     {t.mediakit.share}
                   </button>
+                  <Link
+                    to="/mediakit/$slug/link"
+                    params={{ slug: talent.slug }}
+                    className="gbz-interactive inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-border px-6 font-display text-xs font-bold uppercase tracking-[0.16em] text-foreground transition-[transform,border-color,color] duration-[160ms] ease-[var(--ease-out-gbz)] active:scale-[0.97] fine-hover:hover:border-primary fine-hover:hover:text-primary"
+                  >
+                    <LinkIcon className="h-4 w-4" aria-hidden="true" />
+                    Links
+                  </Link>
                 </div>
               </aside>
             </div>
