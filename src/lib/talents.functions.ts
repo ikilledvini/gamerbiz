@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { Database } from "@/integrations/supabase/types";
 import { TALENT_COLUMNS, mapTalentRow, type TalentRow } from "@/lib/talent-mapper";
+import { withManualSocials } from "@/lib/talent-socials";
 import type {
   SocialPlatform,
   SyncedSocialMetrics,
